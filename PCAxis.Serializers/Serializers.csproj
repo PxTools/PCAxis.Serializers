@@ -47,6 +47,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Folder Include="Html5Table\" />
+    <Folder Include="Json\" />
   </ItemGroup>
 </Project>

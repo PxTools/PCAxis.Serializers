@@ -1,9 +1,8 @@
 ﻿using System;
-using Newtonsoft.Json;
 
 namespace PCAxis.Serializers.JsonStat
 {
-    class DecimalJsonConverter : JsonConverter
+    class DecimalJsonConverter : Newtonsoft.Json.JsonConverter
     {
         public DecimalJsonConverter()
         {
@@ -17,7 +16,7 @@ namespace PCAxis.Serializers.JsonStat
             }
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object ReadJson(Newtonsoft.Json.JsonReader reader, Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer)
         {
             throw new NotImplementedException("Unnecessary because CanRead is false. The type will skip the converter.");
         }
@@ -27,15 +26,15 @@ namespace PCAxis.Serializers.JsonStat
             return (objectType ==  typeof(double?));
         }
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(Newtonsoft.Json.JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer)
         {
                 if (DecimalJsonConverter.IsWholeValue(value))
                 {
-                    writer.WriteRawValue(JsonConvert.ToString(Convert.ToInt64(value)));
+                    writer.WriteRawValue(Newtonsoft.Json.JsonConvert.ToString(Convert.ToInt64(value)));
                 }
                 else
                 {
-                    writer.WriteRawValue(JsonConvert.ToString(value));
+                    writer.WriteRawValue(Newtonsoft.Json.JsonConvert.ToString(value));
                 }
         }
 

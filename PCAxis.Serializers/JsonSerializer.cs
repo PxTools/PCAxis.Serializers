@@ -7,7 +7,7 @@ using PCAxis.Paxiom.Extensions;
 using PCAxis.Paxiom.Operations;
 using PCAxis.Query;
 
-namespace PX.Serializers.Json
+namespace PCAxis.Serializers
 {
     public class JsonSerializer : PCAxis.Paxiom.IPXModelStreamSerializer
     {
