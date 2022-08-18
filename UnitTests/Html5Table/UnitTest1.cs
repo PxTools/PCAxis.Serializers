@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace PCAxis.Html5Table.UnitTest
+namespace UnitTests.Html5Table
 {
 	[TestClass]
 	public class UnitTest1

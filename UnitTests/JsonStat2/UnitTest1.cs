@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace PCAxis.Serializers.JsonStat2.UnitTest
+namespace UnitTests.JsonStat2
 {
     [TestClass]
     public class UnitTest1

@@ -1,7 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PCAxis.Sdmx.ExtensionMethods;
 
-namespace PCAxis.Sdmx.UnitTest
+namespace UnitTests.Sdmx
 {
     [TestClass]
     public class SdmxStringExtensionsTest
