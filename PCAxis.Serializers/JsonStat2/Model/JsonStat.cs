@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -81,7 +82,7 @@
         [JsonProperty("updated")]
         public string Updated
         {
-            get { return _updated.ToString("yyyy-MM-ddTHH:mm:ssZ"); }
+            get { return _updated.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture); }
             set { _updated = DateTime.Parse(value).ToUniversalTime(); }
         }
 
