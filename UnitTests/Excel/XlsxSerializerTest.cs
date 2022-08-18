@@ -2,13 +2,18 @@ using System;
 using System.IO;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using PCAxis.Excel;
 using PCAxis.Paxiom;
 
-namespace PCAxis.Excel.UnitTest
+
+namespace UnitTests.Excel
 {
 	[TestClass]
 	public class XlsxSerializerTest
 	{
+        ExcelHelper helper = new ExcelHelper();
+
+
 		[TestMethod]
 		public void ShouldReturnTrueIsNumeric()
 		{
@@ -29,19 +34,12 @@ namespace PCAxis.Excel.UnitTest
         [DeploymentItem("TestFiles\\BE0101A1_20200914-143936.px")]
 		public void ShouldSerializeCommaSeparated()
         {
-            var model = GetSelectAllModel("TestFiles\\BE0101A1_20200914-143936.px");
-
-            var ser = new XlsxSerializer();
-
-            var stream = new MemoryStream();
+            var model = helper.GetSelectAllModel("TestFiles\\BE0101A1_20200914-143936.px");
 
             try
             {
-                ser.Serialize(model, stream);
-
-                MemoryStream destination = new MemoryStream();
-                stream.CopyTo(destination);
-                string actual = Encoding.UTF8.GetString(stream.ToArray());
+                
+                string actual = helper.GetActual(model);
                 Assert.IsTrue(actual.Length >= 1);
             }
             catch (Exception e)
@@ -55,21 +53,11 @@ namespace PCAxis.Excel.UnitTest
         [DeploymentItem("TestFiles\\BE0101A1.px")]
         public void ShouldSerialize()
         {
-            var model = GetSelectAllModel("TestFiles\\BE0101A1.px");
-
-            var ser = new XlsxSerializer();
-
-            var stream = new MemoryStream();
+            var model = helper.GetSelectAllModel("TestFiles\\BE0101A1.px");
 
             try
             {
-                ser.Serialize(model, stream);
-                
-                MemoryStream destination = new MemoryStream();
-
-                stream.CopyTo(destination);
-
-                string actual = Encoding.UTF8.GetString(stream.ToArray());
+                string actual = helper.GetActual(model);
 
                 Assert.IsTrue(actual.Length >= 1 );
             }
@@ -77,20 +65,6 @@ namespace PCAxis.Excel.UnitTest
             {
                 Assert.Fail();
             }
-        }
-
-
-        private PXModel GetSelectAllModel(string file)
-        {
-            PCAxis.Paxiom.IPXModelBuilder builder = new PXFileBuilder();
-
-            builder.SetPath(file);
-            builder.BuildForSelection();
-
-            PXMeta meta = builder.Model.Meta;
-            builder.BuildForPresentation(Selection.SelectAll(meta));
-
-            return builder.Model;
         }
 
     }
