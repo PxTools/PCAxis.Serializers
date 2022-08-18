@@ -6,13 +6,13 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 
-namespace PCAxis.Serializers.JsonStat.UnitTest
+namespace UnitTests.JsonStat
 {
-    [TestClass]
-    public class NoCrashTests_Issue220
+	[TestClass]
+	public class NoCrashTests_Issue220
 	{
+		private JsonStatHelper helper = new JsonStatHelper();
 
-	
 
 		[TestMethod]
 		public void PR0101B3_CultureInfoFinnish()
@@ -22,25 +22,16 @@ namespace PCAxis.Serializers.JsonStat.UnitTest
 			System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
 
 
-			PXModel myModel = GetSelectAllModel("TestFiles//PR0101B3.px");
+			PXModel myModel = helper.GetSelectAllModel("TestFiles//PR0101B3.px");
 
-			string actual = "";
 
 			try
 			{
-
-				using (MemoryStream memStream = new MemoryStream(1000))
-				{
-					JsonStatSerializer jss = new JsonStatSerializer();
-					jss.Serialize(myModel, memStream);
-
-					actual = Encoding.UTF8.GetString(memStream.GetBuffer(), 0, (int)memStream.Length);
-				}
-
+				string actual = helper.GetActual(myModel);
 
 				Assert.IsTrue(actual.Length >= 1, "Made it!");
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				Assert.Fail();
 			}
@@ -55,29 +46,21 @@ namespace PCAxis.Serializers.JsonStat.UnitTest
 			System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
 
 
-			PXModel myModel = GetSelectAllModel("TestFiles//Issue220Finland.px");
+			PXModel myModel = helper.GetSelectAllModel("TestFiles//Issue220Finland.px");
 
-			string actual = "";
 
 			try
 			{
-
-				using (MemoryStream memStream = new MemoryStream(1000))
-				{
-					JsonStatSerializer jss = new JsonStatSerializer();
-					jss.Serialize(myModel, memStream);
-
-					actual = Encoding.UTF8.GetString(memStream.GetBuffer(), 0, (int)memStream.Length);
-				}
-
+				string actual = helper.GetActual(myModel);
 
 				Assert.IsTrue(actual.Length >= 1, "Made it!");
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				Assert.Fail();
 			}
 		}
+
 
 
 		[TestMethod]
@@ -89,45 +72,20 @@ namespace PCAxis.Serializers.JsonStat.UnitTest
 			System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
 
 
-			PXModel myModel = GetSelectAllModel("TestFiles//Issue220Finland.px");
+			PXModel myModel = helper.GetSelectAllModel("TestFiles//Issue220Finland.px");
 
 
-			string actual = "";
 
 			try
 			{
+				string actual = helper.GetActual(myModel);
 
-				using (MemoryStream memStream = new MemoryStream(1000))
-				{
-					JsonStatSerializer jss = new JsonStatSerializer();
-					jss.Serialize(myModel, memStream);
-
-					actual = Encoding.UTF8.GetString(memStream.GetBuffer(), 0, (int)memStream.Length);
-				}
-
-
-				Assert.IsTrue(actual.Length >= 1,"Made it!");
+				Assert.IsTrue(actual.Length >= 1, "Made it!");
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				Assert.Fail();
 			}
 		}
-
-
-		private PXModel GetSelectAllModel(string file)
-        {
-			PCAxis.Paxiom.IPXModelBuilder builder = new PXFileBuilder();
-
-			builder.SetPath(file);
-			builder.BuildForSelection();
-
-			PXMeta meta = builder.Model.Meta;
-			builder.BuildForPresentation(Selection.SelectAll(meta));
-
-			return builder.Model;
-		}
-
-
 	}
 }
