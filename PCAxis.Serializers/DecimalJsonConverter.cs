@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
 
-namespace PCAxis.Serializers.JsonStat2
+namespace PCAxis.Serializers
 {
     class DecimalJsonConverter : Newtonsoft.Json.JsonConverter
     {

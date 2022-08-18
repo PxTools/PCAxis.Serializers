@@ -1,16 +1,14 @@
 ﻿
-namespace PCAxis.Serializers.JsonStat
+namespace PCAxis.Serializers
 {
+    using Newtonsoft.Json;
+    using PCAxis.Metadata;
+    using PCAxis.Paxiom;
+    using PCAxis.Paxiom.Extensions;
     using System;
     using System.Collections.Generic;
-    using System.Text;
-    using PCAxis.Paxiom;
-    using log4net;
-    using PCAxis.Paxiom.Extensions;
-    using PCAxis.Metadata;
-    using System.Collections;
-	using Newtonsoft.Json;
     using System.Linq;
+    using System.Text;
 
     public class JsonStatSerializer : PCAxis.Paxiom.IPXModelStreamSerializer
     {
@@ -150,7 +148,7 @@ namespace PCAxis.Serializers.JsonStat
                 dataset.label = meta.Title;
             }
 
-            var roles = new Model.JsonStatDimension();
+            var roles = new JsonStat.Model.JsonStatDimension();
 
             var id = new string[meta.Variables.Count];
             var size = new int[meta.Variables.Count];
@@ -279,7 +277,7 @@ namespace PCAxis.Serializers.JsonStat
             }
             else
             {
-                var datasetEx = new Model.JsonStatDatasetExtended(model.Data.MatrixSize);
+                var datasetEx = new JsonStat.Model.JsonStatDatasetExtended(model.Data.MatrixSize);
 
                 // Copy values from the baseobject to the extended object. And add observation status.
                 datasetEx.dimension = dataset.dimension;

@@ -10,7 +10,7 @@ using System.Text;
 using System.Linq;
 
 
-namespace PCAxis.Serializers.JsonStat2
+namespace PCAxis.Serializers
 {
     public class JsonStat2Serializer : IPXModelStreamSerializer
     {
@@ -97,7 +97,7 @@ namespace PCAxis.Serializers.JsonStat2
         public string BuildJsonStructure(PXModel model)
         {
 
-            var jsonStat = new Model.JsonStat();
+            var jsonStat = new JsonStat2.Model.JsonStat();
 
             var value = new double?[model.Data.Matrix.Length];
             var status = new Dictionary<int, string>();
@@ -134,11 +134,11 @@ namespace PCAxis.Serializers.JsonStat2
             {
                 var variable = model.Meta.Variables[i];
                 var link = new Dictionary<string, object>();
-                var dimension = new Model.Dimension();
+                var dimension = new JsonStat2.Model.Dimension();
                 dimension.Label = variable.Name;
 
                 // Category
-                var category = new Model.Category();
+                var category = new JsonStat2.Model.Category();
                 var unit = new Dictionary<string, Dictionary<string, object>>();
 
                 for (var j = 0; j < variable.Values.Count; j++)
@@ -171,7 +171,7 @@ namespace PCAxis.Serializers.JsonStat2
                     }
                 }
 
-                dimension.Category = new Model.Category();
+                dimension.Category = new JsonStat2.Model.Category();
                 dimension.Category = category;
                 var extensions = GetAllSerializedMetaIdsForVariable(variable);
                 if (extensions.Count > 0)
@@ -218,7 +218,7 @@ namespace PCAxis.Serializers.JsonStat2
 			if (model.Meta.InfoFile != null || model.Meta.TableID != null || model.Meta.Decimals != -1)
 			{
 				jsonStat.Extension = new Dictionary<string, object>();
-				var px = new Model.Px();
+				var px = new JsonStat2.Model.Px();
 
 				px.infofile = model.Meta.InfoFile;
 				px.tableid = model.Meta.TableID;
