@@ -48,7 +48,7 @@
         /// </summary>
         public string updated
         {
-            get { return _updated.ToString("yyyy-MM-ddTHH:mm:ssZ"); }
+            get { return _updated.ToString("yyyy-MM-ddTHH:mm:ssZ",CultureInfo.InvariantCulture);}
             set { _updated = DateTime.Parse(value).ToUniversalTime(); }
 
             /*
