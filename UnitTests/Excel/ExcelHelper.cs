@@ -1,14 +1,11 @@
-﻿using PCAxis.Excel;
-using PCAxis.Paxiom;
-using PCAxis.Serializers.JsonStat;
-using System;
-using System.Collections.Generic;
+﻿using PCAxis.Paxiom;
+using PCAxis.Serializers;
 using System.IO;
 using System.Text;
 
 namespace UnitTests.Excel
 {
-	internal class ExcelHelper : UnitTests.Helper
+    internal class ExcelHelper : UnitTests.Helper
 	{
 
 		

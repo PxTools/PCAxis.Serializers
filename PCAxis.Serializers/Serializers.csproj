@@ -45,4 +45,8 @@
       <PackagePath></PackagePath>
     </None>
   </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Html5Table\" />
+  </ItemGroup>
 </Project>

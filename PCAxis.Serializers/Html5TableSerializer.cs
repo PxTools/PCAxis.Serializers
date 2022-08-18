@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using PCAxis.Paxiom;
 using PCAxis.Paxiom.Extensions;
 
-namespace PCAxis.Html5Table
+namespace PCAxis.Serializers
 {
 	public class Html5TableSerializer : PCAxis.Paxiom.IPXModelStreamSerializer
 	{

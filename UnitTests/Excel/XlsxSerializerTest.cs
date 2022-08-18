@@ -1,14 +1,10 @@
-using System;
-using System.IO;
-using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using PCAxis.Excel;
-using PCAxis.Paxiom;
-
+using PCAxis.Serializers.Excel;
+using System;
 
 namespace UnitTests.Excel
 {
-	[TestClass]
+    [TestClass]
 	public class XlsxSerializerTest
 	{
         ExcelHelper helper = new ExcelHelper();
