@@ -1,0 +1,194 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Structure xmlns:s="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/structure" xmlns:c="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/common" xmlns="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/message">
+  <Header>
+    <ID>PR0101B3_STRUCTURE</ID>
+    <Test>false</Test>
+    <Prepared>2022-08-19T13:42:24Z</Prepared>
+    <Sender id="TEST">
+      <Name xml:lang="en">Statistics Sweden</Name>
+    </Sender>
+    <KeyFamilyRef>N_x002F_A</KeyFamilyRef>
+    <DataSetID>PR0101B3</DataSetID>
+  </Header>
+  <CodeLists>
+    <s:CodeList id="CL_FREQ" agencyID="SDMX" version="1.0">
+      <s:Name xml:lang="en">Code list for Frequency (FREQ)</s:Name>
+      <s:Code value="A">
+        <s:Description xml:lang="en">Annual</s:Description>
+      </s:Code>
+      <s:Code value="B">
+        <s:Description xml:lang="en">Daily - business week</s:Description>
+      </s:Code>
+      <s:Code value="D">
+        <s:Description xml:lang="en">Daily</s:Description>
+      </s:Code>
+      <s:Code value="M">
+        <s:Description xml:lang="en">Monthly</s:Description>
+      </s:Code>
+      <s:Code value="N">
+        <s:Description xml:lang="en">Minutely</s:Description>
+      </s:Code>
+      <s:Code value="Q">
+        <s:Description xml:lang="en">Quarterly</s:Description>
+      </s:Code>
+      <s:Code value="S">
+        <s:Description xml:lang="en">Half Yearly, semester</s:Description>
+      </s:Code>
+      <s:Code value="W">
+        <s:Description xml:lang="en">Weekly</s:Description>
+      </s:Code>
+    </s:CodeList>
+    <s:CodeList id="CL_OBS_STATUS" agencyID="SDMX" version="1.0">
+      <s:Name xml:lang="en">Observation status</s:Name>
+      <s:Code value="A">
+        <s:Description xml:lang="en">Normal</s:Description>
+      </s:Code>
+      <s:Code value="B">
+        <s:Description xml:lang="en">Break</s:Description>
+      </s:Code>
+      <s:Code value="E">
+        <s:Description xml:lang="en">Estimated value</s:Description>
+      </s:Code>
+      <s:Code value="F">
+        <s:Description xml:lang="en">Forecast value</s:Description>
+      </s:Code>
+      <s:Code value="I">
+        <s:Description xml:lang="en">Imputed value (CCSA definition)</s:Description>
+      </s:Code>
+      <s:Code value="M">
+        <s:Description xml:lang="en">Missing value</s:Description>
+      </s:Code>
+      <s:Code value="P">
+        <s:Description xml:lang="en">Provisional value</s:Description>
+      </s:Code>
+      <s:Code value="S">
+        <s:Description xml:lang="en">Strike</s:Description>
+      </s:Code>
+    </s:CodeList>
+    <s:CodeList id="CL_UNIT_MEASURE" agencyID="StatisticsSweden" version="1.0">
+      <s:Name xml:lang="en">Unit of measure code list</s:Name>
+      <s:Code value="Index">
+        <s:Description xml:lang="en">Index</s:Description>
+      </s:Code>
+    </s:CodeList>
+    <s:CodeList id="CL_SFA_INDICATOR" agencyID="StatisticsSweden" version="1.0">
+      <s:Name xml:lang="en">Stock, flow, average indicator code list</s:Name>
+      <s:Code value="A">
+        <s:Description xml:lang="en">Average</s:Description>
+      </s:Code>
+      <s:Code value="F">
+        <s:Description xml:lang="en">Flow</s:Description>
+      </s:Code>
+      <s:Code value="S">
+        <s:Description xml:lang="en">Stock</s:Description>
+      </s:Code>
+    </s:CodeList>
+    <s:CodeList id="CL_PRICE_BASIS" agencyID="StatisticsSweden" version="1.0">
+      <s:Name xml:lang="en">Price basis code list</s:Name>
+      <s:Code value="C">
+        <s:Description xml:lang="en">Current Price</s:Description>
+      </s:Code>
+      <s:Code value="F">
+        <s:Description xml:lang="en">Fixed Price</s:Description>
+      </s:Code>
+    </s:CodeList>
+    <s:CodeList id="CL_Productgroup" agencyID="StatisticsSweden" version="1.0">
+      <s:Name xml:lang="en">Product group Code List</s:Name>
+      <s:Code value="01">
+        <s:Description xml:lang="en">01 Food and non-alcoholic beverages</s:Description>
+      </s:Code>
+      <s:Code value="011">
+        <s:Description xml:lang="en">01.1 Food</s:Description>
+      </s:Code>
+      <s:Code value="0111">
+        <s:Description xml:lang="en">01.1.1 Bread and cereals</s:Description>
+      </s:Code>
+      <s:Code value="0112">
+        <s:Description xml:lang="en">01.1.2 Meat</s:Description>
+      </s:Code>
+      <s:Code value="0113">
+        <s:Description xml:lang="en">01.1.3 Fish</s:Description>
+      </s:Code>
+      <s:Code value="0114">
+        <s:Description xml:lang="en">01.1.4 Milk, cheese and eggs</s:Description>
+      </s:Code>
+      <s:Code value="0115">
+        <s:Description xml:lang="en">01.1.5 Oils and fats</s:Description>
+      </s:Code>
+      <s:Code value="0116">
+        <s:Description xml:lang="en">01.1.6 Fruit</s:Description>
+      </s:Code>
+    </s:CodeList>
+  </CodeLists>
+  <Concepts>
+    <s:ConceptScheme id="CROSS_DOMAIN_CONCEPTS" agencyID="SDMX" version="1.0">
+      <s:Name xml:lang="en">SDMX Cross Domain Concept Scheme</s:Name>
+      <s:Concept id="BASE_PER">
+        <s:Name xml:lang="en">Base Period</s:Name>
+      </s:Concept>
+      <s:Concept id="DECIMALS">
+        <s:Name xml:lang="en">Decimals</s:Name>
+      </s:Concept>
+      <s:Concept id="FREQ">
+        <s:Name xml:lang="en">Frequency</s:Name>
+      </s:Concept>
+      <s:Concept id="OBS_VALUE">
+        <s:Name xml:lang="en">Observation</s:Name>
+      </s:Concept>
+      <s:Concept id="OBS_STATUS">
+        <s:Name xml:lang="en">Observation Status</s:Name>
+      </s:Concept>
+      <s:Concept id="REF_PERIOD">
+        <s:Name xml:lang="en">Reference Period</s:Name>
+      </s:Concept>
+      <s:Concept id="TIME_PERIOD">
+        <s:Name xml:lang="en">Time Period</s:Name>
+      </s:Concept>
+      <s:Concept id="UNIT_MEASURE">
+        <s:Name xml:lang="en">Unit of Measure</s:Name>
+      </s:Concept>
+    </s:ConceptScheme>
+    <s:ConceptScheme id="DEFAULT" agencyID="StatisticsSweden" version="1.0">
+      <s:Name xml:lang="en">Default Concept Scheme</s:Name>
+      <s:Concept id="SFA_INDICATOR">
+        <s:Name xml:lang="en">Stock, flow, average indicator</s:Name>
+      </s:Concept>
+      <s:Concept id="SEAS_ADJ">
+        <s:Name xml:lang="en">Seasonally adjustement</s:Name>
+      </s:Concept>
+      <s:Concept id="DAY_ADJ">
+        <s:Name xml:lang="en">Daily adjustement</s:Name>
+      </s:Concept>
+      <s:Concept id="PRICE_BASIS">
+        <s:Name xml:lang="en">Price basis</s:Name>
+      </s:Concept>
+      <s:Concept id="Productgroup">
+        <s:Name xml:lang="en">Product group</s:Name>
+      </s:Concept>
+    </s:ConceptScheme>
+  </Concepts>
+  <KeyFamilies>
+    <s:KeyFamily id="PR0101B3" agencyID="StatisticsSweden" version="1.0">
+      <s:Name xml:lang="en">PR0101B3</s:Name>
+      <s:Components>
+        <s:Dimension conceptRef="FREQ" conceptVersion="1.0" conceptAgency="SDMX" conceptSchemeRef="CROSS_DOMAIN_CONCEPTS" codelist="CL_FREQ" codelistVersion="1.0" codelistAgency="SDMX" isFrequencyDimension="true" />
+        <s:Dimension conceptRef="Productgroup" conceptVersion="1.0" conceptSchemeRef="DEFAULT" conceptSchemeAgency="StatisticsSweden" codelist="CL_Productgroup" codelistVersion="1.0" codelistAgency="StatisticsSweden" />
+        <s:TimeDimension conceptRef="TIME_PERIOD" conceptVersion="1.0" conceptAgency="SDMX" conceptSchemeRef="CROSS_DOMAIN_CONCEPTS">
+          <s:TextFormat />
+        </s:TimeDimension>
+        <s:PrimaryMeasure conceptRef="OBS_VALUE" conceptVersion="1.0" conceptSchemeRef="CROSS_DOMAIN_CONCEPTS" conceptSchemeAgency="SDMX">
+          <s:TextFormat />
+        </s:PrimaryMeasure>
+        <s:Attribute conceptRef="UNIT_MEASURE" conceptVersion="1.0" conceptSchemeRef="CROSS_DOMAIN_CONCEPTS" conceptSchemeAgency="SDMX" codelist="CL_UNIT_MEASURE" codelistVersion="1.0" codelistAgency="StatisticsSweden" attachmentLevel="DataSet" assignmentStatus="Mandatory" />
+        <s:Attribute conceptRef="SFA_INDICATOR" conceptVersion="1.0" conceptSchemeRef="DEFAULT" conceptSchemeAgency="StatisticsSweden" codelist="CL_SFA_INDICATOR" codelistVersion="1.0" codelistAgency="StatisticsSweden" attachmentLevel="DataSet" assignmentStatus="Mandatory" />
+        <s:Attribute conceptRef="BASE_PER" conceptVersion="1.0" conceptSchemeRef="CROSS_DOMAIN_CONCEPTS" conceptSchemeAgency="SDMX" attachmentLevel="DataSet" assignmentStatus="Mandatory">
+          <s:TextFormat />
+        </s:Attribute>
+        <s:Attribute conceptRef="OBS_STATUS" conceptVersion="1.0" conceptSchemeRef="CROSS_DOMAIN_CONCEPTS" conceptSchemeAgency="SDMX" codelist="CL_OBS_STATUS" codelistVersion="1.0" codelistAgency="SDMX" attachmentLevel="Observation" assignmentStatus="Mandatory" />
+        <s:Attribute conceptRef="DECIMALS" conceptVersion="1.0" conceptSchemeRef="CROSS_DOMAIN_CONCEPTS" conceptSchemeAgency="SDMX" attachmentLevel="DataSet" assignmentStatus="Mandatory">
+          <s:TextFormat />
+        </s:Attribute>
+      </s:Components>
+    </s:KeyFamily>
+  </KeyFamilies>
+</Structure>

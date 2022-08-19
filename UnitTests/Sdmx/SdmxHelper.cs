@@ -11,15 +11,32 @@ namespace UnitTests.Sdmx
 	internal class SdmxHelper : UnitTests.Helper
 	{
 
-		internal string GetActual(PXModel myModel)
+		internal string GetActualStructure(PXModel myModel)
 		{
 			string actual = "";
 
 
 			using (MemoryStream memStream = new MemoryStream(1000))
 			{
-				SdmxDataSerializer jss = new SdmxDataSerializer();
-				jss.Serialize(myModel, memStream);
+				SdmxStructureSerializer serializer = new SdmxStructureSerializer();
+
+				serializer.Serialize(myModel, memStream);
+
+				actual = Encoding.UTF8.GetString(memStream.GetBuffer(), 0, (int)memStream.Length);
+			}
+			return actual;
+		}
+
+
+		internal string GetActualData(PXModel myModel)
+		{
+			string actual = "";
+
+
+			using (MemoryStream memStream = new MemoryStream(1000))
+			{
+				SdmxDataSerializer serializer = new SdmxDataSerializer();
+				serializer.Serialize(myModel, memStream);
 
 				actual = Encoding.UTF8.GetString(memStream.GetBuffer(), 0, (int)memStream.Length);
 			}

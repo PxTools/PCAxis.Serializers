@@ -30,6 +30,9 @@
     <None Update="ExceptationFiles\PR0101B3_sdmx_data.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="ExceptationFiles\PR0101B3_sdmx_structure.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TestFiles\BE0101A1.px">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
