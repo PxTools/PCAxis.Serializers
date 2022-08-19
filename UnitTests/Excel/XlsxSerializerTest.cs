@@ -57,7 +57,7 @@ namespace UnitTests.Excel
 
                 Assert.IsTrue(actual.Length >= 1 );
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Assert.Fail();
             }

@@ -1,0 +1,355 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<GenericData xmlns:g="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/generic" xmlns:c="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/common" xmlns="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/message">
+  <Header>
+    <ID>PR0101B3_DATA</ID>
+    <Test>false</Test>
+    <Prepared>2000-12-24T17:00:00Z</Prepared>
+    <Sender id="TEST">
+      <Name xml:lang="en">Statistics Sweden</Name>
+    </Sender>
+    <KeyFamilyRef>N_x002F_A</KeyFamilyRef>
+    <DataSetID>PR0101B3</DataSetID>
+  </Header>
+  <DataSet>
+    <g:KeyFamilyRef>PR0101B3</g:KeyFamilyRef>
+    <g:Attributes>
+      <g:Value concept="UNIT_MEASURE" value="Index" />
+      <g:Value concept="DECIMALS" value="2" />
+      <g:Value concept="SFA_INDICATOR" value="A" />
+      <g:Value concept="BASE_PER" value="1980" />
+    </g:Attributes>
+    <g:Series>
+      <g:SeriesKey>
+        <g:Value concept="FREQ" value="M" />
+        <g:Value concept="Productgroup" value="01" />
+      </g:SeriesKey>
+      <g:Obs>
+        <g:Time>2006-01</g:Time>
+        <g:ObsValue value="236.96" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-02</g:Time>
+        <g:ObsValue value="238.58" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-03</g:Time>
+        <g:ObsValue value="238.72" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-04</g:Time>
+        <g:ObsValue value="238.29" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-05</g:Time>
+        <g:ObsValue value="242.1" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+    </g:Series>
+    <g:Series>
+      <g:SeriesKey>
+        <g:Value concept="FREQ" value="M" />
+        <g:Value concept="Productgroup" value="011" />
+      </g:SeriesKey>
+      <g:Obs>
+        <g:Time>2006-01</g:Time>
+        <g:ObsValue value="246.09" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-02</g:Time>
+        <g:ObsValue value="247.92" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-03</g:Time>
+        <g:ObsValue value="248.02" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-04</g:Time>
+        <g:ObsValue value="247.59" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-05</g:Time>
+        <g:ObsValue value="251.92" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+    </g:Series>
+    <g:Series>
+      <g:SeriesKey>
+        <g:Value concept="FREQ" value="M" />
+        <g:Value concept="Productgroup" value="0111" />
+      </g:SeriesKey>
+      <g:Obs>
+        <g:Time>2006-01</g:Time>
+        <g:ObsValue value="245.29" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-02</g:Time>
+        <g:ObsValue value="243.62" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-03</g:Time>
+        <g:ObsValue value="245.3" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-04</g:Time>
+        <g:ObsValue value="244.74" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-05</g:Time>
+        <g:ObsValue value="244.98" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+    </g:Series>
+    <g:Series>
+      <g:SeriesKey>
+        <g:Value concept="FREQ" value="M" />
+        <g:Value concept="Productgroup" value="0112" />
+      </g:SeriesKey>
+      <g:Obs>
+        <g:Time>2006-01</g:Time>
+        <g:ObsValue value="229.29" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-02</g:Time>
+        <g:ObsValue value="232.2" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-03</g:Time>
+        <g:ObsValue value="232.15" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-04</g:Time>
+        <g:ObsValue value="232.04" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-05</g:Time>
+        <g:ObsValue value="232.88" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+    </g:Series>
+    <g:Series>
+      <g:SeriesKey>
+        <g:Value concept="FREQ" value="M" />
+        <g:Value concept="Productgroup" value="0113" />
+      </g:SeriesKey>
+      <g:Obs>
+        <g:Time>2006-01</g:Time>
+        <g:ObsValue value="316.3" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-02</g:Time>
+        <g:ObsValue value="314.92" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-03</g:Time>
+        <g:ObsValue value="321.89" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-04</g:Time>
+        <g:ObsValue value="315.31" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-05</g:Time>
+        <g:ObsValue value="332.75" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+    </g:Series>
+    <g:Series>
+      <g:SeriesKey>
+        <g:Value concept="FREQ" value="M" />
+        <g:Value concept="Productgroup" value="0114" />
+      </g:SeriesKey>
+      <g:Obs>
+        <g:Time>2006-01</g:Time>
+        <g:ObsValue value="266.87" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-02</g:Time>
+        <g:ObsValue value="267.35" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-03</g:Time>
+        <g:ObsValue value="266.96" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-04</g:Time>
+        <g:ObsValue value="266.31" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-05</g:Time>
+        <g:ObsValue value="267.75" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+    </g:Series>
+    <g:Series>
+      <g:SeriesKey>
+        <g:Value concept="FREQ" value="M" />
+        <g:Value concept="Productgroup" value="0115" />
+      </g:SeriesKey>
+      <g:Obs>
+        <g:Time>2006-01</g:Time>
+        <g:ObsValue value="208.83" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-02</g:Time>
+        <g:ObsValue value="211.21" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-03</g:Time>
+        <g:ObsValue value="211.75" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-04</g:Time>
+        <g:ObsValue value="211.54" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-05</g:Time>
+        <g:ObsValue value="211.7" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+    </g:Series>
+    <g:Series>
+      <g:SeriesKey>
+        <g:Value concept="FREQ" value="M" />
+        <g:Value concept="Productgroup" value="0116" />
+      </g:SeriesKey>
+      <g:Obs>
+        <g:Time>2006-01</g:Time>
+        <g:ObsValue value="232.19" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-02</g:Time>
+        <g:ObsValue value="227.03" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-03</g:Time>
+        <g:ObsValue value="231.75" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-04</g:Time>
+        <g:ObsValue value="232.83" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+      <g:Obs>
+        <g:Time>2006-05</g:Time>
+        <g:ObsValue value="238.17" />
+        <g:Attributes>
+          <g:Value concept="OBS_STATUS" value="A" />
+        </g:Attributes>
+      </g:Obs>
+    </g:Series>
+    <g:Annotations>
+      <c:Annotation>
+        <c:AnnotationText xml:lang="en">Index numbers for main and subgroups have in some cases been adjusted to take into account certain inadequacies in the basic data on prices or in the methods used for calculating the originally published index numbers. They are consistent with shadow index numbers for total CPI. Product classification follows COICOP (Classification of Individual Consumption by Purpose).</c:AnnotationText>
+      </c:Annotation>
+    </g:Annotations>
+  </DataSet>
+</GenericData>
