@@ -17,8 +17,7 @@
     
 
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="PCAxis.Core" Version="1.0.3" />
-    <PackageReference Include="PCAxis.PX.Core" Version="1.0.1" />
+    <PackageReference Include="PCAxis.Core" Version="1.1.0" />
   </ItemGroup>
 
 
