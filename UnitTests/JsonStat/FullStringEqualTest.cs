@@ -17,8 +17,8 @@ namespace UnitTests.JsonStat
 		{
 
 			CultureInfo ci = new CultureInfo("fi-FI");
-			System.Threading.Thread.CurrentThread.CurrentCulture = ci;
-			System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
+			CultureInfo.DefaultThreadCurrentCulture = ci;
+			CultureInfo.DefaultThreadCurrentUICulture = ci;
 
 
 			PXModel myModel = helper.GetSelectAllModel("TestFiles//PR0101B3.px");
@@ -50,8 +50,8 @@ namespace UnitTests.JsonStat
 		{
 
 			CultureInfo ci = new CultureInfo("nb-NO");
-			System.Threading.Thread.CurrentThread.CurrentCulture = ci;
-			System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
+			CultureInfo.DefaultThreadCurrentCulture = ci;
+			CultureInfo.DefaultThreadCurrentUICulture = ci;
 
 
 			PXModel myModel = helper.GetSelectAllModel("TestFiles//PR0101B3.px");
