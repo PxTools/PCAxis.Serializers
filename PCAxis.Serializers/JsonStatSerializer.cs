@@ -112,15 +112,21 @@ namespace PCAxis.Serializers
 
             dataset.source = meta.Source;
 
+            string pxDateString;
+
             if (model.Meta.ContentVariable != null && model.Meta.ContentVariable.Values.Count > 0)
             {
                 var lastUpdatedContentsVariable = model.Meta.ContentVariable.Values.OrderByDescending(x => x.ContentInfo.LastUpdated).FirstOrDefault();
-                dataset.updated = lastUpdatedContentsVariable.ContentInfo.LastUpdated.PxDateStringToDateTime().ToString();
+                pxDateString = lastUpdatedContentsVariable.ContentInfo.LastUpdated;
             }
             else
             {
-                dataset.updated = model.Meta.CreationDate.PxDateStringToDateTime().ToString();
+                pxDateString = model.Meta.CreationDate;
             }
+
+           
+            dataset.updated = pxDateString.PxDateStringToDateTime().ToString();
+
 
             dataset.dimension = new Dictionary<string, object>();
 
@@ -283,7 +289,7 @@ namespace PCAxis.Serializers
                 datasetEx.dimension = dataset.dimension;
                 datasetEx.label = dataset.label;
                 datasetEx.source = dataset.source;
-                datasetEx.updated = dataset.updated;
+                datasetEx.setUpdatedDateTime(dataset.GetUpdatedDateTime());
                 datasetEx.value = dataset.value;
                 datasetEx.status = observationStatus;
 
