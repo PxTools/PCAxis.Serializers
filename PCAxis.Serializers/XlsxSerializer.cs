@@ -247,16 +247,12 @@ namespace PCAxis.Serializers
 				if ((n.Mandantory && InformationLevel == InformationLevelType.MandantoryFootnotesOnly) ||
 					 InformationLevel > InformationLevelType.MandantoryFootnotesOnly)
 				{
-					sheet.Range(sheet.Cell(row, 1), sheet.Cell(row, columnCount)).Merge();
-					
-					//sheet.Cell(row, 1).Value = n.Text;
 					setCell(
 						sheet.Cell(row, 1),
 						CellContentType.Footnote,
 						n.Text,
-						c => c.Style.Alignment.WrapText = true
+						c => c.Style.Alignment.WrapText = false
 					);
-					//sheet.Cell(row, 1).Style.Alignment.WrapText = true;
 					row++;
 
 				}
@@ -275,7 +271,6 @@ namespace PCAxis.Serializers
 						if ((n.Mandantory && InformationLevel == InformationLevelType.MandantoryFootnotesOnly) ||
 								InformationLevel > InformationLevelType.MandantoryFootnotesOnly)
 						{
-							//sheet.Cell(row, 1).Value = var.Name + ":";
 							setCell(
 								sheet.Cell(row, 1),
 								CellContentType.VariableNote,
@@ -284,9 +279,6 @@ namespace PCAxis.Serializers
 							);
 							row++;
 
-							sheet.Range(sheet.Cell(row, 1), sheet.Cell(row, columnCount)).Merge();
-
-							//sheet.Cell(row, 1).Value = n.Text;
 							setCell(
 								sheet.Cell(row, 1),
 								CellContentType.VariableNote,
@@ -316,7 +308,6 @@ namespace PCAxis.Serializers
 							if ((n.Mandantory && InformationLevel == InformationLevelType.MandantoryFootnotesOnly) ||
 									InformationLevel > InformationLevelType.MandantoryFootnotesOnly)
 							{
-								//sheet.Cell(row, 1).Value = var.Name + ":";
 								setCell(
 									sheet.Cell(row, 1),
 									CellContentType.ValueNote,
@@ -324,7 +315,6 @@ namespace PCAxis.Serializers
 									null
 								);
 								row++;
-								//sheet.Cell(row, 1).Value = val.Value + ":";
 								setCell(
 									sheet.Cell(row, 1),
 									CellContentType.ValueNote,
@@ -332,8 +322,6 @@ namespace PCAxis.Serializers
 									null
 								);
 								row++;
-								sheet.Range(sheet.Cell(row, 1), sheet.Cell(row, columnCount)).Merge();
-								//sheet.Cell(row, 1).Value = n.Text;
 								setCell(
 									sheet.Cell(row, 1),
 									CellContentType.ValueNote,
@@ -361,8 +349,6 @@ namespace PCAxis.Serializers
 						vvp = cn.Conditions[j];
 						var = model.Meta.Variables.GetByCode(vvp.VariableCode);
 						val = var.Values.GetByCode(vvp.ValueCode);
-						//sheet.Cell(row, 1).Value =
-						//sheet.Cell(row, 1).Value = var.Name + ":";
 						setCell(
 							sheet.Cell(row, 1),
 							CellContentType.CellNote,
@@ -370,7 +356,6 @@ namespace PCAxis.Serializers
 							null
 						);
 						row++;
-						//sheet.Cell(row, 1).Value = val.Value + ":";
 						setCell(
 							sheet.Cell(row, 1),
 							CellContentType.CellNote,
@@ -379,8 +364,6 @@ namespace PCAxis.Serializers
 						);
 						row++;
 					}
-					sheet.Range(sheet.Cell(row, 1), sheet.Cell(row, columnCount)).Merge();
-					//sheet.Cell(row, 1).Value = cn.Text;
 					setCell(
 						sheet.Cell(row, 1),
 						CellContentType.CellNote,
