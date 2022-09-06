@@ -7,7 +7,7 @@ on:
 jobs:
   release:
 
-    runs-on: windows-2019
+    runs-on: windows-2022
 
     steps:
 
@@ -16,6 +16,11 @@ jobs:
         fetch-depth: 0    
 
     - uses: microsoft/setup-msbuild@v1
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
 
     - uses: NuGet/setup-nuget@v1
 
