@@ -39,8 +39,7 @@ namespace UnitTests.JsonStat2
             PXModel myModel = helper.GetSelectAllModel("TestFiles/BE0101A1_20200914-143936.px");
 
             string actual = helper.GetActual(myModel);
-
-
+            
             Assert.IsNotNull(actual);
 
         }
