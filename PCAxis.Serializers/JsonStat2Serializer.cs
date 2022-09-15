@@ -185,40 +185,13 @@ namespace PCAxis.Serializers
                     dimension.Link = link;
                 }
 
-
-                //todo:add here 
-
-                //jsonStat.Extension = new Dictionary<string, object>();
-                //var px = new JsonStat2.Model.Px();
-                //HeaderPresentationType
-
-                var foo = (HeaderPresentationType)Enum.Parse(typeof(HeaderPresentationType), variable.PresentationText.ToString());
-                //var foo = (HeaderPresentationType)Enum.Parse(typeof(HeaderPresentationType), "2");
-                var test = Enum.GetName(typeof(HeaderPresentationType), foo);
-
-                //var test = Enum.GetName(typeof(HeaderPresentationType), (HeaderPresentationType)Enum.Parse(typeof(HeaderPresentationType), variable.PresentationText.ToString()));
-                //var test =  DirectCast(variable.PresentationText, HeaderPresentationType);
-                //var presentationForm = GetPresentationForm(variable.PresentationText);
-                //jsonStat.Extension = new Dictionary<string, object>();
-                //jsonStat.Extension.Add(EXTENSION, presentationForm);
-
-                //Select Case Me._variable.PresentationText
-                //    Case 0
-                //Return Me.Code
-                //    Case 1
-                //Return Me.Value
-                //    Case 2
-                //Return Me.Code & " " & Me.Value
-                //Case 3
-                //Return Me.Value & " " & Me.Code
-                //End Select
-
-
-
-                dimension.Extension = new Dictionary<string, object>();
-                
-                //dimension.Extension.Add(EXTENSION, presentationForm);
-                dimension.Extension.Add("show", test);
+                // PresentationForm
+                var presentationForm = GetPresentationForm(variable.PresentationText);
+                if (presentationForm != null)
+                {
+                    dimension.Extension = new Dictionary<string, object>();
+                    dimension.Extension.Add("show", presentationForm);
+                }
 
                 jsonStat.Dimension.Add(variable.Code, dimension);
                 
@@ -324,50 +297,23 @@ namespace PCAxis.Serializers
             }
             return extension;
         }
-
-        private Dictionary<string, object> GetPresentationFormExtension(int PresentationText)
+        
+        private string GetPresentationForm(int presentationText)
         {
-            var presentationForm = new Dictionary<string, object>();
-            var extension = new Dictionary<string, object>();
-            switch (PresentationText)
+            switch (presentationText)
             {
                 case 1:
-                    presentationForm.Add("show", "code");
-                    break;
+                    return "code";
                 case 2:
-                    presentationForm.Add("show", "value");
-                    break;
+                    return "value";
                 case 3:
-                    presentationForm.Add("show", "code_value");
-                    break;
+                    return "code_value";
+                case 4:
+                    return "value_code";
+                default:
+                    return null;
             }
-
-            extension.Add(EXTENSION, presentationForm);
-            return extension;
         }
-
-        private Dictionary<string, object> GetPresentationForm(int PresentationText)
-        {
-            var presentationForm = new Dictionary<string, object>();
-            var extension = new Dictionary<string, object>();
-            switch (PresentationText)
-            {
-                case 1:
-                    presentationForm.Add("show", "code");
-                    break;
-                case 2:
-                    presentationForm.Add("show", "value");
-                    break;
-                case 3:
-                    presentationForm.Add("show", "code_value");
-                    break;
-            }
-
-            extension.Add(EXTENSION, presentationForm);
-
-            return presentationForm;
-        }
-
 
         private string SerializeMetaIds(string metaId)
         {
