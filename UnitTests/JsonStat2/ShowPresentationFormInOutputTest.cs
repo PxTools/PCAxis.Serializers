@@ -3,7 +3,6 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PCAxis.Paxiom;
 using Newtonsoft.Json.Linq;
-using DocumentFormat.OpenXml.Drawing.Charts;
 
 
 namespace UnitTests.JsonStat2

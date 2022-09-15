@@ -1,5 +1,4 @@
 ﻿using System;
-using log4net;
 using Newtonsoft.Json;
 using PCAxis.Paxiom;
 using PCAxis.Metadata;
@@ -8,8 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Linq;
-using DocumentFormat.OpenXml.Drawing;
-using PCAxis.Paxiom.Operations;
 
 
 namespace PCAxis.Serializers
