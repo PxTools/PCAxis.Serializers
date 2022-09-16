@@ -38,6 +38,9 @@
     <None Update="TestFiles\BE0101A1_20200914-143936.px">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="TestFiles\BE0101A1_show_codes_or.px">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TestFiles\Issue220Finland.px">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
