@@ -188,6 +188,7 @@ namespace PCAxis.Serializers
                     roles.Add(GEO, variableName);
                 }
 
+
                 id[variableIndex] = variableName;
                 size[variableIndex] = variable.Values.Count;
                 variableIndex++;
@@ -228,6 +229,15 @@ namespace PCAxis.Serializers
                     link.Add(DESCRIBEDBY, new List<object> { extensions });
                     variableEntry.Add(LINK, link);
                 }
+                
+                var presentationForm = GetPresentationForm(variable.PresentationText);
+                if (presentationForm != null)
+                {
+                    Dictionary<string, String> extension = new Dictionary<string, string>();
+                    extension.Add("show", presentationForm);
+                    variableEntry.Add(EXTENSION, extension);
+                }
+
                 dataset.dimension.Add(variableName, variableEntry);
 
             }
@@ -340,6 +350,23 @@ namespace PCAxis.Serializers
                 }
             }
             return (string.Join(" ", metaIdsAsString));
+        }
+
+        private string GetPresentationForm(int presentationText)
+        {
+            switch (presentationText)
+            {
+                case 1:
+                    return "code";
+                case 2:
+                    return "value";
+                case 3:
+                    return "code_value";
+                case 4:
+                    return "value_code";
+                default:
+                    return null;
+            }
         }
     }
 }
