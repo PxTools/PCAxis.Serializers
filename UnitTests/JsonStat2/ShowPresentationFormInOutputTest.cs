@@ -37,9 +37,6 @@ namespace UnitTests.JsonStat2
                 
             PXModel myModel = helper.GetSelectAllModel("TestFiles/BE0101A1_show_codes_or.px");
             
-           // myModel.Meta.Variables.Where(x => x.PresentationText == 1 && x.Code == "region")
-  //              .ToList().ForEach(y => y.PresentationText = 3);
-            
             var actual = helper.GetActual(myModel);
          
             var jsonstat2Object = JObject.Parse(actual);
@@ -63,9 +60,6 @@ namespace UnitTests.JsonStat2
             //PX: =3
             var showValueRegion = jsonstat2Object["dimension"]["region"]["extension"]["show"].ToString();
             Assert.AreEqual("value_code", showValueRegion, "For var=region");
-
-          
-
 
         }
 

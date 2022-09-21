@@ -181,15 +181,16 @@ namespace PCAxis.Serializers
                     link.Add(DESCRIBEDBY, new List<object> { extensions });
                     dimension.Link = link;
                 }
+                
+                PresentationForm presentationForm;
+                Enum.TryParse<PresentationForm>(variable.PresentationText.ToString(), out presentationForm);
 
-                // PresentationForm
-                var presentationForm = GetPresentationForm(variable.PresentationText);
-                if (presentationForm != null)
+                if (presentationForm.ToString() != null)
                 {
                     dimension.Extension = new Dictionary<string, object>();
-                    dimension.Extension.Add("show", presentationForm);
+                    dimension.Extension.Add("show", presentationForm.ToString());
                 }
-
+                
                 jsonStat.Dimension.Add(variable.Code, dimension);
                 
                 size.Add(variable.Values.Count);
@@ -256,6 +257,14 @@ namespace PCAxis.Serializers
             return result;
         }
 
+        public enum PresentationForm
+        {
+            code = 0,
+            text = 1,
+            code_value = 2,
+            value_code = 3
+        }
+
         public void Serialize(PXModel model, Stream stream)
         {
             var result = BuildJsonStructure(model);
@@ -295,23 +304,6 @@ namespace PCAxis.Serializers
             return extension;
         }
         
-        private string GetPresentationForm(int presentationText)
-        {
-            switch (presentationText)
-            {
-                case 1:
-                    return "code";
-                case 2:
-                    return "value";
-                case 3:
-                    return "code_value";
-                case 4:
-                    return "value_code";
-                default:
-                    return null;
-            }
-        }
-
         private string SerializeMetaIds(string metaId)
         {
             var metaIds = metaId.Split(metaLinkManager.GetSystemSeparator(), StringSplitOptions.RemoveEmptyEntries);
