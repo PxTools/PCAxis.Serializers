@@ -182,8 +182,8 @@ namespace PCAxis.Serializers
                     dimension.Link = link;
                 }
                 
-                PresentationForm presentationForm;
-                Enum.TryParse<PresentationForm>(variable.PresentationText.ToString(), out presentationForm);
+                PresentationFormType presentationForm;
+                Enum.TryParse<PresentationFormType>(variable.PresentationText.ToString(), out presentationForm);
 
                 if (presentationForm.ToString() != null)
                 {
@@ -257,7 +257,7 @@ namespace PCAxis.Serializers
             return result;
         }
 
-        public enum PresentationForm
+        public enum PresentationFormType
         {
             code = 0,
             text = 1,

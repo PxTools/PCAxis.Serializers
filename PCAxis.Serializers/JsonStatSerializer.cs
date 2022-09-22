@@ -228,8 +228,20 @@ namespace PCAxis.Serializers
                     link.Add(DESCRIBEDBY, new List<object> { extensions });
                     variableEntry.Add(LINK, link);
                 }
-                dataset.dimension.Add(variableName, variableEntry);
 
+                //var presentationForm = GetPresentationForm(variable.PresentationText);
+
+                PresentationFormType presentationForm;
+                Enum.TryParse<PresentationFormType>(variable.PresentationText.ToString(), out presentationForm);
+
+                if (presentationForm.ToString() != null)
+                {
+                    Dictionary<string, String> extension = new Dictionary<string, string>();
+                    extension.Add("show", presentationForm.ToString());
+                    variableEntry.Add(EXTENSION, extension);
+                }
+
+                dataset.dimension.Add(variableName, variableEntry);
             }
             #endregion
 
@@ -303,6 +315,14 @@ namespace PCAxis.Serializers
 
 
 			return result;
+        }
+
+        public enum PresentationFormType
+        {
+            code = 0,
+            text = 1,
+            code_value = 2,
+            value_code = 3
         }
 
         private Dictionary<string, object> GetAllSerializedMetaIdsForVariable(Variable variable)
