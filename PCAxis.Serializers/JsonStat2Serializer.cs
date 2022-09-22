@@ -188,7 +188,7 @@ namespace PCAxis.Serializers
                 if (presentationForm.ToString() != null)
                 {
                     dimension.Extension = new Dictionary<string, object>();
-                    dimension.Extension.Add("show", presentationForm.ToString());
+                    dimension.Extension.Add("show", presentationForm.ToString().ToLower());
                 }
                 
                 jsonStat.Dimension.Add(variable.Code, dimension);
@@ -256,14 +256,7 @@ namespace PCAxis.Serializers
  
             return result;
         }
-
-        public enum PresentationFormType
-        {
-            code = 0,
-            text = 1,
-            code_value = 2,
-            value_code = 3
-        }
+        
 
         public void Serialize(PXModel model, Stream stream)
         {
