@@ -1,5 +1,4 @@
 ﻿using System;
-using log4net;
 using Newtonsoft.Json;
 using PCAxis.Paxiom;
 using PCAxis.Metadata;
@@ -148,6 +147,9 @@ namespace PCAxis.Serializers
                     category.Label.Add(varvalue.Code, varvalue.Value);
                     category.Index.Add(varvalue.Code, j);
 
+                    
+                    
+
                     if (variable.IsContentVariable)
                     {
                         var unitContent = new Dictionary<string, object>();
@@ -179,8 +181,18 @@ namespace PCAxis.Serializers
                     link.Add(DESCRIBEDBY, new List<object> { extensions });
                     dimension.Link = link;
                 }
-                jsonStat.Dimension.Add(variable.Code, dimension);
+                
+                PresentationFormType presentationForm;
+                Enum.TryParse<PresentationFormType>(variable.PresentationText.ToString(), out presentationForm);
 
+                if (presentationForm.ToString() != null)
+                {
+                    dimension.Extension = new Dictionary<string, object>();
+                    dimension.Extension.Add("show", presentationForm.ToString().ToLower());
+                }
+                
+                jsonStat.Dimension.Add(variable.Code, dimension);
+                
                 size.Add(variable.Values.Count);
                 id.Add(variable.Code);
 
@@ -201,6 +213,9 @@ namespace PCAxis.Serializers
                         roleGeoList.Add(variable.Code);
                     }
                 }
+
+
+
             }
 
             // Id
@@ -241,6 +256,7 @@ namespace PCAxis.Serializers
  
             return result;
         }
+        
 
         public void Serialize(PXModel model, Stream stream)
         {
@@ -280,7 +296,7 @@ namespace PCAxis.Serializers
             }
             return extension;
         }
-
+        
         private string SerializeMetaIds(string metaId)
         {
             var metaIds = metaId.Split(metaLinkManager.GetSystemSeparator(), StringSplitOptions.RemoveEmptyEntries);
