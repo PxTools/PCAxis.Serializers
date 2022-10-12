@@ -26,7 +26,7 @@
     </PackageReference>
     
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="PCAxis.Core" Version="1.1.1" />
+    <PackageReference Include="PCAxis.Core" Version="1.2.1" />
     <PackageReference Include="PCAxis.Metadata" Version="1.0.1" />
     <PackageReference Include="PCAxis.Query" Version="1.0.4" />
     <PackageReference Include="ClosedXML" Version="0.95.4" />

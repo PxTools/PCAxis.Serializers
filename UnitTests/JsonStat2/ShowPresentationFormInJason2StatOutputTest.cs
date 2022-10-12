@@ -27,7 +27,7 @@ namespace UnitTests.JsonStat2
    
             //PX:No mention, should defalt to 1 
             var showValueSex = jsonstat2Object["dimension"]["sex"]["extension"]["show"].ToString();
-            Assert.AreEqual("text",showValueSex,"For var=sex");
+            Assert.AreEqual("value",showValueSex,"For var=sex");
 
             //PX: =2
             var showValueMaritalStatus = jsonstat2Object["dimension"]["marital status"]["extension"]["show"].ToString();
