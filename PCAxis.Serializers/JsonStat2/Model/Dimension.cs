@@ -1,8 +1,8 @@
-﻿namespace PCAxis.Serializers.JsonStat2.Model
-{
-    using System.Collections.Generic;
-    using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
+namespace Serializers.JsonStat2.Model
+{
     /// <summary>
     /// JSON-stat follows a cube model: the values are organized in cells, and a cell is the intersection of various dimensions. The dimension property contains information about the dimensions of the dataset.
     /// http://json-stat.org/format/#dimension

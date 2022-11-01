@@ -1,6 +1,7 @@
-﻿namespace PCAxis.Serializers.JsonStat2.Model
+﻿using Newtonsoft.Json;
+
+namespace Serializers.JsonStat2.Model
 {
-    using Newtonsoft.Json;
     public class Px
     {
 		/// <summary>

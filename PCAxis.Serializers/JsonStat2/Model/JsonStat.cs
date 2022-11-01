@@ -1,10 +1,10 @@
-﻿namespace PCAxis.Serializers.JsonStat2.Model
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using Newtonsoft.Json;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using Newtonsoft.Json;
 
+namespace Serializers.JsonStat2.Model
+{
     /// <summary>
     /// The JSON-stat format is a simple lightweight JSON format for data dissemination. It is based in a cube model that arises from the evidence that the most common form of data dissemination is the tabular form. In this cube model, datasets are organized in dimensions. Dimensions are organized in categories.
     /// </summary>

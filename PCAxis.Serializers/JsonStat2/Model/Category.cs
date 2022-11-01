@@ -1,8 +1,8 @@
-﻿namespace PCAxis.Serializers.JsonStat2.Model
-{
-    using System.Collections.Generic;
-    using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
+namespace Serializers.JsonStat2.Model
+{
     /// <summary>
     /// It is used to describe the possible values of a dimension.
     /// http://json-stat.org/format/#category
