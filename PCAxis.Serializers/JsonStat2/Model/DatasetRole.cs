@@ -17,10 +17,10 @@ using System.Text;
 namespace Serializers.JsonStat2.Model
 { 
     /// <summary>
-    /// Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#role)
+    /// Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#role)
     /// </summary>
     [DataContract]
-    public class DatasetRole : IEquatable<DatasetRole>
+    public partial class DatasetRole : IEquatable<DatasetRole>
     {
         /// <summary>
         /// Gets or Sets Time

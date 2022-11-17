@@ -24,7 +24,7 @@ namespace PCAxis.OpenAPILib.Models
     /// 
     /// </summary>
     [DataContract]
-    public class TableMetadata : IEquatable<TableMetadata>
+    public partial class TableMetadata : IEquatable<TableMetadata>
     {
         /// <summary>
         /// Identifyer for the table.

@@ -20,19 +20,19 @@ namespace Serializers.JsonStat2.Model
     /// 
     /// </summary>
     [DataContract]
-    public class JsonstatCategory : IEquatable<JsonstatCategory>
+    public partial class JsonstatCategory : IEquatable<JsonstatCategory>
     {
         /// <summary>
-        /// Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#index)
+        /// Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#index)
         /// </summary>
-        /// <value>Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#index)</value>
+        /// <value>Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#index)</value>
         [DataMember(Name="index", EmitDefaultValue=false)]
         public Dictionary<string, int> Index { get; set; }
 
         /// <summary>
-        /// Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#label)
+        /// Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#label)
         /// </summary>
-        /// <value>Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#label)</value>
+        /// <value>Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#label)</value>
         [DataMember(Name="label", EmitDefaultValue=false)]
         public Dictionary<string, string> Label { get; set; }
 
@@ -43,9 +43,9 @@ namespace Serializers.JsonStat2.Model
         public Dictionary<string, List<string>> Child { get; set; }
 
         /// <summary>
-        /// Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#unit)
+        /// Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#unit)
         /// </summary>
-        /// <value>Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#unit)</value>
+        /// <value>Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#unit)</value>
         [DataMember(Name="unit", EmitDefaultValue=false)]
         public Dictionary<string, JsonstatCategoryUnitValue> Unit { get; set; }
 

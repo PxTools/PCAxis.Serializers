@@ -21,7 +21,7 @@ namespace Serializers.JsonStat2.Model
     /// 
     /// </summary>
     [DataContract]
-    public class Value : IEquatable<Value>
+    public partial class Value : IEquatable<Value>
     {
         /// <summary>
         /// A code representing the value.

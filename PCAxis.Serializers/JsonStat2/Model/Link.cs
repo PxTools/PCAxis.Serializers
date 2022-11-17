@@ -19,7 +19,7 @@ namespace Serializers.JsonStat2.Model
     /// 
     /// </summary>
     [DataContract]
-    public class Link : IEquatable<Link>
+    public partial class Link : IEquatable<Link>
     {
         /// <summary>
         /// Gets or Sets Rel

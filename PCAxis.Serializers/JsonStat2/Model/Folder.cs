@@ -24,7 +24,7 @@ namespace PCAxis.OpenAPILib.Models
     /// Folder item
     /// </summary>
     [DataContract]
-    public class Folder : IEquatable<Folder>
+    public partial class Folder : IEquatable<Folder>
     {
         /// <summary>
         /// Gets or Sets Id

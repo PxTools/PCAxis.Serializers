@@ -18,7 +18,7 @@ namespace Serializers.JsonStat2.Model
     /// Properties corresponds to keywords in the px-file.  See [PX file format](https://www.scb.se/en/services/statistical-programs-for-px-files/px-file-format/) 
     /// </summary>
     [DataContract]
-    public class ExtensionRootPx : IEquatable<ExtensionRootPx>
+    public partial class ExtensionRootPx : IEquatable<ExtensionRootPx>
     {
         /// <summary>
         /// Name of a file containing more information for the statistics**
@@ -54,13 +54,6 @@ namespace Serializers.JsonStat2.Model
         /// <value>If the contents of the table cannot be aggregated</value>
         [DataMember(Name="aggregallowed", EmitDefaultValue=true)]
         public bool Aggregallowed { get; set; }
-
-        /// <summary>
-        /// Text with information on the exact period for the statistics
-        /// </summary>
-        /// <value>Text with information on the exact period for the statistics</value>
-        [DataMember(Name="refperiod", EmitDefaultValue=false)]
-        public string Refperiod { get; set; }
 
         /// <summary>
         /// Copyright is given as YES or NO
@@ -110,7 +103,6 @@ namespace Serializers.JsonStat2.Model
             sb.Append("  Decimals: ").Append(Decimals).Append("\n");
             sb.Append("  OfficialStatistics: ").Append(OfficialStatistics).Append("\n");
             sb.Append("  Aggregallowed: ").Append(Aggregallowed).Append("\n");
-            sb.Append("  Refperiod: ").Append(Refperiod).Append("\n");
             sb.Append("  Copyright: ").Append(Copyright).Append("\n");
             sb.Append("  Language: ").Append(Language).Append("\n");
             sb.Append("  Description: ").Append(Description).Append("\n");
@@ -178,11 +170,6 @@ namespace Serializers.JsonStat2.Model
                     Aggregallowed.Equals(other.Aggregallowed)
                 ) && 
                 (
-                    Refperiod == other.Refperiod ||
-                    Refperiod != null &&
-                    Refperiod.Equals(other.Refperiod)
-                ) && 
-                (
                     Copyright == other.Copyright ||
                     Copyright != null &&
                     Copyright.Equals(other.Copyright)
@@ -229,8 +216,6 @@ namespace Serializers.JsonStat2.Model
                     hashCode = hashCode * 59 + OfficialStatistics.GetHashCode();
                     
                     hashCode = hashCode * 59 + Aggregallowed.GetHashCode();
-                    if (Refperiod != null)
-                    hashCode = hashCode * 59 + Refperiod.GetHashCode();
                     if (Copyright != null)
                     hashCode = hashCode * 59 + Copyright.GetHashCode();
                     if (Language != null)

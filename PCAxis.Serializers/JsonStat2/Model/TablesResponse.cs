@@ -24,7 +24,7 @@ namespace PCAxis.OpenAPILib.Models
     /// 
     /// </summary>
     [DataContract]
-    public class TablesResponse : IEquatable<TablesResponse>
+    public partial class TablesResponse : IEquatable<TablesResponse>
     {
         /// <summary>
         /// Gets or Sets Page

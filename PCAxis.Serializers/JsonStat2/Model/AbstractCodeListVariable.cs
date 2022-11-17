@@ -36,7 +36,7 @@ namespace PCAxis.OpenAPILib.Models
     [SwaggerSubType(typeof(RegularVariable), DiscriminatorValue =  "RegularVariable")]
     [JsonSubtypes.KnownSubType(typeof(TimeVariable), "TimeVariable")]
     [SwaggerSubType(typeof(TimeVariable), DiscriminatorValue =  "TimeVariable")]
-    public class AbstractCodeListVariable : AbstractVariable, IEquatable<AbstractCodeListVariable>
+    public partial class AbstractCodeListVariable : AbstractVariable, IEquatable<AbstractCodeListVariable>
     {
         /// <summary>
         /// Gets or Sets Elimination
@@ -51,16 +51,17 @@ namespace PCAxis.OpenAPILib.Models
         public string EliminationValueCode { get; set; }
 
         /// <summary>
-        /// Gets or Sets Filters
-        /// </summary>
-        [DataMember(Name="filters", EmitDefaultValue=false)]
-        public List<CodeListInformation> Filters { get; set; }
-
-        /// <summary>
         /// Gets or Sets Values
         /// </summary>
         [DataMember(Name="values", EmitDefaultValue=false)]
         public List<Value> Values { get; set; }
+
+        /// <summary>
+        /// Available codelists for this dimension
+        /// </summary>
+        /// <value>Available codelists for this dimension</value>
+        [DataMember(Name="codeLists", EmitDefaultValue=false)]
+        public List<CodeListInformation> CodeLists { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -72,8 +73,8 @@ namespace PCAxis.OpenAPILib.Models
             sb.Append("class AbstractCodeListVariable {\n");
             sb.Append("  Elimination: ").Append(Elimination).Append("\n");
             sb.Append("  EliminationValueCode: ").Append(EliminationValueCode).Append("\n");
-            sb.Append("  Filters: ").Append(Filters).Append("\n");
             sb.Append("  Values: ").Append(Values).Append("\n");
+            sb.Append("  CodeLists: ").Append(CodeLists).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -121,16 +122,16 @@ namespace PCAxis.OpenAPILib.Models
                     EliminationValueCode.Equals(other.EliminationValueCode)
                 ) && 
                 (
-                    Filters == other.Filters ||
-                    Filters != null &&
-                    other.Filters != null &&
-                    Filters.SequenceEqual(other.Filters)
-                ) && 
-                (
                     Values == other.Values ||
                     Values != null &&
                     other.Values != null &&
                     Values.SequenceEqual(other.Values)
+                ) && 
+                (
+                    CodeLists == other.CodeLists ||
+                    CodeLists != null &&
+                    other.CodeLists != null &&
+                    CodeLists.SequenceEqual(other.CodeLists)
                 );
         }
 
@@ -148,10 +149,10 @@ namespace PCAxis.OpenAPILib.Models
                     hashCode = hashCode * 59 + Elimination.GetHashCode();
                     if (EliminationValueCode != null)
                     hashCode = hashCode * 59 + EliminationValueCode.GetHashCode();
-                    if (Filters != null)
-                    hashCode = hashCode * 59 + Filters.GetHashCode();
                     if (Values != null)
                     hashCode = hashCode * 59 + Values.GetHashCode();
+                    if (CodeLists != null)
+                    hashCode = hashCode * 59 + CodeLists.GetHashCode();
                 return hashCode;
             }
         }

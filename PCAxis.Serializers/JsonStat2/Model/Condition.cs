@@ -24,7 +24,7 @@ namespace PCAxis.OpenAPILib.Models
     /// Condition determining to what the CellNote applies
     /// </summary>
     [DataContract]
-    public class Condition : IEquatable<Condition>
+    public partial class Condition : IEquatable<Condition>
     {
         /// <summary>
         /// The code of the variable

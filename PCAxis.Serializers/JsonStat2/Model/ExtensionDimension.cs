@@ -20,7 +20,7 @@ namespace Serializers.JsonStat2.Model
     /// extension at dimension
     /// </summary>
     [DataContract]
-    public class ExtensionDimension : IEquatable<ExtensionDimension>
+    public partial class ExtensionDimension : IEquatable<ExtensionDimension>
     {
         /// <summary>
         /// Can dimension be elminated
@@ -37,6 +37,20 @@ namespace Serializers.JsonStat2.Model
         public string EliminationValueCode { get; set; }
 
         /// <summary>
+        /// Text with information on the exact period for the statistics
+        /// </summary>
+        /// <value>Text with information on the exact period for the statistics</value>
+        [DataMember(Name="refperiod", EmitDefaultValue=false)]
+        public Dictionary<string, string> Refperiod { get; set; }
+
+        /// <summary>
+        /// Information about how variables are presented
+        /// </summary>
+        /// <value>Information about how variables are presented</value>
+        [DataMember(Name="show", EmitDefaultValue=false)]
+        public string Show { get; set; }
+
+        /// <summary>
         /// Notes for dimension
         /// </summary>
         /// <value>Notes for dimension</value>
@@ -51,10 +65,11 @@ namespace Serializers.JsonStat2.Model
         public Dictionary<string, List<Note>> ValueNote { get; set; }
 
         /// <summary>
-        /// Gets or Sets Filters
+        /// Available codelists for this dimension
         /// </summary>
-        [DataMember(Name="filters", EmitDefaultValue=false)]
-        public Filters Filters { get; set; }
+        /// <value>Available codelists for this dimension</value>
+        [DataMember(Name="codeLists", EmitDefaultValue=false)]
+        public List<CodeListInformation> CodeLists { get; set; }
 
         /// <summary>
         /// How often a table is updated
@@ -87,9 +102,11 @@ namespace Serializers.JsonStat2.Model
             sb.Append("class ExtensionDimension {\n");
             sb.Append("  Elimination: ").Append(Elimination).Append("\n");
             sb.Append("  EliminationValueCode: ").Append(EliminationValueCode).Append("\n");
+            sb.Append("  Refperiod: ").Append(Refperiod).Append("\n");
+            sb.Append("  Show: ").Append(Show).Append("\n");
             sb.Append("  Note: ").Append(Note).Append("\n");
             sb.Append("  ValueNote: ").Append(ValueNote).Append("\n");
-            sb.Append("  Filters: ").Append(Filters).Append("\n");
+            sb.Append("  CodeLists: ").Append(CodeLists).Append("\n");
             sb.Append("  Frequency: ").Append(Frequency).Append("\n");
             sb.Append("  FirstPeriod: ").Append(FirstPeriod).Append("\n");
             sb.Append("  LastPeriod: ").Append(LastPeriod).Append("\n");
@@ -140,6 +157,17 @@ namespace Serializers.JsonStat2.Model
                     EliminationValueCode.Equals(other.EliminationValueCode)
                 ) && 
                 (
+                    Refperiod == other.Refperiod ||
+                    Refperiod != null &&
+                    other.Refperiod != null &&
+                    Refperiod.SequenceEqual(other.Refperiod)
+                ) && 
+                (
+                    Show == other.Show ||
+                    Show != null &&
+                    Show.Equals(other.Show)
+                ) && 
+                (
                     Note == other.Note ||
                     Note != null &&
                     other.Note != null &&
@@ -152,9 +180,10 @@ namespace Serializers.JsonStat2.Model
                     ValueNote.SequenceEqual(other.ValueNote)
                 ) && 
                 (
-                    Filters == other.Filters ||
-                    Filters != null &&
-                    Filters.Equals(other.Filters)
+                    CodeLists == other.CodeLists ||
+                    CodeLists != null &&
+                    other.CodeLists != null &&
+                    CodeLists.SequenceEqual(other.CodeLists)
                 ) && 
                 (
                     Frequency == other.Frequency ||
@@ -187,12 +216,16 @@ namespace Serializers.JsonStat2.Model
                     hashCode = hashCode * 59 + Elimination.GetHashCode();
                     if (EliminationValueCode != null)
                     hashCode = hashCode * 59 + EliminationValueCode.GetHashCode();
+                    if (Refperiod != null)
+                    hashCode = hashCode * 59 + Refperiod.GetHashCode();
+                    if (Show != null)
+                    hashCode = hashCode * 59 + Show.GetHashCode();
                     if (Note != null)
                     hashCode = hashCode * 59 + Note.GetHashCode();
                     if (ValueNote != null)
                     hashCode = hashCode * 59 + ValueNote.GetHashCode();
-                    if (Filters != null)
-                    hashCode = hashCode * 59 + Filters.GetHashCode();
+                    if (CodeLists != null)
+                    hashCode = hashCode * 59 + CodeLists.GetHashCode();
                     if (Frequency != null)
                     hashCode = hashCode * 59 + Frequency.GetHashCode();
                     if (FirstPeriod != null)

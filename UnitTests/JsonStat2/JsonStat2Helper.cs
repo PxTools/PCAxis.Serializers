@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Text;
 using PCAxis.Paxiom;
-using PCAxis.Serializers;
+using Serializers;
 
 namespace UnitTests.JsonStat2
 {

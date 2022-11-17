@@ -36,7 +36,7 @@ namespace PCAxis.OpenAPILib.Models
     [SwaggerSubType(typeof(RegularVariable), DiscriminatorValue =  "RegularVariable")]
     [JsonSubtypes.KnownSubType(typeof(TimeVariable), "TimeVariable")]
     [SwaggerSubType(typeof(TimeVariable), DiscriminatorValue =  "TimeVariable")]
-    public class GeographicalVariable : AbstractCodeListVariable, IEquatable<GeographicalVariable>
+    public partial class GeographicalVariable : AbstractCodeListVariable, IEquatable<GeographicalVariable>
     {
         /// <summary>
         /// Gets or Sets Map

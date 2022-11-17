@@ -18,7 +18,7 @@ namespace Serializers.JsonStat2.Model
     /// 
     /// </summary>
     [DataContract]
-    public class JsonstatCategoryUnitValue : IEquatable<JsonstatCategoryUnitValue>
+    public partial class JsonstatCategoryUnitValue : IEquatable<JsonstatCategoryUnitValue>
     {
         /// <summary>
         /// It is the base unit (person, gram, euro, etc.).

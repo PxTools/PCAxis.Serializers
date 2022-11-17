@@ -20,7 +20,7 @@ namespace Serializers.JsonStat2.Model
     /// extension at root level
     /// </summary>
     [DataContract]
-    public class ExtensionRoot : IEquatable<ExtensionRoot>
+    public partial class ExtensionRoot : IEquatable<ExtensionRoot>
     {
         /// <summary>
         /// Gets or Sets Px
@@ -40,7 +40,7 @@ namespace Serializers.JsonStat2.Model
         /// </summary>
         /// <value>Table will no longer be updated</value>
         [DataMember(Name="discontinued", EmitDefaultValue=true)]
-        public bool Discontinued { get; set; }
+        public bool? Discontinued { get; set; }
 
         /// <summary>
         /// A list of contacts associated with the table.
@@ -48,6 +48,12 @@ namespace Serializers.JsonStat2.Model
         /// <value>A list of contacts associated with the table.</value>
         [DataMember(Name="contact", EmitDefaultValue=false)]
         public List<Contact> Contact { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Note
+        /// </summary>
+        [DataMember(Name="note", EmitDefaultValue=false)]
+        public List<Note> Note { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -61,6 +67,7 @@ namespace Serializers.JsonStat2.Model
             sb.Append("  Tags: ").Append(Tags).Append("\n");
             sb.Append("  Discontinued: ").Append(Discontinued).Append("\n");
             sb.Append("  Contact: ").Append(Contact).Append("\n");
+            sb.Append("  Note: ").Append(Note).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -110,7 +117,7 @@ namespace Serializers.JsonStat2.Model
                 ) && 
                 (
                     Discontinued == other.Discontinued ||
-                    
+                    Discontinued != null &&
                     Discontinued.Equals(other.Discontinued)
                 ) && 
                 (
@@ -118,6 +125,12 @@ namespace Serializers.JsonStat2.Model
                     Contact != null &&
                     other.Contact != null &&
                     Contact.SequenceEqual(other.Contact)
+                ) && 
+                (
+                    Note == other.Note ||
+                    Note != null &&
+                    other.Note != null &&
+                    Note.SequenceEqual(other.Note)
                 );
         }
 
@@ -135,10 +148,12 @@ namespace Serializers.JsonStat2.Model
                     hashCode = hashCode * 59 + Px.GetHashCode();
                     if (Tags != null)
                     hashCode = hashCode * 59 + Tags.GetHashCode();
-                    
+                    if (Discontinued != null)
                     hashCode = hashCode * 59 + Discontinued.GetHashCode();
                     if (Contact != null)
                     hashCode = hashCode * 59 + Contact.GetHashCode();
+                    if (Note != null)
+                    hashCode = hashCode * 59 + Note.GetHashCode();
                 return hashCode;
             }
         }

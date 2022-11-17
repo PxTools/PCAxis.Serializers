@@ -34,7 +34,7 @@ namespace PCAxis.OpenAPILib.Models
     [SwaggerSubType(typeof(Heading), DiscriminatorValue =  "heading")]
     [JsonSubtypes.KnownSubType(typeof(Table), "table")]
     [SwaggerSubType(typeof(Table), DiscriminatorValue =  "table")]
-    public class FolderInformation : FolderContentItem, IEquatable<FolderInformation>
+    public partial class FolderInformation : FolderContentItem, IEquatable<FolderInformation>
     {
         /// <summary>
         /// Gets or Sets Tags

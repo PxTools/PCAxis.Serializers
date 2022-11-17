@@ -24,7 +24,7 @@ namespace PCAxis.OpenAPILib.Models
     /// 
     /// </summary>
     [DataContract]
-    public class CodeListMetadata : IEquatable<CodeListMetadata>
+    public partial class CodeListMetadata : IEquatable<CodeListMetadata>
     {
         /// <summary>
         /// The identiyer for the codelist

@@ -21,10 +21,10 @@ using Serializers.JsonStat2.Model.Converters;
 namespace Serializers.JsonStat2.Model
 { 
     /// <summary>
-    /// Representation of TableMetaData/TableData according to JSON-stat 2.0 Dataset Schema (2018-09-05 10:55), see full spesification of JSON-stat format [here](https://json-stat.org/full/)  Properties in **extension** are mostly from PX-file format, see [PX file format](https://www.scb.se/en/services/statistical-programs-for-px-files/px-file-format/) 
+    /// Representation of TableMetaData/TableData according to JSON-stat 2.0 Dataset Schema (2018-09-05 10:55), see full specification of JSON-stat format [here](https://json-stat.org/full/)  Properties in **extension** are mostly from PX-file format, see [PX file format](https://www.scb.se/en/services/statistical-programs-for-px-files/px-file-format/) 
     /// </summary>
     [DataContract]
-    public class Dataset : IEquatable<Dataset>
+    public partial class Dataset : IEquatable<Dataset>
     {
 
         /// <summary>
@@ -77,23 +77,23 @@ namespace Serializers.JsonStat2.Model
         public ClassEnum Class { get; set; } = ClassEnum.DatasetEnum;
 
         /// <summary>
-        /// Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#href)
+        /// Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#href)
         /// </summary>
-        /// <value>Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#href)</value>
+        /// <value>Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#href)</value>
         [DataMember(Name="href", EmitDefaultValue=false)]
         public string Href { get; set; }
 
         /// <summary>
-        /// Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#label)
+        /// Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#label)
         /// </summary>
-        /// <value>Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#label)</value>
+        /// <value>Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#label)</value>
         [DataMember(Name="label", EmitDefaultValue=false)]
         public string Label { get; set; }
 
         /// <summary>
-        /// Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#source)
+        /// Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#source)
         /// </summary>
-        /// <value>Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#source)</value>
+        /// <value>Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#source)</value>
         [DataMember(Name="source", EmitDefaultValue=false)]
         public string Source { get; set; }
 
@@ -112,12 +112,6 @@ namespace Serializers.JsonStat2.Model
         public Dictionary<string, List<JsonstatLink>> Link { get; set; }
 
         /// <summary>
-        /// Gets or Sets Extension
-        /// </summary>
-        [DataMember(Name="extension", EmitDefaultValue=false)]
-        public ExtensionRoot Extension { get; set; }
-
-        /// <summary>
         /// Gets or Sets Role
         /// </summary>
         [DataMember(Name="role", EmitDefaultValue=false)]
@@ -131,39 +125,39 @@ namespace Serializers.JsonStat2.Model
         public List<string> Id { get; set; }
 
         /// <summary>
-        /// Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#size)
+        /// Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#size)
         /// </summary>
-        /// <value>Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#size)</value>
+        /// <value>Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#size)</value>
         [Required]
         [DataMember(Name="size", EmitDefaultValue=false)]
         public List<int> Size { get; set; }
 
         /// <summary>
-        /// Gets or Sets Note
+        /// Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#dimension)
         /// </summary>
-        [DataMember(Name="note", EmitDefaultValue=false)]
-        public List<string> Note { get; set; }
-
-        /// <summary>
-        /// Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#dimension)
-        /// </summary>
-        /// <value>Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#dimension)</value>
+        /// <value>Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#dimension)</value>
         [Required]
         [DataMember(Name="dimension", EmitDefaultValue=false)]
         public Dictionary<string, DatasetDimensionValue> Dimension { get; set; }
 
         /// <summary>
-        /// Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#value)
+        /// Gets or Sets Extension
         /// </summary>
-        /// <value>Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#value)</value>
-        [Required]
-        [DataMember(Name="value", EmitDefaultValue=true)]
-        public List<decimal> Value { get; set; }
+        [DataMember(Name="extension", EmitDefaultValue=false)]
+        public ExtensionRoot Extension { get; set; }
 
         /// <summary>
-        /// Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#status)
+        /// Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#value)
         /// </summary>
-        /// <value>Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#status)</value>
+        /// <value>Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#value)</value>
+        [Required]
+        [DataMember(Name="value", EmitDefaultValue=true)]
+        public List<double?> Value { get; set; }
+
+        /// <summary>
+        /// Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#status)
+        /// </summary>
+        /// <value>Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#status)</value>
         [DataMember(Name="status", EmitDefaultValue=false)]
         public Dictionary<string, string> Status { get; set; }
 
@@ -182,12 +176,11 @@ namespace Serializers.JsonStat2.Model
             sb.Append("  Source: ").Append(Source).Append("\n");
             sb.Append("  Updated: ").Append(Updated).Append("\n");
             sb.Append("  Link: ").Append(Link).Append("\n");
-            sb.Append("  Extension: ").Append(Extension).Append("\n");
             sb.Append("  Role: ").Append(Role).Append("\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  Size: ").Append(Size).Append("\n");
-            sb.Append("  Note: ").Append(Note).Append("\n");
             sb.Append("  Dimension: ").Append(Dimension).Append("\n");
+            sb.Append("  Extension: ").Append(Extension).Append("\n");
             sb.Append("  Value: ").Append(Value).Append("\n");
             sb.Append("  Status: ").Append(Status).Append("\n");
             sb.Append("}\n");
@@ -263,11 +256,6 @@ namespace Serializers.JsonStat2.Model
                     Link.SequenceEqual(other.Link)
                 ) && 
                 (
-                    Extension == other.Extension ||
-                    Extension != null &&
-                    Extension.Equals(other.Extension)
-                ) && 
-                (
                     Role == other.Role ||
                     Role != null &&
                     Role.Equals(other.Role)
@@ -285,16 +273,15 @@ namespace Serializers.JsonStat2.Model
                     Size.SequenceEqual(other.Size)
                 ) && 
                 (
-                    Note == other.Note ||
-                    Note != null &&
-                    other.Note != null &&
-                    Note.SequenceEqual(other.Note)
-                ) && 
-                (
                     Dimension == other.Dimension ||
                     Dimension != null &&
                     other.Dimension != null &&
                     Dimension.SequenceEqual(other.Dimension)
+                ) && 
+                (
+                    Extension == other.Extension ||
+                    Extension != null &&
+                    Extension.Equals(other.Extension)
                 ) && 
                 (
                     Value == other.Value ||
@@ -334,18 +321,16 @@ namespace Serializers.JsonStat2.Model
                     hashCode = hashCode * 59 + Updated.GetHashCode();
                     if (Link != null)
                     hashCode = hashCode * 59 + Link.GetHashCode();
-                    if (Extension != null)
-                    hashCode = hashCode * 59 + Extension.GetHashCode();
                     if (Role != null)
                     hashCode = hashCode * 59 + Role.GetHashCode();
                     if (Id != null)
                     hashCode = hashCode * 59 + Id.GetHashCode();
                     if (Size != null)
                     hashCode = hashCode * 59 + Size.GetHashCode();
-                    if (Note != null)
-                    hashCode = hashCode * 59 + Note.GetHashCode();
                     if (Dimension != null)
                     hashCode = hashCode * 59 + Dimension.GetHashCode();
+                    if (Extension != null)
+                    hashCode = hashCode * 59 + Extension.GetHashCode();
                     if (Value != null)
                     hashCode = hashCode * 59 + Value.GetHashCode();
                     if (Status != null)

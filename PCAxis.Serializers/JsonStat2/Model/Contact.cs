@@ -18,7 +18,7 @@ namespace Serializers.JsonStat2.Model
     /// 
     /// </summary>
     [DataContract]
-    public class Contact : IEquatable<Contact>
+    public partial class Contact : IEquatable<Contact>
     {
         /// <summary>
         /// Gets or Sets Name

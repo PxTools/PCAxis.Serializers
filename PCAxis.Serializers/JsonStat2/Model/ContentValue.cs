@@ -24,7 +24,7 @@ namespace PCAxis.OpenAPILib.Models
     /// Content value
     /// </summary>
     [DataContract]
-    public class ContentValue : IEquatable<ContentValue>
+    public partial class ContentValue : IEquatable<ContentValue>
     {
         /// <summary>
         /// Gets or Sets Baseperiod

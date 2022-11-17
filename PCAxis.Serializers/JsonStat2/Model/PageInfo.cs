@@ -24,7 +24,7 @@ namespace PCAxis.OpenAPILib.Models
     /// 
     /// </summary>
     [DataContract]
-    public class PageInfo : IEquatable<PageInfo>
+    public partial class PageInfo : IEquatable<PageInfo>
     {
         /// <summary>
         /// Gets or Sets PageNumber

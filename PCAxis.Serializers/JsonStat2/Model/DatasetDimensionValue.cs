@@ -18,12 +18,12 @@ namespace Serializers.JsonStat2.Model
     /// 
     /// </summary>
     [DataContract]
-    public class DatasetDimensionValue : IEquatable<DatasetDimensionValue>
+    public partial class DatasetDimensionValue : IEquatable<DatasetDimensionValue>
     {
         /// <summary>
-        /// Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#label)
+        /// Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#label)
         /// </summary>
-        /// <value>Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#label)</value>
+        /// <value>Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#label)</value>
         [DataMember(Name="label", EmitDefaultValue=false)]
         public string Label { get; set; }
 

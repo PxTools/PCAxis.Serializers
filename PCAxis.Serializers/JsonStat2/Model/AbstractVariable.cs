@@ -38,7 +38,7 @@ namespace PCAxis.OpenAPILib.Models
     [SwaggerSubType(typeof(RegularVariable), DiscriminatorValue =  "RegularVariable")]
     [JsonSubtypes.KnownSubType(typeof(TimeVariable), "TimeVariable")]
     [SwaggerSubType(typeof(TimeVariable), DiscriminatorValue =  "TimeVariable")]
-    public class AbstractVariable : IEquatable<AbstractVariable>
+    public partial class AbstractVariable : IEquatable<AbstractVariable>
     {
         /// <summary>
         /// Gets or Sets Id

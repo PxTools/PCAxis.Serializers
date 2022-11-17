@@ -24,7 +24,7 @@ namespace PCAxis.OpenAPILib.Models
     /// 
     /// </summary>
     [DataContract]
-    public class ValueMap : IEquatable<ValueMap>
+    public partial class ValueMap : IEquatable<ValueMap>
     {
         /// <summary>
         /// The code for the value.

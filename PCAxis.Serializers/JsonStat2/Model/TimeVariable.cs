@@ -36,7 +36,7 @@ namespace PCAxis.OpenAPILib.Models
     [SwaggerSubType(typeof(RegularVariable), DiscriminatorValue =  "RegularVariable")]
     [JsonSubtypes.KnownSubType(typeof(TimeVariable), "TimeVariable")]
     [SwaggerSubType(typeof(TimeVariable), DiscriminatorValue =  "TimeVariable")]
-    public class TimeVariable : AbstractVariable, IEquatable<TimeVariable>
+    public partial class TimeVariable : AbstractVariable, IEquatable<TimeVariable>
     {
         /// <summary>
         /// How often a table is updated
@@ -60,6 +60,12 @@ namespace PCAxis.OpenAPILib.Models
         public string LastPeriod { get; set; }
 
         /// <summary>
+        /// Gets or Sets Values
+        /// </summary>
+        [DataMember(Name="values", EmitDefaultValue=false)]
+        public List<Value> Values { get; set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -70,6 +76,7 @@ namespace PCAxis.OpenAPILib.Models
             sb.Append("  Frequency: ").Append(Frequency).Append("\n");
             sb.Append("  FirstPeriod: ").Append(FirstPeriod).Append("\n");
             sb.Append("  LastPeriod: ").Append(LastPeriod).Append("\n");
+            sb.Append("  Values: ").Append(Values).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -120,6 +127,12 @@ namespace PCAxis.OpenAPILib.Models
                     LastPeriod == other.LastPeriod ||
                     LastPeriod != null &&
                     LastPeriod.Equals(other.LastPeriod)
+                ) && 
+                (
+                    Values == other.Values ||
+                    Values != null &&
+                    other.Values != null &&
+                    Values.SequenceEqual(other.Values)
                 );
         }
 
@@ -139,6 +152,8 @@ namespace PCAxis.OpenAPILib.Models
                     hashCode = hashCode * 59 + FirstPeriod.GetHashCode();
                     if (LastPeriod != null)
                     hashCode = hashCode * 59 + LastPeriod.GetHashCode();
+                    if (Values != null)
+                    hashCode = hashCode * 59 + Values.GetHashCode();
                 return hashCode;
             }
         }

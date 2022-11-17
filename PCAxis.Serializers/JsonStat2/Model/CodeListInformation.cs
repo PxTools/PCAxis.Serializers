@@ -20,7 +20,7 @@ namespace Serializers.JsonStat2.Model
     /// 
     /// </summary>
     [DataContract]
-    public class CodeListInformation : IEquatable<CodeListInformation>
+    public partial class CodeListInformation : IEquatable<CodeListInformation>
     {
         /// <summary>
         /// The identity of the CodeList

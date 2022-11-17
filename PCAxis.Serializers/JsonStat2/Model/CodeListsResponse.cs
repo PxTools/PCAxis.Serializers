@@ -24,7 +24,7 @@ namespace PCAxis.OpenAPILib.Models
     /// 
     /// </summary>
     [DataContract]
-    public class CodeListsResponse : IEquatable<CodeListsResponse>
+    public partial class CodeListsResponse : IEquatable<CodeListsResponse>
     {
         /// <summary>
         /// The language code for the language used in this response

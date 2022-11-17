@@ -24,7 +24,7 @@ namespace PCAxis.OpenAPILib.Models
     /// Note for a table
     /// </summary>
     [DataContract]
-    public class CellNote : IEquatable<CellNote>
+    public partial class CellNote : IEquatable<CellNote>
     {
         /// <summary>
         /// A set of condition that must be fulfilled for the note to be valid.

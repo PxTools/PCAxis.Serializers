@@ -20,7 +20,7 @@ namespace Serializers.JsonStat2.Model
     /// 
     /// </summary>
     [DataContract]
-    public class JsonstatExtensionLink : IEquatable<JsonstatExtensionLink>
+    public partial class JsonstatExtensionLink : IEquatable<JsonstatExtensionLink>
     {
         /// <summary>
         /// Gets or Sets Describedby

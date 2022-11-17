@@ -19,7 +19,7 @@ namespace Serializers.JsonStat2.Model
     /// 
     /// </summary>
     [DataContract]
-    public class Note : IEquatable<Note>
+    public partial class Note : IEquatable<Note>
     {
         /// <summary>
         /// Must be shown to end user if true

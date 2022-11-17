@@ -18,7 +18,7 @@ namespace Serializers.JsonStat2.Model
     /// 
     /// </summary>
     [DataContract]
-    public class JsonstatLink : IEquatable<JsonstatLink>
+    public partial class JsonstatLink : IEquatable<JsonstatLink>
     {
         /// <summary>
         /// Gets or Sets Type
@@ -27,9 +27,9 @@ namespace Serializers.JsonStat2.Model
         public string Type { get; set; }
 
         /// <summary>
-        /// Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#href)
+        /// Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#href)
         /// </summary>
-        /// <value>Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#href)</value>
+        /// <value>Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#href)</value>
         [DataMember(Name="href", EmitDefaultValue=false)]
         public string Href { get; set; }
 

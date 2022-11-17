@@ -20,7 +20,7 @@ namespace Serializers.JsonStat2.Model
     /// 
     /// </summary>
     [DataContract]
-    public class DimensionExtension : IEquatable<DimensionExtension>
+    public partial class DimensionExtension : IEquatable<DimensionExtension>
     {
         /// <summary>
         /// A extension object
