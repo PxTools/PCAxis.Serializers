@@ -8,10 +8,9 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using Serializers.JsonStat2.Model;
-using PCAxis.Serializers;
 using Value = PCAxis.Paxiom.Value;
 
-namespace Serializers
+namespace PCAxis.Serializers
 {
     public class JsonStat2Serializer : IPXModelStreamSerializer
     {
