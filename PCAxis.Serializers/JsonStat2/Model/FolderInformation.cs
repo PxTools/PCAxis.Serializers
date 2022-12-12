@@ -46,6 +46,7 @@ namespace PCAxis.OpenAPILib.Models
         /// Links to ...
         /// </summary>
         /// <value>Links to ...</value>
+        [Required]
         [DataMember(Name="links", EmitDefaultValue=true)]
         public List<Link> Links { get; set; }
 

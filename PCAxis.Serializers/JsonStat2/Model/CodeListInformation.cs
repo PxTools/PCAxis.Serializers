@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -26,6 +27,7 @@ namespace Serializers.JsonStat2.Model
         /// The identity of the CodeList
         /// </summary>
         /// <value>The identity of the CodeList</value>
+        [Required]
         [DataMember(Name="id", EmitDefaultValue=false)]
         public string Id { get; set; }
 
@@ -33,6 +35,7 @@ namespace Serializers.JsonStat2.Model
         /// A textual name for the CodeList
         /// </summary>
         /// <value>A textual name for the CodeList</value>
+        [Required]
         [DataMember(Name="label", EmitDefaultValue=false)]
         public string Label { get; set; }
 
@@ -40,6 +43,7 @@ namespace Serializers.JsonStat2.Model
         /// Links to associated information about the code list
         /// </summary>
         /// <value>Links to associated information about the code list</value>
+        [Required]
         [DataMember(Name="links", EmitDefaultValue=false)]
         public List<Link> Links { get; set; }
 

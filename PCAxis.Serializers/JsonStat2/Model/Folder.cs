@@ -27,22 +27,32 @@ namespace PCAxis.OpenAPILib.Models
     public partial class Folder : IEquatable<Folder>
     {
         /// <summary>
-        /// Gets or Sets Id
+        /// allways set to folder
         /// </summary>
-        [DataMember(Name="id", EmitDefaultValue=true)]
-        public string? Id { get; set; }
-
-        /// <summary>
-        /// One of heading, table, folder or folder-information
-        /// </summary>
-        /// <value>One of heading, table, folder or folder-information</value>
+        /// <value>allways set to folder</value>
         [DataMember(Name="objectType", EmitDefaultValue=false)]
         public string ObjectType { get; set; }
+
+        /// <summary>
+        /// The language code (ISO 639) for this response
+        /// </summary>
+        /// <value>The language code (ISO 639) for this response</value>
+        [Required]
+        [DataMember(Name="language", EmitDefaultValue=false)]
+        public string Language { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Id
+        /// </summary>
+        [Required]
+        [DataMember(Name="id", EmitDefaultValue=true)]
+        public string? Id { get; set; }
 
         /// <summary>
         /// Display text
         /// </summary>
         /// <value>Display text</value>
+        [Required]
         [DataMember(Name="label", EmitDefaultValue=true)]
         public string? Label { get; set; }
 
@@ -62,6 +72,7 @@ namespace PCAxis.OpenAPILib.Models
         /// <summary>
         /// Gets or Sets FolderContents
         /// </summary>
+        [Required]
         [DataMember(Name="folderContents", EmitDefaultValue=true)]
         public List<FolderContentItem> FolderContents { get; set; }
 
@@ -69,6 +80,7 @@ namespace PCAxis.OpenAPILib.Models
         /// Links to ...
         /// </summary>
         /// <value>Links to ...</value>
+        [Required]
         [DataMember(Name="links", EmitDefaultValue=true)]
         public List<Link> Links { get; set; }
 
@@ -80,8 +92,9 @@ namespace PCAxis.OpenAPILib.Models
         {
             var sb = new StringBuilder();
             sb.Append("class Folder {\n");
-            sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  ObjectType: ").Append(ObjectType).Append("\n");
+            sb.Append("  Language: ").Append(Language).Append("\n");
+            sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  Label: ").Append(Label).Append("\n");
             sb.Append("  Description: ").Append(Description).Append("\n");
             sb.Append("  Tags: ").Append(Tags).Append("\n");
@@ -124,14 +137,19 @@ namespace PCAxis.OpenAPILib.Models
 
             return 
                 (
-                    Id == other.Id ||
-                    Id != null &&
-                    Id.Equals(other.Id)
-                ) && 
-                (
                     ObjectType == other.ObjectType ||
                     ObjectType != null &&
                     ObjectType.Equals(other.ObjectType)
+                ) && 
+                (
+                    Language == other.Language ||
+                    Language != null &&
+                    Language.Equals(other.Language)
+                ) && 
+                (
+                    Id == other.Id ||
+                    Id != null &&
+                    Id.Equals(other.Id)
                 ) && 
                 (
                     Label == other.Label ||
@@ -173,10 +191,12 @@ namespace PCAxis.OpenAPILib.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                    if (Id != null)
-                    hashCode = hashCode * 59 + Id.GetHashCode();
                     if (ObjectType != null)
                     hashCode = hashCode * 59 + ObjectType.GetHashCode();
+                    if (Language != null)
+                    hashCode = hashCode * 59 + Language.GetHashCode();
+                    if (Id != null)
+                    hashCode = hashCode * 59 + Id.GetHashCode();
                     if (Label != null)
                     hashCode = hashCode * 59 + Label.GetHashCode();
                     if (Description != null)

@@ -21,7 +21,7 @@ using PCAxis.OpenAPILib.Converters;
 namespace PCAxis.OpenAPILib.Models
 { 
     /// <summary>
-    /// Note for a table
+    /// Note for a table or a part of it
     /// </summary>
     [DataContract]
     public partial class CellNote : IEquatable<CellNote>

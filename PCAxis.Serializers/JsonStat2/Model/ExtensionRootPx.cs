@@ -91,6 +91,13 @@ namespace Serializers.JsonStat2.Model
         public string SubjectCode { get; set; }
 
         /// <summary>
+        /// Subject area
+        /// </summary>
+        /// <value>Subject area</value>
+        [DataMember(Name="subject-area", EmitDefaultValue=false)]
+        public string SubjectArea { get; set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -108,6 +115,7 @@ namespace Serializers.JsonStat2.Model
             sb.Append("  Description: ").Append(Description).Append("\n");
             sb.Append("  Matrix: ").Append(Matrix).Append("\n");
             sb.Append("  SubjectCode: ").Append(SubjectCode).Append("\n");
+            sb.Append("  SubjectArea: ").Append(SubjectArea).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -193,6 +201,11 @@ namespace Serializers.JsonStat2.Model
                     SubjectCode == other.SubjectCode ||
                     SubjectCode != null &&
                     SubjectCode.Equals(other.SubjectCode)
+                ) && 
+                (
+                    SubjectArea == other.SubjectArea ||
+                    SubjectArea != null &&
+                    SubjectArea.Equals(other.SubjectArea)
                 );
         }
 
@@ -226,6 +239,8 @@ namespace Serializers.JsonStat2.Model
                     hashCode = hashCode * 59 + Matrix.GetHashCode();
                     if (SubjectCode != null)
                     hashCode = hashCode * 59 + SubjectCode.GetHashCode();
+                    if (SubjectArea != null)
+                    hashCode = hashCode * 59 + SubjectArea.GetHashCode();
                 return hashCode;
             }
         }

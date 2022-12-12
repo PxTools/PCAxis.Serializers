@@ -41,7 +41,6 @@ namespace PCAxis.OpenAPILib.Models
         /// <summary>
         /// Gets or Sets Map
         /// </summary>
-        [Required]
         [DataMember(Name="map", EmitDefaultValue=false)]
         public string Map { get; set; }
 

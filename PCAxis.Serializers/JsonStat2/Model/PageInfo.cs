@@ -27,26 +27,34 @@ namespace PCAxis.OpenAPILib.Models
     public partial class PageInfo : IEquatable<PageInfo>
     {
         /// <summary>
-        /// Gets or Sets PageNumber
+        /// The current page number.
         /// </summary>
+        /// <value>The current page number.</value>
+        [Required]
         [DataMember(Name="pageNumber", EmitDefaultValue=true)]
         public int PageNumber { get; set; }
 
         /// <summary>
-        /// Gets or Sets PageSize
+        /// The maximal number of elements in a page
         /// </summary>
+        /// <value>The maximal number of elements in a page</value>
+        [Required]
         [DataMember(Name="pageSize", EmitDefaultValue=true)]
         public int PageSize { get; set; }
 
         /// <summary>
-        /// Gets or Sets TotalElements
+        /// the Total number of elements
         /// </summary>
+        /// <value>the Total number of elements</value>
+        [Required]
         [DataMember(Name="totalElements", EmitDefaultValue=true)]
         public int TotalElements { get; set; }
 
         /// <summary>
-        /// Gets or Sets TotalPages
+        /// The total number of pages
         /// </summary>
+        /// <value>The total number of pages</value>
+        [Required]
         [DataMember(Name="totalPages", EmitDefaultValue=true)]
         public int TotalPages { get; set; }
 

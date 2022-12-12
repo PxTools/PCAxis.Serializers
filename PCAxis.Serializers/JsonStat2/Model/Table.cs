@@ -43,17 +43,35 @@ namespace PCAxis.OpenAPILib.Models
         public List<string> Tags { get; set; }
 
         /// <summary>
-        /// For treeNodeType \&quot;table\&quot;
+        /// Date and time when the figures in the table was last updated, in UTC time.
         /// </summary>
-        /// <value>For treeNodeType \&quot;table\&quot;</value>
+        /// <value>Date and time when the figures in the table was last updated, in UTC time.</value>
+        [Required]
+        [RegularExpression("^((19|20)\\d\\d)\\-(0?[1-9]|1[012])\\-(0?[1-9]|[12][0-9]|3[01])$")]
         [DataMember(Name="updated", EmitDefaultValue=true)]
         public DateTime? Updated { get; set; }
 
+        /// <summary>
+        /// First period
+        /// </summary>
+        /// <value>First period</value>
+        [Required]
+        [DataMember(Name="firstPeriod", EmitDefaultValue=true)]
+        public string? FirstPeriod { get; set; }
 
         /// <summary>
-        /// Mostly for internal use. Which category table belongs to. internal, official, private or section. I, O, P, S
+        /// Last period
         /// </summary>
-        /// <value>Mostly for internal use. Which category table belongs to. internal, official, private or section. I, O, P, S</value>
+        /// <value>Last period</value>
+        [Required]
+        [DataMember(Name="lastPeriod", EmitDefaultValue=true)]
+        public string? LastPeriod { get; set; }
+
+
+        /// <summary>
+        /// Mostly for internal use. Which category table belongs to. internal, public, private or section.
+        /// </summary>
+        /// <value>Mostly for internal use. Which category table belongs to. internal, public, private or section.</value>
         [TypeConverter(typeof(CustomEnumConverter<CategoryEnum>))]
         [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public enum CategoryEnum
@@ -66,10 +84,10 @@ namespace PCAxis.OpenAPILib.Models
             InternalEnum = 1,
             
             /// <summary>
-            /// Enum OfficialEnum for official
+            /// Enum PublicEnum for public
             /// </summary>
-            [EnumMember(Value = "official")]
-            OfficialEnum = 2,
+            [EnumMember(Value = "public")]
+            PublicEnum = 2,
             
             /// <summary>
             /// Enum PrivateEnum for private
@@ -85,45 +103,33 @@ namespace PCAxis.OpenAPILib.Models
         }
 
         /// <summary>
-        /// Mostly for internal use. Which category table belongs to. internal, official, private or section. I, O, P, S
+        /// Mostly for internal use. Which category table belongs to. internal, public, private or section.
         /// </summary>
-        /// <value>Mostly for internal use. Which category table belongs to. internal, official, private or section. I, O, P, S</value>
+        /// <value>Mostly for internal use. Which category table belongs to. internal, public, private or section.</value>
         [DataMember(Name="category", EmitDefaultValue=true)]
-        public CategoryEnum Category { get; set; } = CategoryEnum.OfficialEnum;
-
-        /// <summary>
-        /// Links to ...
-        /// </summary>
-        /// <value>Links to ...</value>
-        [DataMember(Name="links", EmitDefaultValue=true)]
-        public List<Link> Links { get; set; }
+        public CategoryEnum Category { get; set; } = CategoryEnum.PublicEnum;
 
         /// <summary>
         /// List of varibles name
         /// </summary>
         /// <value>List of varibles name</value>
-        [DataMember(Name="variablesName", EmitDefaultValue=false)]
-        public List<string> VariablesName { get; set; }
-
-        /// <summary>
-        /// First period
-        /// </summary>
-        /// <value>First period</value>
-        [DataMember(Name="firstPeriod", EmitDefaultValue=false)]
-        public string FirstPeriod { get; set; }
-
-        /// <summary>
-        /// Last period
-        /// </summary>
-        /// <value>Last period</value>
-        [DataMember(Name="lastPeriod", EmitDefaultValue=false)]
-        public string LastPeriod { get; set; }
+        [Required]
+        [DataMember(Name="variableNames", EmitDefaultValue=false)]
+        public List<string> VariableNames { get; set; }
 
         /// <summary>
         /// Gets or Sets Discontinued
         /// </summary>
         [DataMember(Name="discontinued", EmitDefaultValue=true)]
         public bool? Discontinued { get; set; }
+
+        /// <summary>
+        /// Links to ...
+        /// </summary>
+        /// <value>Links to ...</value>
+        [Required]
+        [DataMember(Name="links", EmitDefaultValue=true)]
+        public List<Link> Links { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -135,12 +141,12 @@ namespace PCAxis.OpenAPILib.Models
             sb.Append("class Table {\n");
             sb.Append("  Tags: ").Append(Tags).Append("\n");
             sb.Append("  Updated: ").Append(Updated).Append("\n");
-            sb.Append("  Category: ").Append(Category).Append("\n");
-            sb.Append("  Links: ").Append(Links).Append("\n");
-            sb.Append("  VariablesName: ").Append(VariablesName).Append("\n");
             sb.Append("  FirstPeriod: ").Append(FirstPeriod).Append("\n");
             sb.Append("  LastPeriod: ").Append(LastPeriod).Append("\n");
+            sb.Append("  Category: ").Append(Category).Append("\n");
+            sb.Append("  VariableNames: ").Append(VariableNames).Append("\n");
             sb.Append("  Discontinued: ").Append(Discontinued).Append("\n");
+            sb.Append("  Links: ").Append(Links).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -189,23 +195,6 @@ namespace PCAxis.OpenAPILib.Models
                     Updated.Equals(other.Updated)
                 ) && 
                 (
-                    Category == other.Category ||
-                    
-                    Category.Equals(other.Category)
-                ) && 
-                (
-                    Links == other.Links ||
-                    Links != null &&
-                    other.Links != null &&
-                    Links.SequenceEqual(other.Links)
-                ) && 
-                (
-                    VariablesName == other.VariablesName ||
-                    VariablesName != null &&
-                    other.VariablesName != null &&
-                    VariablesName.SequenceEqual(other.VariablesName)
-                ) && 
-                (
                     FirstPeriod == other.FirstPeriod ||
                     FirstPeriod != null &&
                     FirstPeriod.Equals(other.FirstPeriod)
@@ -216,9 +205,26 @@ namespace PCAxis.OpenAPILib.Models
                     LastPeriod.Equals(other.LastPeriod)
                 ) && 
                 (
+                    Category == other.Category ||
+                    
+                    Category.Equals(other.Category)
+                ) && 
+                (
+                    VariableNames == other.VariableNames ||
+                    VariableNames != null &&
+                    other.VariableNames != null &&
+                    VariableNames.SequenceEqual(other.VariableNames)
+                ) && 
+                (
                     Discontinued == other.Discontinued ||
                     Discontinued != null &&
                     Discontinued.Equals(other.Discontinued)
+                ) && 
+                (
+                    Links == other.Links ||
+                    Links != null &&
+                    other.Links != null &&
+                    Links.SequenceEqual(other.Links)
                 );
         }
 
@@ -236,18 +242,18 @@ namespace PCAxis.OpenAPILib.Models
                     hashCode = hashCode * 59 + Tags.GetHashCode();
                     if (Updated != null)
                     hashCode = hashCode * 59 + Updated.GetHashCode();
-                    
-                    hashCode = hashCode * 59 + Category.GetHashCode();
-                    if (Links != null)
-                    hashCode = hashCode * 59 + Links.GetHashCode();
-                    if (VariablesName != null)
-                    hashCode = hashCode * 59 + VariablesName.GetHashCode();
                     if (FirstPeriod != null)
                     hashCode = hashCode * 59 + FirstPeriod.GetHashCode();
                     if (LastPeriod != null)
                     hashCode = hashCode * 59 + LastPeriod.GetHashCode();
+                    
+                    hashCode = hashCode * 59 + Category.GetHashCode();
+                    if (VariableNames != null)
+                    hashCode = hashCode * 59 + VariableNames.GetHashCode();
                     if (Discontinued != null)
                     hashCode = hashCode * 59 + Discontinued.GetHashCode();
+                    if (Links != null)
+                    hashCode = hashCode * 59 + Links.GetHashCode();
                 return hashCode;
             }
         }

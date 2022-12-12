@@ -27,16 +27,24 @@ namespace PCAxis.OpenAPILib.Models
     public partial class TablesResponse : IEquatable<TablesResponse>
     {
         /// <summary>
+        /// Gets or Sets Tables
+        /// </summary>
+        [Required]
+        [DataMember(Name="tables", EmitDefaultValue=false)]
+        public List<Table> Tables { get; set; }
+
+        /// <summary>
         /// Gets or Sets Page
         /// </summary>
+        [Required]
         [DataMember(Name="page", EmitDefaultValue=false)]
         public PageInfo Page { get; set; }
 
         /// <summary>
-        /// Gets or Sets Tables
+        /// Gets or Sets Links
         /// </summary>
-        [DataMember(Name="tables", EmitDefaultValue=false)]
-        public List<Table> Tables { get; set; }
+        [DataMember(Name="links", EmitDefaultValue=false)]
+        public List<Link> Links { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -46,8 +54,9 @@ namespace PCAxis.OpenAPILib.Models
         {
             var sb = new StringBuilder();
             sb.Append("class TablesResponse {\n");
-            sb.Append("  Page: ").Append(Page).Append("\n");
             sb.Append("  Tables: ").Append(Tables).Append("\n");
+            sb.Append("  Page: ").Append(Page).Append("\n");
+            sb.Append("  Links: ").Append(Links).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -85,15 +94,21 @@ namespace PCAxis.OpenAPILib.Models
 
             return 
                 (
+                    Tables == other.Tables ||
+                    Tables != null &&
+                    other.Tables != null &&
+                    Tables.SequenceEqual(other.Tables)
+                ) && 
+                (
                     Page == other.Page ||
                     Page != null &&
                     Page.Equals(other.Page)
                 ) && 
                 (
-                    Tables == other.Tables ||
-                    Tables != null &&
-                    other.Tables != null &&
-                    Tables.SequenceEqual(other.Tables)
+                    Links == other.Links ||
+                    Links != null &&
+                    other.Links != null &&
+                    Links.SequenceEqual(other.Links)
                 );
         }
 
@@ -107,10 +122,12 @@ namespace PCAxis.OpenAPILib.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                    if (Page != null)
-                    hashCode = hashCode * 59 + Page.GetHashCode();
                     if (Tables != null)
                     hashCode = hashCode * 59 + Tables.GetHashCode();
+                    if (Page != null)
+                    hashCode = hashCode * 59 + Page.GetHashCode();
+                    if (Links != null)
+                    hashCode = hashCode * 59 + Links.GetHashCode();
                 return hashCode;
             }
         }

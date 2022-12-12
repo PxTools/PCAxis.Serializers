@@ -43,29 +43,32 @@ namespace PCAxis.OpenAPILib.Models
     public partial class FolderContentItem : IEquatable<FolderContentItem>
     {
         /// <summary>
-        /// Gets or Sets Id
-        /// </summary>
-        [DataMember(Name="id", EmitDefaultValue=true)]
-        public string? Id { get; set; }
-
-        /// <summary>
         /// One of heading, table, folder or folder-information
         /// </summary>
         /// <value>One of heading, table, folder or folder-information</value>
+        [Required]
         [DataMember(Name="objectType", EmitDefaultValue=false)]
         public string ObjectType { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Id
+        /// </summary>
+        [Required]
+        [DataMember(Name="id", EmitDefaultValue=false)]
+        public string Id { get; set; }
 
         /// <summary>
         /// Display text
         /// </summary>
         /// <value>Display text</value>
+        [Required]
         [DataMember(Name="label", EmitDefaultValue=true)]
         public string? Label { get; set; }
 
         /// <summary>
-        /// Longer text describing node. If no longer text exist, same as label
+        /// Longer text describing node.
         /// </summary>
-        /// <value>Longer text describing node. If no longer text exist, same as label</value>
+        /// <value>Longer text describing node.</value>
         [DataMember(Name="description", EmitDefaultValue=true)]
         public string? Description { get; set; }
 
@@ -84,8 +87,8 @@ namespace PCAxis.OpenAPILib.Models
         {
             var sb = new StringBuilder();
             sb.Append("class FolderContentItem {\n");
-            sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  ObjectType: ").Append(ObjectType).Append("\n");
+            sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  Label: ").Append(Label).Append("\n");
             sb.Append("  Description: ").Append(Description).Append("\n");
             sb.Append("  SortCode: ").Append(SortCode).Append("\n");
@@ -126,14 +129,14 @@ namespace PCAxis.OpenAPILib.Models
 
             return 
                 (
-                    Id == other.Id ||
-                    Id != null &&
-                    Id.Equals(other.Id)
-                ) && 
-                (
                     ObjectType == other.ObjectType ||
                     ObjectType != null &&
                     ObjectType.Equals(other.ObjectType)
+                ) && 
+                (
+                    Id == other.Id ||
+                    Id != null &&
+                    Id.Equals(other.Id)
                 ) && 
                 (
                     Label == other.Label ||
@@ -162,10 +165,10 @@ namespace PCAxis.OpenAPILib.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                    if (Id != null)
-                    hashCode = hashCode * 59 + Id.GetHashCode();
                     if (ObjectType != null)
                     hashCode = hashCode * 59 + ObjectType.GetHashCode();
+                    if (Id != null)
+                    hashCode = hashCode * 59 + Id.GetHashCode();
                     if (Label != null)
                     hashCode = hashCode * 59 + Label.GetHashCode();
                     if (Description != null)

@@ -30,6 +30,7 @@ namespace PCAxis.OpenAPILib.Models
         /// The identiyer for the codelist
         /// </summary>
         /// <value>The identiyer for the codelist</value>
+        [Required]
         [DataMember(Name="id", EmitDefaultValue=false)]
         public string Id { get; set; }
 
@@ -37,12 +38,21 @@ namespace PCAxis.OpenAPILib.Models
         /// The textual name  for the codelist.
         /// </summary>
         /// <value>The textual name  for the codelist.</value>
+        [Required]
         [DataMember(Name="label", EmitDefaultValue=false)]
         public string Label { get; set; }
 
         /// <summary>
+        /// Gets or Sets Type
+        /// </summary>
+        [Required]
+        [DataMember(Name="type", EmitDefaultValue=true)]
+        public CodeListType Type { get; set; }
+
+        /// <summary>
         /// Gets or Sets Links
         /// </summary>
+        [Required]
         [DataMember(Name="links", EmitDefaultValue=false)]
         public List<Link> Links { get; set; }
 
@@ -56,6 +66,7 @@ namespace PCAxis.OpenAPILib.Models
             sb.Append("class CodeListMetadata {\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  Label: ").Append(Label).Append("\n");
+            sb.Append("  Type: ").Append(Type).Append("\n");
             sb.Append("  Links: ").Append(Links).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
@@ -104,6 +115,11 @@ namespace PCAxis.OpenAPILib.Models
                     Label.Equals(other.Label)
                 ) && 
                 (
+                    Type == other.Type ||
+                    
+                    Type.Equals(other.Type)
+                ) && 
+                (
                     Links == other.Links ||
                     Links != null &&
                     other.Links != null &&
@@ -125,6 +141,8 @@ namespace PCAxis.OpenAPILib.Models
                     hashCode = hashCode * 59 + Id.GetHashCode();
                     if (Label != null)
                     hashCode = hashCode * 59 + Label.GetHashCode();
+                    
+                    hashCode = hashCode * 59 + Type.GetHashCode();
                     if (Links != null)
                     hashCode = hashCode * 59 + Links.GetHashCode();
                 return hashCode;

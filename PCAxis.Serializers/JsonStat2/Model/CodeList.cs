@@ -30,6 +30,7 @@ namespace PCAxis.OpenAPILib.Models
         /// The identiyer for the codelist
         /// </summary>
         /// <value>The identiyer for the codelist</value>
+        [Required]
         [DataMember(Name="id", EmitDefaultValue=false)]
         public string Id { get; set; }
 
@@ -37,6 +38,7 @@ namespace PCAxis.OpenAPILib.Models
         /// The textual name  for the codelist.
         /// </summary>
         /// <value>The textual name  for the codelist.</value>
+        [Required]
         [DataMember(Name="label", EmitDefaultValue=false)]
         public string Label { get; set; }
 
@@ -44,18 +46,28 @@ namespace PCAxis.OpenAPILib.Models
         /// The language code for the language used in this response
         /// </summary>
         /// <value>The language code for the language used in this response</value>
+        [Required]
         [DataMember(Name="language", EmitDefaultValue=false)]
         public string Language { get; set; }
 
         /// <summary>
+        /// Gets or Sets Type
+        /// </summary>
+        [Required]
+        [DataMember(Name="type", EmitDefaultValue=true)]
+        public CodeListType Type { get; set; }
+
+        /// <summary>
         /// Gets or Sets Values
         /// </summary>
+        [Required]
         [DataMember(Name="values", EmitDefaultValue=false)]
         public List<ValueMap> Values { get; set; }
 
         /// <summary>
         /// Gets or Sets Links
         /// </summary>
+        [Required]
         [DataMember(Name="links", EmitDefaultValue=false)]
         public List<Link> Links { get; set; }
 
@@ -70,6 +82,7 @@ namespace PCAxis.OpenAPILib.Models
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  Label: ").Append(Label).Append("\n");
             sb.Append("  Language: ").Append(Language).Append("\n");
+            sb.Append("  Type: ").Append(Type).Append("\n");
             sb.Append("  Values: ").Append(Values).Append("\n");
             sb.Append("  Links: ").Append(Links).Append("\n");
             sb.Append("}\n");
@@ -124,6 +137,11 @@ namespace PCAxis.OpenAPILib.Models
                     Language.Equals(other.Language)
                 ) && 
                 (
+                    Type == other.Type ||
+                    
+                    Type.Equals(other.Type)
+                ) && 
+                (
                     Values == other.Values ||
                     Values != null &&
                     other.Values != null &&
@@ -153,6 +171,8 @@ namespace PCAxis.OpenAPILib.Models
                     hashCode = hashCode * 59 + Label.GetHashCode();
                     if (Language != null)
                     hashCode = hashCode * 59 + Language.GetHashCode();
+                    
+                    hashCode = hashCode * 59 + Type.GetHashCode();
                     if (Values != null)
                     hashCode = hashCode * 59 + Values.GetHashCode();
                     if (Links != null)

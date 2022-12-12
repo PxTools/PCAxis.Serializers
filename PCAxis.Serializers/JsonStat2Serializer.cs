@@ -51,13 +51,20 @@ namespace PCAxis.Serializers
             AddPxToExtension(model, dataset);
 
             // Dimension
+            //Handle Elminated content variable
+
+            if (model.Meta.ContentVariable == null)
+            {
+                AddInfoForEliminatedContentVariable(model, dataset);
+            }
+
             foreach (var variable in model.Meta.Variables)
             {
                 //temporary collector storage
                 var metaIdsHelper = new Dictionary<string, string>();
-
+             
                 dataset.AddDimensionValue(variable.Code, variable.Name, out var dimensionValue);
-
+                
                 var indexCounter = 0;
 
                 foreach (var variableValue in variable.Values)
@@ -73,17 +80,18 @@ namespace PCAxis.Serializers
                     if (!variable.IsContentVariable) continue;
 
                     var unitDecimals = (variableValue.HasPrecision()) ? variableValue.Precision : model.Meta.ShowDecimals;
-                    dataset.AddUnitValue(dimensionValue.Category, unitDecimals, out var unitValue);
+                    dataset.AddUnitValue(dimensionValue.Category, out var unitValue);
 
                     if (variableValue.ContentInfo != null)
                     {
                         unitValue.Base = variableValue.ContentInfo.Units;
+                        unitValue.Decimals = unitDecimals;
 
                         //refPeriod extension dimension
                         dataset.AddRefPeriod(dimensionValue, variableValue.Code, variableValue.ContentInfo.RefPeriod);
 
                         // Contact
-                        AddContacts(dataset, variableValue);
+                        AddContacts(dataset, variableValue.ContentInfo.Contact);
                     }
                     else
                     {
@@ -131,6 +139,27 @@ namespace PCAxis.Serializers
             var result = JsonConvert.SerializeObject(dataset, new DecimalJsonConverter());
 
             return result;
+        }
+
+        private void AddInfoForEliminatedContentVariable(PXModel model, Dataset dataset)
+        {
+            dataset.AddDimensionValue("ContentsCode", "EliminatedContents", out var dimensionValue);
+            dimensionValue.Category.Label.Add("EliminatedValue", model.Meta.Contents);
+            dimensionValue.Category.Index.Add("EliminatedValue", 0);
+
+            dataset.AddUnitValue(dimensionValue.Category, out var unitValue);
+            unitValue.Base = model.Meta.ContentInfo.Units;
+            unitValue.Decimals = model.Meta.Decimals;
+
+            dimensionValue.Category.Unit.Add("EliminatedValue", unitValue);
+
+            dimensionValue.Extension.Elimination = true;
+
+            //refPeriod extension dimension
+            dataset.AddRefPeriod(dimensionValue, "EliminatedValue", model.Meta.ContentInfo.RefPeriod);
+
+            // Contact
+            AddContacts(dataset, model.Meta.ContentInfo.Contact);
         }
 
         private void AddUpdated(PXModel model, Dataset dataset)
@@ -219,10 +248,10 @@ namespace PCAxis.Serializers
             }
         }
 
-        private void AddContacts(Dataset dataset, Value variableValue)
+        private void AddContacts(Dataset dataset, string contactString)
         {
             if (dataset.Extension.Contact != null) return;
-            var contacts = variableValue.ContentInfo.Contact.Split(new[] { "##" },
+            var contacts = contactString.Split(new[] { "##" },
                 StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var contact in contacts)
@@ -231,11 +260,15 @@ namespace PCAxis.Serializers
 
                 //Temporary solution for contact information
                 if (contactArray.Length <= 0) continue;
-                if (contactArray.Length == 3)
-                    dataset.AddContact(contactArray[0], contactArray[1], contactArray[2]);
 
-                if (contactArray.Length == 1)
-                    dataset.AddContact(contactArray[0]);
+                if (contactArray.Length == 3)
+                {
+                    dataset.AddContact(contactArray[0], contactArray[1], contactArray[2], contact);
+                }
+                else
+                {
+                    dataset.AddContact(contact);
+                }
             }
         }
 

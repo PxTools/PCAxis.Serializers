@@ -22,15 +22,25 @@ namespace Serializers.JsonStat2.Model
     public partial class Link : IEquatable<Link>
     {
         /// <summary>
-        /// Gets or Sets Rel
+        /// the link relation, see https://www.iana.org/assignments/link-relations/link-relations.xhtml
         /// </summary>
+        /// <value>the link relation, see https://www.iana.org/assignments/link-relations/link-relations.xhtml</value>
         [Required]
         [DataMember(Name="rel", EmitDefaultValue=false)]
         public string Rel { get; set; }
 
         /// <summary>
-        /// Gets or Sets Href
+        /// The language that is used for the link, see https://moz.com/learn/seo/hreflang-tag
         /// </summary>
+        /// <value>The language that is used for the link, see https://moz.com/learn/seo/hreflang-tag</value>
+        [Required]
+        [DataMember(Name="hreflang", EmitDefaultValue=false)]
+        public string Hreflang { get; set; }
+
+        /// <summary>
+        /// the link to the resource
+        /// </summary>
+        /// <value>the link to the resource</value>
         [Required]
         [DataMember(Name="href", EmitDefaultValue=false)]
         public string Href { get; set; }
@@ -44,6 +54,7 @@ namespace Serializers.JsonStat2.Model
             var sb = new StringBuilder();
             sb.Append("class Link {\n");
             sb.Append("  Rel: ").Append(Rel).Append("\n");
+            sb.Append("  Hreflang: ").Append(Hreflang).Append("\n");
             sb.Append("  Href: ").Append(Href).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
@@ -87,6 +98,11 @@ namespace Serializers.JsonStat2.Model
                     Rel.Equals(other.Rel)
                 ) && 
                 (
+                    Hreflang == other.Hreflang ||
+                    Hreflang != null &&
+                    Hreflang.Equals(other.Hreflang)
+                ) && 
+                (
                     Href == other.Href ||
                     Href != null &&
                     Href.Equals(other.Href)
@@ -105,6 +121,8 @@ namespace Serializers.JsonStat2.Model
                 // Suitable nullity checks etc, of course :)
                     if (Rel != null)
                     hashCode = hashCode * 59 + Rel.GetHashCode();
+                    if (Hreflang != null)
+                    hashCode = hashCode * 59 + Hreflang.GetHashCode();
                     if (Href != null)
                     hashCode = hashCode * 59 + Href.GetHashCode();
                 return hashCode;

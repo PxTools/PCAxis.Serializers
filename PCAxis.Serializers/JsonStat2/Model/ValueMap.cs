@@ -30,6 +30,7 @@ namespace PCAxis.OpenAPILib.Models
         /// The code for the value.
         /// </summary>
         /// <value>The code for the value.</value>
+        [Required]
         [DataMember(Name="code", EmitDefaultValue=false)]
         public string Code { get; set; }
 
@@ -37,6 +38,7 @@ namespace PCAxis.OpenAPILib.Models
         /// The textual representation for the value
         /// </summary>
         /// <value>The textual representation for the value</value>
+        [Required]
         [DataMember(Name="label", EmitDefaultValue=false)]
         public string Label { get; set; }
 
@@ -44,8 +46,16 @@ namespace PCAxis.OpenAPILib.Models
         /// An array of codes from the origial codelist for the variable that cand be mapped to this value
         /// </summary>
         /// <value>An array of codes from the origial codelist for the variable that cand be mapped to this value</value>
+        [Required]
         [DataMember(Name="valueMap", EmitDefaultValue=false)]
         public List<string> _ValueMap { get; set; }
+
+        /// <summary>
+        /// Optional notes that are associated with the value
+        /// </summary>
+        /// <value>Optional notes that are associated with the value</value>
+        [DataMember(Name="notes", EmitDefaultValue=false)]
+        public List<Note> Notes { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -58,6 +68,7 @@ namespace PCAxis.OpenAPILib.Models
             sb.Append("  Code: ").Append(Code).Append("\n");
             sb.Append("  Label: ").Append(Label).Append("\n");
             sb.Append("  _ValueMap: ").Append(_ValueMap).Append("\n");
+            sb.Append("  Notes: ").Append(Notes).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -109,6 +120,12 @@ namespace PCAxis.OpenAPILib.Models
                     _ValueMap != null &&
                     other._ValueMap != null &&
                     _ValueMap.SequenceEqual(other._ValueMap)
+                ) && 
+                (
+                    Notes == other.Notes ||
+                    Notes != null &&
+                    other.Notes != null &&
+                    Notes.SequenceEqual(other.Notes)
                 );
         }
 
@@ -128,6 +145,8 @@ namespace PCAxis.OpenAPILib.Models
                     hashCode = hashCode * 59 + Label.GetHashCode();
                     if (_ValueMap != null)
                     hashCode = hashCode * 59 + _ValueMap.GetHashCode();
+                    if (Notes != null)
+                    hashCode = hashCode * 59 + Notes.GetHashCode();
                 return hashCode;
             }
         }

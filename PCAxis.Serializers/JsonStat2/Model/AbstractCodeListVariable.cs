@@ -53,6 +53,7 @@ namespace PCAxis.OpenAPILib.Models
         /// <summary>
         /// Gets or Sets Values
         /// </summary>
+        [Required]
         [DataMember(Name="values", EmitDefaultValue=false)]
         public List<Value> Values { get; set; }
 

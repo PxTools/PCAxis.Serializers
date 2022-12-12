@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Text;
 
@@ -39,6 +40,14 @@ namespace Serializers.JsonStat2.Model
         public string Mail { get; set; }
 
         /// <summary>
+        /// Raw contact information for compatability with PX files
+        /// </summary>
+        /// <value>Raw contact information for compatability with PX files</value>
+        [Required]
+        [DataMember(Name="raw", EmitDefaultValue=false)]
+        public string Raw { get; set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -49,6 +58,7 @@ namespace Serializers.JsonStat2.Model
             sb.Append("  Name: ").Append(Name).Append("\n");
             sb.Append("  Phone: ").Append(Phone).Append("\n");
             sb.Append("  Mail: ").Append(Mail).Append("\n");
+            sb.Append("  Raw: ").Append(Raw).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -99,6 +109,11 @@ namespace Serializers.JsonStat2.Model
                     Mail == other.Mail ||
                     Mail != null &&
                     Mail.Equals(other.Mail)
+                ) && 
+                (
+                    Raw == other.Raw ||
+                    Raw != null &&
+                    Raw.Equals(other.Raw)
                 );
         }
 
@@ -118,6 +133,8 @@ namespace Serializers.JsonStat2.Model
                     hashCode = hashCode * 59 + Phone.GetHashCode();
                     if (Mail != null)
                     hashCode = hashCode * 59 + Mail.GetHashCode();
+                    if (Raw != null)
+                    hashCode = hashCode * 59 + Raw.GetHashCode();
                 return hashCode;
             }
         }

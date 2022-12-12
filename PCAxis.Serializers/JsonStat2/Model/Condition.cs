@@ -31,16 +31,16 @@ namespace PCAxis.OpenAPILib.Models
         /// </summary>
         /// <value>The code of the variable</value>
         [Required]
-        [DataMember(Name="variableCode", EmitDefaultValue=false)]
-        public string VariableCode { get; set; }
+        [DataMember(Name="variable", EmitDefaultValue=false)]
+        public string Variable { get; set; }
 
         /// <summary>
         /// The code of the value
         /// </summary>
         /// <value>The code of the value</value>
         [Required]
-        [DataMember(Name="valueCode", EmitDefaultValue=false)]
-        public string ValueCode { get; set; }
+        [DataMember(Name="value", EmitDefaultValue=false)]
+        public string Value { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -50,8 +50,8 @@ namespace PCAxis.OpenAPILib.Models
         {
             var sb = new StringBuilder();
             sb.Append("class Condition {\n");
-            sb.Append("  VariableCode: ").Append(VariableCode).Append("\n");
-            sb.Append("  ValueCode: ").Append(ValueCode).Append("\n");
+            sb.Append("  Variable: ").Append(Variable).Append("\n");
+            sb.Append("  Value: ").Append(Value).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -89,14 +89,14 @@ namespace PCAxis.OpenAPILib.Models
 
             return 
                 (
-                    VariableCode == other.VariableCode ||
-                    VariableCode != null &&
-                    VariableCode.Equals(other.VariableCode)
+                    Variable == other.Variable ||
+                    Variable != null &&
+                    Variable.Equals(other.Variable)
                 ) && 
                 (
-                    ValueCode == other.ValueCode ||
-                    ValueCode != null &&
-                    ValueCode.Equals(other.ValueCode)
+                    Value == other.Value ||
+                    Value != null &&
+                    Value.Equals(other.Value)
                 );
         }
 
@@ -110,10 +110,10 @@ namespace PCAxis.OpenAPILib.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                    if (VariableCode != null)
-                    hashCode = hashCode * 59 + VariableCode.GetHashCode();
-                    if (ValueCode != null)
-                    hashCode = hashCode * 59 + ValueCode.GetHashCode();
+                    if (Variable != null)
+                    hashCode = hashCode * 59 + Variable.GetHashCode();
+                    if (Value != null)
+                    hashCode = hashCode * 59 + Value.GetHashCode();
                 return hashCode;
             }
         }

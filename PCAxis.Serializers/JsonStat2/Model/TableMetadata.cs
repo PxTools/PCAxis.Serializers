@@ -27,9 +27,9 @@ namespace PCAxis.OpenAPILib.Models
     public partial class TableMetadata : IEquatable<TableMetadata>
     {
         /// <summary>
-        /// Identifyer for the table.
+        /// Identifier for the table.
         /// </summary>
-        /// <value>Identifyer for the table.</value>
+        /// <value>Identifier for the table.</value>
         [Required]
         [DataMember(Name="id", EmitDefaultValue=false)]
         public string Id { get; set; }
@@ -50,11 +50,11 @@ namespace PCAxis.OpenAPILib.Models
         public string Description { get; set; }
 
         /// <summary>
-        /// If the content of the table can be aggregated.
+        /// If all content of the table can be aggregated.
         /// </summary>
-        /// <value>If the content of the table can be aggregated.</value>
-        [DataMember(Name="agregationPossible", EmitDefaultValue=true)]
-        public bool AgregationPossible { get; set; }
+        /// <value>If all content of the table can be aggregated.</value>
+        [DataMember(Name="aggregationAllowed", EmitDefaultValue=true)]
+        public bool AggregationAllowed { get; set; }
 
         /// <summary>
         /// A marker if the table is a part of the national official statistics.
@@ -67,8 +67,15 @@ namespace PCAxis.OpenAPILib.Models
         /// The code for the subject area that the table belongs to.
         /// </summary>
         /// <value>The code for the subject area that the table belongs to.</value>
-        [DataMember(Name="category", EmitDefaultValue=false)]
-        public string Category { get; set; }
+        [DataMember(Name="subjectCode", EmitDefaultValue=false)]
+        public string SubjectCode { get; set; }
+
+        /// <summary>
+        /// The label for the subject area that the table belongs to.
+        /// </summary>
+        /// <value>The label for the subject area that the table belongs to.</value>
+        [DataMember(Name="subjectLabel", EmitDefaultValue=false)]
+        public string SubjectLabel { get; set; }
 
         /// <summary>
         /// The name of the organization responsible for the table.
@@ -78,11 +85,11 @@ namespace PCAxis.OpenAPILib.Models
         public string Source { get; set; }
 
         /// <summary>
-        /// A copyright statement for the data it could also be SPDX (https://spdx.org/licenses/) identifyer
+        /// A copyright statement for the data it could also be SPDX (https://spdx.org/licenses/) identifier
         /// </summary>
-        /// <value>A copyright statement for the data it could also be SPDX (https://spdx.org/licenses/) identifyer</value>
-        [DataMember(Name="copyright", EmitDefaultValue=false)]
-        public string Copyright { get; set; }
+        /// <value>A copyright statement for the data it could also be SPDX (https://spdx.org/licenses/) identifier</value>
+        [DataMember(Name="licence", EmitDefaultValue=false)]
+        public string Licence { get; set; }
 
         /// <summary>
         /// A list of strings/tags associated with the table
@@ -92,9 +99,10 @@ namespace PCAxis.OpenAPILib.Models
         public List<string> Tags { get; set; }
 
         /// <summary>
-        /// A date and time when the table was last updated
+        /// Date and time when the figures in the table was last updated, in UTC time.
         /// </summary>
-        /// <value>A date and time when the table was last updated</value>
+        /// <value>Date and time when the figures in the table was last updated, in UTC time.</value>
+        [RegularExpression("^((19|20)\\d\\d)\\-(0?[1-9]|1[012])\\-(0?[1-9]|[12][0-9]|3[01])$")]
         [DataMember(Name="updated", EmitDefaultValue=true)]
         public DateTime? Updated { get; set; }
 
@@ -113,38 +121,23 @@ namespace PCAxis.OpenAPILib.Models
         public List<Contact> Contacts { get; set; }
 
         /// <summary>
-        /// Gets or Sets ContentsVariable
+        /// Gets or Sets Variables
         /// </summary>
-        [DataMember(Name="contentsVariable", EmitDefaultValue=false)]
-        public ContentsVariable ContentsVariable { get; set; }
-
-        /// <summary>
-        /// Gets or Sets TimeVariable
-        /// </summary>
-        [DataMember(Name="timeVariable", EmitDefaultValue=false)]
-        public TimeVariable TimeVariable { get; set; }
-
-        /// <summary>
-        /// Gets or Sets GeoVariables
-        /// </summary>
-        [DataMember(Name="geoVariables", EmitDefaultValue=false)]
-        public List<GeographicalVariable> GeoVariables { get; set; }
-
-        /// <summary>
-        /// Gets or Sets RegularVariables
-        /// </summary>
-        [DataMember(Name="regularVariables", EmitDefaultValue=false)]
-        public List<RegularVariable> RegularVariables { get; set; }
+        [Required]
+        [DataMember(Name="variables", EmitDefaultValue=false)]
+        public AbstractVariable Variables { get; set; }
 
         /// <summary>
         /// Gets or Sets VariablesDisplayOrder
         /// </summary>
+        [Required]
         [DataMember(Name="variablesDisplayOrder", EmitDefaultValue=false)]
         public List<string> VariablesDisplayOrder { get; set; }
 
         /// <summary>
         /// Gets or Sets Links
         /// </summary>
+        [Required]
         [DataMember(Name="links", EmitDefaultValue=false)]
         public List<Link> Links { get; set; }
 
@@ -159,19 +152,17 @@ namespace PCAxis.OpenAPILib.Models
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  Label: ").Append(Label).Append("\n");
             sb.Append("  Description: ").Append(Description).Append("\n");
-            sb.Append("  AgregationPossible: ").Append(AgregationPossible).Append("\n");
+            sb.Append("  AggregationAllowed: ").Append(AggregationAllowed).Append("\n");
             sb.Append("  OfficalStatistics: ").Append(OfficalStatistics).Append("\n");
-            sb.Append("  Category: ").Append(Category).Append("\n");
+            sb.Append("  SubjectCode: ").Append(SubjectCode).Append("\n");
+            sb.Append("  SubjectLabel: ").Append(SubjectLabel).Append("\n");
             sb.Append("  Source: ").Append(Source).Append("\n");
-            sb.Append("  Copyright: ").Append(Copyright).Append("\n");
+            sb.Append("  Licence: ").Append(Licence).Append("\n");
             sb.Append("  Tags: ").Append(Tags).Append("\n");
             sb.Append("  Updated: ").Append(Updated).Append("\n");
             sb.Append("  Notes: ").Append(Notes).Append("\n");
             sb.Append("  Contacts: ").Append(Contacts).Append("\n");
-            sb.Append("  ContentsVariable: ").Append(ContentsVariable).Append("\n");
-            sb.Append("  TimeVariable: ").Append(TimeVariable).Append("\n");
-            sb.Append("  GeoVariables: ").Append(GeoVariables).Append("\n");
-            sb.Append("  RegularVariables: ").Append(RegularVariables).Append("\n");
+            sb.Append("  Variables: ").Append(Variables).Append("\n");
             sb.Append("  VariablesDisplayOrder: ").Append(VariablesDisplayOrder).Append("\n");
             sb.Append("  Links: ").Append(Links).Append("\n");
             sb.Append("}\n");
@@ -226,9 +217,9 @@ namespace PCAxis.OpenAPILib.Models
                     Description.Equals(other.Description)
                 ) && 
                 (
-                    AgregationPossible == other.AgregationPossible ||
+                    AggregationAllowed == other.AggregationAllowed ||
                     
-                    AgregationPossible.Equals(other.AgregationPossible)
+                    AggregationAllowed.Equals(other.AggregationAllowed)
                 ) && 
                 (
                     OfficalStatistics == other.OfficalStatistics ||
@@ -236,9 +227,14 @@ namespace PCAxis.OpenAPILib.Models
                     OfficalStatistics.Equals(other.OfficalStatistics)
                 ) && 
                 (
-                    Category == other.Category ||
-                    Category != null &&
-                    Category.Equals(other.Category)
+                    SubjectCode == other.SubjectCode ||
+                    SubjectCode != null &&
+                    SubjectCode.Equals(other.SubjectCode)
+                ) && 
+                (
+                    SubjectLabel == other.SubjectLabel ||
+                    SubjectLabel != null &&
+                    SubjectLabel.Equals(other.SubjectLabel)
                 ) && 
                 (
                     Source == other.Source ||
@@ -246,9 +242,9 @@ namespace PCAxis.OpenAPILib.Models
                     Source.Equals(other.Source)
                 ) && 
                 (
-                    Copyright == other.Copyright ||
-                    Copyright != null &&
-                    Copyright.Equals(other.Copyright)
+                    Licence == other.Licence ||
+                    Licence != null &&
+                    Licence.Equals(other.Licence)
                 ) && 
                 (
                     Tags == other.Tags ||
@@ -274,26 +270,9 @@ namespace PCAxis.OpenAPILib.Models
                     Contacts.SequenceEqual(other.Contacts)
                 ) && 
                 (
-                    ContentsVariable == other.ContentsVariable ||
-                    ContentsVariable != null &&
-                    ContentsVariable.Equals(other.ContentsVariable)
-                ) && 
-                (
-                    TimeVariable == other.TimeVariable ||
-                    TimeVariable != null &&
-                    TimeVariable.Equals(other.TimeVariable)
-                ) && 
-                (
-                    GeoVariables == other.GeoVariables ||
-                    GeoVariables != null &&
-                    other.GeoVariables != null &&
-                    GeoVariables.SequenceEqual(other.GeoVariables)
-                ) && 
-                (
-                    RegularVariables == other.RegularVariables ||
-                    RegularVariables != null &&
-                    other.RegularVariables != null &&
-                    RegularVariables.SequenceEqual(other.RegularVariables)
+                    Variables == other.Variables ||
+                    Variables != null &&
+                    Variables.Equals(other.Variables)
                 ) && 
                 (
                     VariablesDisplayOrder == other.VariablesDisplayOrder ||
@@ -326,15 +305,17 @@ namespace PCAxis.OpenAPILib.Models
                     if (Description != null)
                     hashCode = hashCode * 59 + Description.GetHashCode();
                     
-                    hashCode = hashCode * 59 + AgregationPossible.GetHashCode();
+                    hashCode = hashCode * 59 + AggregationAllowed.GetHashCode();
                     
                     hashCode = hashCode * 59 + OfficalStatistics.GetHashCode();
-                    if (Category != null)
-                    hashCode = hashCode * 59 + Category.GetHashCode();
+                    if (SubjectCode != null)
+                    hashCode = hashCode * 59 + SubjectCode.GetHashCode();
+                    if (SubjectLabel != null)
+                    hashCode = hashCode * 59 + SubjectLabel.GetHashCode();
                     if (Source != null)
                     hashCode = hashCode * 59 + Source.GetHashCode();
-                    if (Copyright != null)
-                    hashCode = hashCode * 59 + Copyright.GetHashCode();
+                    if (Licence != null)
+                    hashCode = hashCode * 59 + Licence.GetHashCode();
                     if (Tags != null)
                     hashCode = hashCode * 59 + Tags.GetHashCode();
                     if (Updated != null)
@@ -343,14 +324,8 @@ namespace PCAxis.OpenAPILib.Models
                     hashCode = hashCode * 59 + Notes.GetHashCode();
                     if (Contacts != null)
                     hashCode = hashCode * 59 + Contacts.GetHashCode();
-                    if (ContentsVariable != null)
-                    hashCode = hashCode * 59 + ContentsVariable.GetHashCode();
-                    if (TimeVariable != null)
-                    hashCode = hashCode * 59 + TimeVariable.GetHashCode();
-                    if (GeoVariables != null)
-                    hashCode = hashCode * 59 + GeoVariables.GetHashCode();
-                    if (RegularVariables != null)
-                    hashCode = hashCode * 59 + RegularVariables.GetHashCode();
+                    if (Variables != null)
+                    hashCode = hashCode * 59 + Variables.GetHashCode();
                     if (VariablesDisplayOrder != null)
                     hashCode = hashCode * 59 + VariablesDisplayOrder.GetHashCode();
                     if (Links != null)

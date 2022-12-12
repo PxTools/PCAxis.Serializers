@@ -49,22 +49,22 @@ namespace Serializers.JsonStat2.Model
             Role.Geo.Add(variableCode);
         }
 
-        public void AddContact(string name, string phone, string mail)
+        public void AddContact(string name, string phone, string mail, string raw)
         {
             if (Extension == null) Extension = new ExtensionRoot();
 
             if (Extension.Contact == null) Extension.Contact = new List<Contact>();
 
-            Extension.Contact.Add(new Contact(){Name = name, Phone = phone, Mail = mail});
+            Extension.Contact.Add(new Contact(){Name = name, Phone = phone, Mail = mail, Raw = raw});
         }
 
-        public void AddContact(string name)
+        public void AddContact(string raw)
         {
             if (Extension == null) Extension = new ExtensionRoot();
 
             if (Extension.Contact == null) Extension.Contact = new List<Contact>();
 
-            Extension.Contact.Add(new Contact() { Name = name});
+            Extension.Contact.Add(new Contact() { Raw = raw});
         }
 
         public void AddTableNote(bool isMandatory, string text)
@@ -195,11 +195,11 @@ namespace Serializers.JsonStat2.Model
             dimensionValue.Extension.Note.Add(new Note() { Mandatory = isMandatory, Text = text });
         }
 
-        public void AddUnitValue(JsonstatCategory category, int decimals, out JsonstatCategoryUnitValue unitValue)
+        public void AddUnitValue(JsonstatCategory category, out JsonstatCategoryUnitValue unitValue)
         {
             if(category.Unit == null) category.Unit = new Dictionary<string, JsonstatCategoryUnitValue>();
 
-            unitValue = new JsonstatCategoryUnitValue() { Decimals = decimals };
+            unitValue = new JsonstatCategoryUnitValue();
         }
 
         public void AddRefPeriod(DatasetDimensionValue dimensionValue, string valueCode, string refPeriod)

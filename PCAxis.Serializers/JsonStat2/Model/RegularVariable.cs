@@ -23,7 +23,7 @@ using PCAxis.OpenAPILib.Converters;
 namespace PCAxis.OpenAPILib.Models
 { 
     /// <summary>
-    /// Non-geographical Variable
+    /// All other type of variaiable except for time, contents or geographical
     /// </summary>
     [DataContract]
     [JsonConverter(typeof(JsonSubtypes), "Type")]

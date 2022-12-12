@@ -38,12 +38,59 @@ namespace PCAxis.OpenAPILib.Models
     [SwaggerSubType(typeof(TimeVariable), DiscriminatorValue =  "TimeVariable")]
     public partial class TimeVariable : AbstractVariable, IEquatable<TimeVariable>
     {
+
         /// <summary>
-        /// How often a table is updated
+        /// Indicates the time scale for the variable.
         /// </summary>
-        /// <value>How often a table is updated</value>
-        [DataMember(Name="frequency", EmitDefaultValue=false)]
-        public string Frequency { get; set; }
+        /// <value>Indicates the time scale for the variable.</value>
+        [TypeConverter(typeof(CustomEnumConverter<TimeUnitEnum>))]
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public enum TimeUnitEnum
+        {
+            
+            /// <summary>
+            /// Enum AnnualEnum for Annual
+            /// </summary>
+            [EnumMember(Value = "Annual")]
+            AnnualEnum = 1,
+            
+            /// <summary>
+            /// Enum HalfYearEnum for HalfYear
+            /// </summary>
+            [EnumMember(Value = "HalfYear")]
+            HalfYearEnum = 2,
+            
+            /// <summary>
+            /// Enum QuarterlyEnum for Quarterly
+            /// </summary>
+            [EnumMember(Value = "Quarterly")]
+            QuarterlyEnum = 3,
+            
+            /// <summary>
+            /// Enum MonthlyEnum for Monthly
+            /// </summary>
+            [EnumMember(Value = "Monthly")]
+            MonthlyEnum = 4,
+            
+            /// <summary>
+            /// Enum WeeklyEnum for Weekly
+            /// </summary>
+            [EnumMember(Value = "Weekly")]
+            WeeklyEnum = 5,
+            
+            /// <summary>
+            /// Enum OtherEnum for Other
+            /// </summary>
+            [EnumMember(Value = "Other")]
+            OtherEnum = 6
+        }
+
+        /// <summary>
+        /// Indicates the time scale for the variable.
+        /// </summary>
+        /// <value>Indicates the time scale for the variable.</value>
+        [DataMember(Name="timeUnit", EmitDefaultValue=true)]
+        public TimeUnitEnum TimeUnit { get; set; } = TimeUnitEnum.OtherEnum;
 
         /// <summary>
         /// Earliest time period in table
@@ -73,7 +120,7 @@ namespace PCAxis.OpenAPILib.Models
         {
             var sb = new StringBuilder();
             sb.Append("class TimeVariable {\n");
-            sb.Append("  Frequency: ").Append(Frequency).Append("\n");
+            sb.Append("  TimeUnit: ").Append(TimeUnit).Append("\n");
             sb.Append("  FirstPeriod: ").Append(FirstPeriod).Append("\n");
             sb.Append("  LastPeriod: ").Append(LastPeriod).Append("\n");
             sb.Append("  Values: ").Append(Values).Append("\n");
@@ -114,9 +161,9 @@ namespace PCAxis.OpenAPILib.Models
 
             return 
                 (
-                    Frequency == other.Frequency ||
-                    Frequency != null &&
-                    Frequency.Equals(other.Frequency)
+                    TimeUnit == other.TimeUnit ||
+                    
+                    TimeUnit.Equals(other.TimeUnit)
                 ) && 
                 (
                     FirstPeriod == other.FirstPeriod ||
@@ -146,8 +193,8 @@ namespace PCAxis.OpenAPILib.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                    if (Frequency != null)
-                    hashCode = hashCode * 59 + Frequency.GetHashCode();
+                    
+                    hashCode = hashCode * 59 + TimeUnit.GetHashCode();
                     if (FirstPeriod != null)
                     hashCode = hashCode * 59 + FirstPeriod.GetHashCode();
                     if (LastPeriod != null)
