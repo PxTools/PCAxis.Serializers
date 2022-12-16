@@ -58,7 +58,7 @@ namespace PCAxis.Serializers
                 AddInfoForEliminatedContentVariable(model, dataset);
             }
 
-            foreach (var variable in model.Meta.Variables)
+            foreach (var variable in model.Meta.Variables.OrderByDescending(x => x.IsTime).ThenBy(x => x.IsContentVariable))
             {
                 //temporary collector storage
                 var metaIdsHelper = new Dictionary<string, string>();
