@@ -27,15 +27,15 @@ namespace UnitTests.JsonStat2
    
             //PX:No mention, should defalt to 1 
             var showValueSex = jsonstat2Object["dimension"]["sex"]["extension"]["show"].ToString();
-            Assert.AreEqual("value",showValueSex,"For var=sex");
+            Assert.AreEqual("text",showValueSex,"For var=sex");
 
             //PX: =2
             var showValueMaritalStatus = jsonstat2Object["dimension"]["marital status"]["extension"]["show"].ToString();
-            Assert.AreEqual("code_value", showValueMaritalStatus, "For var=marital status");
+            Assert.AreEqual("code_text", showValueMaritalStatus, "For var=marital status");
 
             //PX: =3
             var showValueRegion = jsonstat2Object["dimension"]["region"]["extension"]["show"].ToString();
-            Assert.AreEqual("value_code", showValueRegion, "For var=region");
+            Assert.AreEqual("text_code", showValueRegion, "For var=region");
 
         }
 
