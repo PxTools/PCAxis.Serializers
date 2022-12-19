@@ -226,7 +226,33 @@ namespace PCAxis.Serializers
         {
             if (Enum.TryParse(variable.PresentationText.ToString(), out PresentationFormType presentationForm))
             {
-                dimensionValue.Extension.Show = presentationForm.ToString().ToLower();
+                dimensionValue.Extension.Show = ConvertPresentationFormTypeToText(presentationForm);
+            }
+        }
+
+        private string ConvertPresentationFormTypeToText(PresentationFormType enuFormType)
+        {
+            try
+            {
+                switch (enuFormType)
+                {
+                    case PresentationFormType.Code:
+                        return "code";
+                    case PresentationFormType.Value:
+                        return "text";
+                    case PresentationFormType.Code_Value:
+                        return "code_text";
+                    case PresentationFormType.Value_Code:
+                        return "text_code";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(enuFormType), enuFormType,
+                            $"Presentation form value {enuFormType} is not a valid, defaulting to 1 (text)");
+                }
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                _logger.Warn(e.Message, e);
+                return "text";
             }
         }
 
