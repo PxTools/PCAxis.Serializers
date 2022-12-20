@@ -261,7 +261,7 @@ namespace PCAxis.Serializers
             if (variableValue.Notes == null) return;
             foreach (var note in variableValue.Notes)
             {
-                dataset.AddValueNoteToDimension(dimensionValue, note.Mandantory, note.Text);
+                dataset.AddValueNoteToDimension(dimensionValue, variableValue.Code, note.Mandantory, note.Text);
             }
         }
 

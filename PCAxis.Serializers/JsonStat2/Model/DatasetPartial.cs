@@ -188,11 +188,20 @@ namespace Serializers.JsonStat2.Model
             dimensionValue.Extension.Note.Add(new Note() { Mandatory = isMandatory, Text = text });
         }
 
-        public void AddValueNoteToDimension(DatasetDimensionValue dimensionValue, bool isMandatory, string text)
+        public void AddValueNoteToDimension(DatasetDimensionValue dimensionValue, string valueNoteKey, bool isMandatory, string text)
         {
-            if (dimensionValue.Extension.Note == null) dimensionValue.Extension.Note = new List<Note>();
+            if (dimensionValue.Extension.ValueNote == null) dimensionValue.Extension.ValueNote = new Dictionary<string, List<Note>>();
 
-            dimensionValue.Extension.Note.Add(new Note() { Mandatory = isMandatory, Text = text });
+            if (dimensionValue.Extension.ValueNote.ContainsKey(valueNoteKey))
+            {
+                dimensionValue.Extension.ValueNote[valueNoteKey]
+                    .Add(new Note() { Mandatory = isMandatory, Text = text });
+            }
+            else
+            {
+                dimensionValue.Extension.ValueNote.Add(valueNoteKey,
+                    new List<Note> { new Note() { Mandatory = isMandatory, Text = text } });
+            }
         }
 
         public void AddUnitValue(JsonstatCategory category, out JsonstatCategoryUnitValue unitValue)
