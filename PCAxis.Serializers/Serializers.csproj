@@ -17,32 +17,7 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="JsonStat2\Model\AbstractCodeListVariable.cs" />
-    <Compile Remove="JsonStat2\Model\AbstractVariable.cs" />
-    <Compile Remove="JsonStat2\Model\CellNote.cs" />
-    <Compile Remove="JsonStat2\Model\CodeList.cs" />
-    <Compile Remove="JsonStat2\Model\CodeListMetadata.cs" />
-    <Compile Remove="JsonStat2\Model\CodeListsResponse.cs" />
-    <Compile Remove="JsonStat2\Model\Condition.cs" />
-    <Compile Remove="JsonStat2\Model\ContentsVariable.cs" />
-    <Compile Remove="JsonStat2\Model\ContentValue.cs" />
-    <Compile Remove="JsonStat2\Model\Folder.cs" />
-    <Compile Remove="JsonStat2\Model\FolderContentItem.cs" />
-    <Compile Remove="JsonStat2\Model\FolderInformation.cs" />
-    <Compile Remove="JsonStat2\Model\GeographicalVariable.cs" />
-    <Compile Remove="JsonStat2\Model\Heading.cs" />
-    <Compile Remove="JsonStat2\Model\PageInfo.cs" />
-    <Compile Remove="JsonStat2\Model\Problem.cs" />
-    <Compile Remove="JsonStat2\Model\RegularVariable.cs" />
-    <Compile Remove="JsonStat2\Model\Table.cs" />
-    <Compile Remove="JsonStat2\Model\TableMetadata.cs" />
-    <Compile Remove="JsonStat2\Model\TablesResponse.cs" />
-    <Compile Remove="JsonStat2\Model\TimeVariable.cs" />
-    <Compile Remove="JsonStat2\Model\ValueMap.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
+	<ItemGroup>
     <PackageReference Include="log4net" Version="2.0.12" />
     
     <PackageReference Include="MinVer" Version="4.2.0">
