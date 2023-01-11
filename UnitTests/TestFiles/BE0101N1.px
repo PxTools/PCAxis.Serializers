@@ -1,0 +1,93 @@
+CHARSET="ANSI";
+AXIS-VERSION="2010";
+CODEPAGE="iso-8859-1";
+LANGUAGE="sv";
+CREATION-DATE="20230104 13:23";
+DECIMALS=0;
+SHOWDECIMALS=0;
+MATRIX="BE0101N1";
+COPYRIGHT=NO;
+SUBJECT-CODE="BE";
+SUBJECT-AREA="Befolkning";
+TITLE="Folkmängden efter region, civilstånd, ålder, kön, tabellinnehåll och år";
+CONTENTS="Folkmängden";
+STUB="region","civilstånd","ålder","kön";
+HEADING="tabellinnehåll","år";
+CONTVARIABLE="tabellinnehåll";
+VARIABLECODE("region")="Region";
+VALUES("region")="Upplands Väsby","Vallentuna";
+VARIABLECODE("civilstånd")="Civilstand";
+VALUES("civilstånd")="ogifta","gifta";
+VARIABLECODE("ålder")="Alder";
+VALUES("ålder")="45-54 år","55-64 år";
+VARIABLECODE("kön")="Kon";
+VALUES("kön")="män","kvinnor";
+VARIABLECODE("tabellinnehåll")="ContentsCode";
+VALUES("tabellinnehåll")="Folkmängd","Folkökning";
+VARIABLECODE("år")="Tid";
+VALUES("år")="2020","2021";
+TIMEVAL("år")=TLIST(A1),"2020","2021";
+CODES("region")="0114","0115";
+CODES("civilstånd")="OG","G";
+CODES("ålder")="45-54","55-64";
+CODES("kön")="1","2";
+CODES("tabellinnehåll")="BE0101N1","BE0101N2";
+CODES("år")="2020","2021";
+PRESTEXT("region")=2;
+PRESTEXT("år")=0;
+ELIMINATION("kön")=YES;
+UNITS="antal";
+LAST-UPDATED("Folkmängd")="20220222 08:00";
+STOCKFA("Folkmängd")="S";
+DAYADJ("Folkmängd")=NO;
+SEASADJ("Folkmängd")=NO;
+REFPERIOD("Folkmängd")="31 december respektive år";
+UNITS("Folkmängd")="antal";
+CONTACT("Folkmängd")="Ann-Marie Persson, SCB# +46 010-479 63 38#ann-marie.persson@scb.se## Statistikservice, SCB# +46 010-479 50 00#information@scb.se##Rasmus Andersson, SCB# +46 010-479 66 55#rasmus.andersson@scb.se##";
+LAST-UPDATED("Folkökning")="20220222 08:00";
+STOCKFA("Folkökning")="F";
+DAYADJ("Folkökning")=NO;
+SEASADJ("Folkökning")=NO;
+UNITS("Folkökning")="antal";
+CONTACT("Folkökning")="Ann-Marie Persson, SCB# +46 010-479 63 38#ann-marie.persson@scb.se## Statistikservice, SCB# +46 010-479 50 00#information@scb.se##Rasmus Andersson, SCB# +46 010-479 66 55#rasmus.andersson@scb.se##";
+DATABASE="Statistikdatabasen ";
+SOURCE="SCB";
+INFOFILE="BE0101";
+NOTEX="Fr o m 2007-01-01 överförs Heby kommun från Västmanlands län till Uppsala län. Hebys kommunkod ändras från 1917 till 0331. ##Registrerat partnerskap reglerade parförhållanden mellan personer av samma kön och fanns från 1995 till 2009. Registrerade partne"
+"rs räknas som Gifta, Separerade partners som Skilda och Efterlevande partners som Änka/änklingar.";
+NOTE("region")="År 1968-1998 redovisas enligt regional indelning 1998-01-01.";
+VALUENOTEX("tabellinnehåll","Folkmängd")="Uppgifterna avser förhållandena den 31 december för valt/valda år enligt den regionala indelning som gäller den 1 januari året efter.";
+VALUENOTE("tabellinnehåll","Folkökning")="Folkökningen definieras som skillnaden mellan folkmängden vid årets början och årets slut.";
+META-ID("civilstånd")=" ";
+META-ID("ålder")="Ålder";
+META-ID("kön")="Kön";
+DATASYMBOL1=".";
+DATASYMBOL2="..";
+DATASYMBOL3="..";
+DATASYMBOLSUM="*";
+DATASYMBOLNIL="-";
+DATANOTESUM="*";
+TABLEID="TAB638";
+VARIABLE-TYPE("region")="V";
+VARIABLE-TYPE("civilstånd")="V";
+VARIABLE-TYPE("ålder")="V";
+VARIABLE-TYPE("kön")="V";
+VARIABLE-TYPE("år")="T";
+DATA=
+1054 1026 -1 -28 
+815 809 -7 -6 
+616 658 50 42 
+515 555 38 40 
+1782 1758 -27 -24 
+1641 1639 -12 -2 
+1377 1450 46 73 
+1177 1233 13 56 
+698 705 -13 7 
+580 597 -17 17 
+474 500 10 26 
+410 433 39 23 
+1585 1618 -13 33 
+1553 1560 6 7 
+1149 1194 42 45 
+1004 1049 18 45 
+;

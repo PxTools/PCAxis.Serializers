@@ -91,7 +91,7 @@ namespace PCAxis.Serializers
                 }
 
                 int row = 0;
-                Build(pivotedModel, formatter, 0, ref row, tableResponse, new List<string>());
+                Build(pivotedModel, formatter, 0, ref row, tableResponse, new List<string>(), new List<string>());
 
            
                 // Write to output stream
@@ -109,26 +109,30 @@ namespace PCAxis.Serializers
         /// <param name="row"></param>
         /// <param name="response"></param>
         /// <param name="key"></param>
-        private void Build(PXModel model, DataFormatter formatter, int varIdx, ref int row, TableResponse response, List<string> key)
+        /// <param name="text"></param>
+        private void Build(PXModel model, DataFormatter formatter, int varIdx, ref int row, TableResponse response, List<string> key, List<string> text)
         {
             foreach (var value in model.Meta.Stub[varIdx].Values)
             {
                 if (varIdx + 1 < model.Meta.Stub.Count)
                 {
                     // Continue building
-                    Build(model, formatter, varIdx + 1, ref row, response, new List<string>(key) { value.Code });
+                    Build(model, formatter, varIdx + 1, ref row, response, new List<string>(key) {value.Code}, new List<string>(text) { value.Value });
                 }
                 else
                 {
                     // No more variables. Output key and data
                     var data = new TableResponseData
                     {
-                        Key = new List<string>(key) { value.Code }
+
+                        Key = new List<string>(key) { value.Code },
+                        Text = new List<string>(text) { value.Value }
                     };
 
                     for (int col = 0; col < model.Data.MatrixColumnCount; col++)
                     {
                         data.Values.Add(formatter.ReadElement(row, col));
+                        
                     }
                     response.Data.Add(data);
                     row++;
