@@ -18,17 +18,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="log4net" Version="2.0.12" />
+    <PackageReference Include="log4net" Version="2.0.15" />
     
     <PackageReference Include="MinVer" Version="4.3.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="PCAxis.Core" Version="1.2.2" />
-    <PackageReference Include="PCAxis.Metadata" Version="1.0.1" />
-    <PackageReference Include="PCAxis.Query" Version="1.0.6" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="PCAxis.Core" Version="1.2.3" />
+    <PackageReference Include="PCAxis.Metadata" Version="1.0.2" />
+    <PackageReference Include="PCAxis.Query" Version="1.0.7" />
     <PackageReference Include="ClosedXML" Version="0.95.4" />
     
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
