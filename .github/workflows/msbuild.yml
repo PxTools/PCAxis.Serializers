@@ -2,9 +2,7 @@
 
 name: BuildAndRunTests
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push, or pull request events but these only for the "main" branch
   push:
     branches: ["main"]
   pull_request:
@@ -12,6 +10,7 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+
 jobs:
   build:
     strategy:
@@ -22,7 +21,6 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - run: echo "Hello log!"
       - uses: actions/checkout@v2
 
       - name: Setup .NET
@@ -30,16 +28,11 @@ jobs:
         with:
           dotnet-version: 6.0.x
 
-      #- uses: NuGet/setup-nuget@v1
-
-      #- name: Restore NuGet packages
-      #  run: nuget restore
-
       - name: Restore dependencies
         run: dotnet restore
 
       - name: Build the application
         run: dotnet build --no-restore --configuration ${{ matrix.configuration }}
 
-      #- name: Execute unit tests
-      #  run: dotnet test --no-build --verbosity normal
+      - name: Execute unit tests
+        run: dotnet test --no-build --verbosity normal
