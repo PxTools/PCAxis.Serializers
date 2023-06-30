@@ -8,7 +8,7 @@ on:
   push:
     branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -22,29 +22,26 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    -  run: echo "Hello log!" 
-    - uses: actions/checkout@v2
+      - run: echo "Hello log!"
+      - uses: actions/checkout@v2
 
-    - uses: microsoft/setup-msbuild@v1
-    
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 6.0.x
+      - uses: microsoft/setup-msbuild@v1
 
-    - uses: NuGet/setup-nuget@v1
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 6.0.x
 
-    - name: Restore NuGet packages
-      run: nuget restore 
+      - uses: NuGet/setup-nuget@v1
 
-    - name: Build the application
-      run: msbuild /p:Configuration=$env:Configuration
-      env:
-        Configuration: ${{ matrix.configuration }}
-        
-    # Execute all unit tests in the solution
-    - name: Execute unit tests
-      run: dotnet test    
-        
-        
-        
+      - name: Restore NuGet packages
+        run: nuget restore
+
+      - name: Build the application
+        run: msbuild /p:Configuration=$env:Configuration
+        env:
+          Configuration: ${{ matrix.configuration }}
+
+      # Execute all unit tests in the solution
+      - name: Execute unit tests
+        run: dotnet test
