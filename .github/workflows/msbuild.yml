@@ -36,7 +36,7 @@ jobs:
         run: nuget restore
 
       - name: Build the application
-        run: dotnet msbuild -p:Configuration=$env:Configuration
+        run: dotnet build -configuration $env:Configuration
         env:
           Configuration: ${{ matrix.configuration }}
 
