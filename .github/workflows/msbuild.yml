@@ -35,10 +35,11 @@ jobs:
       - name: Restore NuGet packages
         run: nuget restore
 
+      - name: Restore dependencies
+        run: dotnet restore
+
       - name: Build the application
-        run: dotnet build --configuration $env:Configuration
-        env:
-          Configuration: ${{ matrix.configuration }}
+        run: dotnet build --no-restore --configuration ${{ matrix.configuration }}
 
       - name: Execute unit tests
         run: dotnet test --no-build --verbosity normal
