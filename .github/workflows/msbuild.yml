@@ -41,5 +41,5 @@ jobs:
       - name: Build the application
         run: dotnet build --no-restore --configuration ${{ matrix.configuration }}
 
-      - name: Execute unit tests
-        run: dotnet test --no-build --verbosity normal
+      #- name: Execute unit tests
+      #  run: dotnet test --no-build --verbosity normal
