@@ -36,10 +36,11 @@ jobs:
         run: nuget restore
 
       - name: Build the application
-        run: dotnet build -configuration $env:Configuration
+        run: dotnet build --configuration $env:Configuration
         env:
           Configuration: ${{ matrix.configuration }}
 
       # Execute all unit tests in the solution
       - name: Execute unit tests
         run: dotnet test
+        run: dotnet test --no-build --verbosity normal
