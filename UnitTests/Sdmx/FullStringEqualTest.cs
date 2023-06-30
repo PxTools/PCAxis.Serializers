@@ -7,11 +7,11 @@ using System.Text;
 
 namespace UnitTests.Sdmx
 {
-    [TestClass]
+	[TestClass]
 	[DeploymentItem("TestFiles/PR0101B3.px")]
 	[DeploymentItem("ExceptationFiles/PR0101B3_sdmx_data.txt")]
 	[DeploymentItem("ExceptationFiles/PR0101B3_sdmx_structure.txt")]
-    public class FullStringEqualTest
+	public class FullStringEqualTest
 	{
 		private SdmxHelper helper = new SdmxHelper();
 
@@ -28,7 +28,7 @@ namespace UnitTests.Sdmx
 
 			string actual = helper.AlignDateInPreparedElement(helper.GetActualData(myModel));
 
-			var expectedfromFile = Encoding.UTF8.GetString( System.IO.File.ReadAllBytes(@"PR0101B3_sdmx_data.txt"));
+			var expectedfromFile = Encoding.UTF8.GetString(System.IO.File.ReadAllBytes(@"PR0101B3_sdmx_data.txt"));
 			//Going via bytes since ReadAllText(@"ExceptationFiles\PR0101B3_sdmx_data.txt")  eats the BOM
 
 			string expected = helper.AlignDateInPreparedElement(expectedfromFile);

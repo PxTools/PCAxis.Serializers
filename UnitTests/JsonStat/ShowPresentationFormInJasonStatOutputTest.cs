@@ -11,24 +11,24 @@ namespace UnitTests.JsonStat
     public class ShowPresentationFormInJasonStatOutputTest
     {
         private JsonStatHelper helper = new JsonStatHelper();
-        
-		[TestMethod]
+
+        [TestMethod]
         [DeploymentItem("TestFiles/BE0101A1_show_codes_or.px")]
         public void ShouldShowCorrectPresentationFormInJasoStat()
         {
             CultureInfo ci = new CultureInfo("sv-SE");
             System.Threading.Thread.CurrentThread.CurrentCulture = ci;
             System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
-                
+
             PXModel myModel = helper.GetSelectAllModel("BE0101A1_show_codes_or.px");
-            
+
             var actual = helper.GetActual(myModel);
-         
+
             var jsonstatObject = JObject.Parse(actual);
-   
+
             //PX:No mention, should defalt to 1 
             var showValueSex = jsonstatObject["dataset"]["dimension"]["sex"]["extension"]["show"].ToString();
-            Assert.AreEqual("value",showValueSex,"For var=sex");
+            Assert.AreEqual("value", showValueSex, "For var=sex");
 
             //PX: =2
             var showValueMaritalStatus = jsonstatObject["dataset"]["dimension"]["marital status"]["extension"]["show"].ToString();

@@ -7,9 +7,9 @@ using System.Text;
 
 namespace UnitTests.JsonStat
 {
-    [TestClass]
+	[TestClass]
 	[DeploymentItem("TestFiles/PR0101B3.px")]
-    public class FullStringEqualTest
+	public class FullStringEqualTest
 	{
 		private JsonStatHelper helper = new JsonStatHelper();
 
@@ -38,7 +38,7 @@ namespace UnitTests.JsonStat
 			Assert.AreEqual(expected_updated_pos, actual_updated_pos, "Position of first occurence of word updated does not match");
 
 
-			var actual_updated_string= actual.Substring(actual_updated_pos,40);
+			var actual_updated_string = actual.Substring(actual_updated_pos, 40);
 			var expected_updated_string = expected.Substring(actual_updated_pos, 40);
 			Assert.AreEqual(expected_updated_string, actual_updated_string);
 
@@ -46,7 +46,7 @@ namespace UnitTests.JsonStat
 			//Assert
 			//Check their equality.
 			Assert.AreEqual(expected, actual);
-			
+
 		}
 
 		[TestMethod]
