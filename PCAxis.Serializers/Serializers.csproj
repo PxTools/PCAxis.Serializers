@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -29,7 +29,7 @@
     <PackageReference Include="PCAxis.Core" Version="1.2.3" />
     <PackageReference Include="PCAxis.Metadata" Version="1.0.2" />
     <PackageReference Include="PCAxis.Query" Version="1.0.7" />
-    <PackageReference Include="ClosedXML" Version="0.95.4" />
+    <PackageReference Include="ClosedXML" Version="0.102.0" />
     
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
       <PrivateAssets>all</PrivateAssets>
