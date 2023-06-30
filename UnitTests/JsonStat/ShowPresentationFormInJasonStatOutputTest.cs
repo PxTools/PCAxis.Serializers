@@ -13,13 +13,14 @@ namespace UnitTests.JsonStat
         private JsonStatHelper helper = new JsonStatHelper();
         
 		[TestMethod]
+        [DeploymentItem("TestFiles/BE0101A1_show_codes_or.px")]
         public void ShouldShowCorrectPresentationFormInJasoStat()
         {
             CultureInfo ci = new CultureInfo("sv-SE");
             System.Threading.Thread.CurrentThread.CurrentCulture = ci;
             System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
                 
-            PXModel myModel = helper.GetSelectAllModel("TestFiles/BE0101A1_show_codes_or.px");
+            PXModel myModel = helper.GetSelectAllModel("BE0101A1_show_codes_or.px");
             
             var actual = helper.GetActual(myModel);
          

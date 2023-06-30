@@ -8,6 +8,7 @@ using System.Text;
 namespace UnitTests.JsonStat
 {
     [TestClass]
+	[DeploymentItem("TestFiles/PR0101B3.px")]
     public class FullStringEqualTest
 	{
 		private JsonStatHelper helper = new JsonStatHelper();
@@ -25,7 +26,7 @@ namespace UnitTests.JsonStat
 			*/
 
 
-			PXModel myModel = helper.GetSelectAllModel("TestFiles//PR0101B3.px");
+			PXModel myModel = helper.GetSelectAllModel("PR0101B3.px");
 
 			string actual = helper.GetActual(myModel);
 
@@ -57,7 +58,7 @@ namespace UnitTests.JsonStat
 			System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
 
 
-			PXModel myModel = helper.GetSelectAllModel("TestFiles//PR0101B3.px");
+			PXModel myModel = helper.GetSelectAllModel("PR0101B3.px");
 
 			string actual = helper.GetActual(myModel);
 

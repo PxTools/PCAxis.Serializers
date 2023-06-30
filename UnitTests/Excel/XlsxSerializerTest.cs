@@ -27,10 +27,10 @@ namespace UnitTests.Excel
 		}
 
         [TestMethod]
-        [DeploymentItem("TestFiles\\BE0101A1_20200914-143936.px")]
+        [DeploymentItem("TestFiles/BE0101A1_20200914-143936.px")]
 		public void ShouldSerializeCommaSeparated()
         {
-            var model = helper.GetSelectAllModel("TestFiles\\BE0101A1_20200914-143936.px");
+            var model = helper.GetSelectAllModel("BE0101A1_20200914-143936.px");
 
             try
             {
@@ -46,10 +46,10 @@ namespace UnitTests.Excel
     
 
         [TestMethod]
-        [DeploymentItem("TestFiles\\BE0101A1.px")]
+        [DeploymentItem("TestFiles/BE0101A1.px")]
         public void ShouldSerialize()
         {
-            var model = helper.GetSelectAllModel("TestFiles\\BE0101A1.px");
+            var model = helper.GetSelectAllModel("BE0101A1.px");
 
             try
             {

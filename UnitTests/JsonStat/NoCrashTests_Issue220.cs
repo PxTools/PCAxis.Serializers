@@ -9,6 +9,8 @@ using System.Text;
 namespace UnitTests.JsonStat
 {
 	[TestClass]
+	[DeploymentItem("TestFiles/PR0101B3.px")]
+	[DeploymentItem("TestFiles/Issue220Finland.px")]
 	public class NoCrashTests_Issue220
 	{
 		private JsonStatHelper helper = new JsonStatHelper();
@@ -22,7 +24,7 @@ namespace UnitTests.JsonStat
 			System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
 
 
-			PXModel myModel = helper.GetSelectAllModel("TestFiles//PR0101B3.px");
+			PXModel myModel = helper.GetSelectAllModel("PR0101B3.px");
 
 
 			try
@@ -46,7 +48,7 @@ namespace UnitTests.JsonStat
 			System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
 
 
-			PXModel myModel = helper.GetSelectAllModel("TestFiles//Issue220Finland.px");
+			PXModel myModel = helper.GetSelectAllModel("Issue220Finland.px");
 
 
 			try
@@ -72,7 +74,7 @@ namespace UnitTests.JsonStat
 			System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
 
 
-			PXModel myModel = helper.GetSelectAllModel("TestFiles//Issue220Finland.px");
+			PXModel myModel = helper.GetSelectAllModel("Issue220Finland.px");
 
 
 

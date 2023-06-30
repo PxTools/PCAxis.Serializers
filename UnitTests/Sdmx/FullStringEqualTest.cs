@@ -8,6 +8,9 @@ using System.Text;
 namespace UnitTests.Sdmx
 {
     [TestClass]
+	[DeploymentItem("TestFiles/PR0101B3.px")]
+	[DeploymentItem("ExceptationFiles/PR0101B3_sdmx_data.txt")]
+	[DeploymentItem("ExceptationFiles/PR0101B3_sdmx_structure.txt")]
     public class FullStringEqualTest
 	{
 		private SdmxHelper helper = new SdmxHelper();
@@ -21,11 +24,11 @@ namespace UnitTests.Sdmx
 			System.Threading.Thread.CurrentThread.CurrentCulture = ci;
 			System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
 
-			PXModel myModel = helper.GetSelectAllModel("TestFiles//PR0101B3.px");
+			PXModel myModel = helper.GetSelectAllModel("PR0101B3.px");
 
 			string actual = helper.AlignDateInPreparedElement(helper.GetActualData(myModel));
 
-			var expectedfromFile = Encoding.UTF8.GetString( System.IO.File.ReadAllBytes(@"ExceptationFiles\PR0101B3_sdmx_data.txt"));
+			var expectedfromFile = Encoding.UTF8.GetString( System.IO.File.ReadAllBytes(@"PR0101B3_sdmx_data.txt"));
 			//Going via bytes since ReadAllText(@"ExceptationFiles\PR0101B3_sdmx_data.txt")  eats the BOM
 
 			string expected = helper.AlignDateInPreparedElement(expectedfromFile);
@@ -51,11 +54,11 @@ namespace UnitTests.Sdmx
 			System.Threading.Thread.CurrentThread.CurrentCulture = ci;
 			System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
 
-			PXModel myModel = helper.GetSelectAllModel("TestFiles//PR0101B3.px");
+			PXModel myModel = helper.GetSelectAllModel("PR0101B3.px");
 
 			string actual = helper.AlignDateInPreparedElement(helper.GetActualStructure(myModel));
 
-			var expectedfromFile = Encoding.UTF8.GetString(System.IO.File.ReadAllBytes(@"ExceptationFiles\PR0101B3_sdmx_structure.txt"));
+			var expectedfromFile = Encoding.UTF8.GetString(System.IO.File.ReadAllBytes(@"PR0101B3_sdmx_structure.txt"));
 			//Going via bytes since ReadAllText(@"ExceptationFiles\PR0101B3_sdmx_data.txt")  eats the BOM
 
 			string expected = helper.AlignDateInPreparedElement(expectedfromFile);
