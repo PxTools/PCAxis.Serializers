@@ -14,12 +14,12 @@ on:
   workflow_dispatch:
 jobs:
   build:
-
-    runs-on: windows-2022
-
     strategy:
       matrix:
         configuration: [Debug, Release]
+        os: [windows-latest, ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
     -  run: echo "Hello log!" 
