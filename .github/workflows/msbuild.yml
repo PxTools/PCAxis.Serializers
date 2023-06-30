@@ -25,8 +25,6 @@ jobs:
       - run: echo "Hello log!"
       - uses: actions/checkout@v2
 
-      - uses: microsoft/setup-msbuild@v1
-
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
@@ -38,7 +36,7 @@ jobs:
         run: nuget restore
 
       - name: Build the application
-        run: msbuild /p:Configuration=$env:Configuration
+        run: dotnet msbuild -p:Configuration=$env:Configuration
         env:
           Configuration: ${{ matrix.configuration }}
 
