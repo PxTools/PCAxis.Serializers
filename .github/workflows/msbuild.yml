@@ -2,48 +2,37 @@
 
 name: BuildAndRunTests
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push, or pull request events but these only for the "main" branch
   push:
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+
 jobs:
   build:
-
-    runs-on: windows-2022
-
     strategy:
       matrix:
         configuration: [Debug, Release]
+        os: [windows-latest, ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
-    -  run: echo "Hello log!" 
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - uses: microsoft/setup-msbuild@v1
-    
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 6.0.x
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 6.0.x
 
-    - uses: NuGet/setup-nuget@v1
+      - name: Restore dependencies
+        run: dotnet restore
 
-    - name: Restore NuGet packages
-      run: nuget restore 
+      - name: Build the application
+        run: dotnet build --no-restore --configuration ${{ matrix.configuration }}
 
-    - name: Build the application
-      run: msbuild /p:Configuration=$env:Configuration
-      env:
-        Configuration: ${{ matrix.configuration }}
-        
-    # Execute all unit tests in the solution
-    - name: Execute unit tests
-      run: dotnet test    
-        
-        
-        
+      - name: Execute unit tests
+        run: dotnet test --verbosity normal
