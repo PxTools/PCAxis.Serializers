@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 namespace UnitTests.Parquet
 {
     [TestClass]
+    [DeploymentItem("TestFiles", "TestFiles")]
     public class ParquetIntegrationTests
     {
         private const string InputDirectoryPath = @"TestFiles";
