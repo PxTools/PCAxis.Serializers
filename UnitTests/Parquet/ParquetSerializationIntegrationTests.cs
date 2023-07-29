@@ -5,14 +5,13 @@ using PCAxis.Paxiom;
 using PCAxis.Serializers;
 using System.Collections.Generic;
 using Parquet.Rows;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace UnitTests.Parquet
 {
     [TestClass]
     [DeploymentItem("TestFiles", "TestFiles")]
-    public class ParquetIntegrationTests
+    public class ParquetSerializationIntegrationTests
     {
         private const string InputDirectoryPath = @"TestFiles";
         private const string OutputDirectoryPath = @"OutputParquetFiles";
@@ -30,7 +29,7 @@ namespace UnitTests.Parquet
 
         [TestMethod]
         [DynamicData(nameof(GetPxFilePaths), DynamicDataSourceType.Method)]
-        public void ParquetSerialization(string pxFile)
+        public void ShouldSerialize(string pxFile)
         {
             var model = GetPxModelFromFile(pxFile);
 
@@ -43,21 +42,50 @@ namespace UnitTests.Parquet
             Table table = ReadBackParquetFileSync(outputFile);
 
             // Assertion: Ensure that the model's matrix size is equal to the table's count.
-            Assert.AreEqual(model.Data.MatrixSize, table.Count, $"Mismatch in matrix size for file {pxFile}");
+            Assert.AreEqual(table.Count, model.Data.MatrixSize, $"Mismatch in matrix size for file {fileNameWithoutExtension}.parquet.");
+
+            // Assertion: Calculate the amount of columns we should have, based on the metadata
+            // Number of columns in meta, number of columns in table.
+
+            var numberOfColsInPx = CalculateNumberOfColumnsFromPxFile(model);
+            var numberOfColsInParq = table.Schema.DataFields.Length;
+
+            Assert.AreEqual(numberOfColsInParq, numberOfColsInPx, $"Mismatch in column number for {fileNameWithoutExtension}.parquet.");
         }
 
-        private async Task<Table> ReadBackParquetFileAsync(string parquetFile)
+        private static int CalculateNumberOfColumnsFromPxFile(PXModel model)
+        {
+
+            int numberOfCols = 0;
+
+            foreach (var variable in model.Meta.Variables)
+            {
+                if (variable.IsContentVariable)
+                {   // Each content-variable value is a column
+                    numberOfCols += variable.Values.Count;
+                }
+                else
+                {
+                    numberOfCols++;
+                }
+
+            }
+
+            return numberOfCols;
+        }
+
+        private static async Task<Table> ReadBackParquetFileAsync(string parquetFile)
         {
             return await Table.ReadAsync(parquetFile);
         }
 
         // Synchronous wrapper around the asynchronous method
-        private Table ReadBackParquetFileSync(string parquetFile)
+        private static Table ReadBackParquetFileSync(string parquetFile)
         {
             return Task.Run(() => ReadBackParquetFileAsync(parquetFile)).Result;
         }
 
-        private PXModel GetPxModelFromFile(string pxFile)
+        private static PXModel GetPxModelFromFile(string pxFile)
         {
             var builder = new PXFileBuilder();
             builder.SetPath(new Uri(pxFile, UriKind.Relative).ToString());
@@ -67,7 +95,7 @@ namespace UnitTests.Parquet
             return builder.Model;
         }
 
-        private void SerializePxModelToParquet(PXModel model, string outputPath)
+        private static void SerializePxModelToParquet(PXModel model, string outputPath)
         {
             using (FileStream stream = new FileStream(outputPath, FileMode.Create))
             {
