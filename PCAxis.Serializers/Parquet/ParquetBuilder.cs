@@ -150,7 +150,7 @@ namespace PCAxis.Serializers
 
                     if (variable.IsTime)
                     {
-                        value = variable.Values[index[i]].Value;
+                        value = variable.Values[index[i]].TimeValue;
                         row[i] = ParseTimeScale(value, variable.TimeScale);
                     }
                     else
@@ -192,37 +192,46 @@ namespace PCAxis.Serializers
                 case TimeScaleType.Halfyear:
                     if (int.TryParse(value.Substring(0, 4), out int halfYearYear) && int.TryParse(value.Substring(4), out int halfYear))
                     {
-                        int monthHalfyear = halfYear == 1 ? 1 : 7;
+                        int monthHalfyear = halfYear == 1 ? 1 : 7;  // For half year 1, it gives month 1 (January), for half year 2 it gives month 7 (July).
                         parseCache[value] = new DateTime(halfYearYear, monthHalfyear, 1);
                         return parseCache[value];
                     }
                     break;
 
                 case TimeScaleType.Quartely:
-                    if (int.TryParse(value.Substring(0, 4), out int quarterYear) && int.TryParse(value.Substring(5), out int quarter))
+                    if (int.TryParse(value.Substring(0, 4), out int quarterYear) && int.TryParse(value.Substring(4), out int quarter))
                     {
-                        int monthQuarter = (quarter - 1) * 3 + 1;
+                        int monthQuarter = (quarter - 1) * 3 + 1;  // For quarter 1, this gives month 1 (January), for quarter 2 it gives 4 (April), and so on.
                         parseCache[value] = new DateTime(quarterYear, monthQuarter, 1);
                         return parseCache[value];
                     }
                     break;
 
                 case TimeScaleType.Monthly:
-                    if (int.TryParse(value.Substring(0, 4), out int monthYear) && int.TryParse(value.Substring(5), out int month))
+                    if (int.TryParse(value.Substring(0, 4), out int monthYear) && int.TryParse(value.Substring(4, 2), out int month))
                     {
                         parseCache[value] = new DateTime(monthYear, month, 1);
                         return parseCache[value];
                     }
                     break;
-
+                    
+                // This time ISO-8601 compliant.
                 case TimeScaleType.Weekly:
-                    if (int.TryParse(value.Substring(0, 4), out int weekYear) && int.TryParse(value.Substring(5), out int week))
+                    if (int.TryParse(value.Substring(0, 4), out int weekYear) && int.TryParse(value.Substring(4), out int week))
                     {
-                        int daysToAdd = (week - 1) * 7;
-                        parseCache[value] = new DateTime(weekYear, 1, 1).AddDays(daysToAdd);
+                        DateTime jan1 = new DateTime(weekYear, 1, 1);
+                        // Find the first Thursday of the year
+                        DateTime firstThursday = jan1.AddDays((DayOfWeek.Thursday + 7 - jan1.DayOfWeek) % 7);
+                        // Calculate the start date of the first week
+                        DateTime firstWeekStart = firstThursday.AddDays(-(int)firstThursday.DayOfWeek + (int)DayOfWeek.Monday);
+                        // Calculate the start date of the desired week
+                        DateTime weekStartDate = firstWeekStart.AddDays((week - 1) * 7);
+
+                        parseCache[value] = weekStartDate;
                         return parseCache[value];
                     }
                     break;
+
             }
 
             throw new ArgumentException("Invalid TimeScaleType or value.");
