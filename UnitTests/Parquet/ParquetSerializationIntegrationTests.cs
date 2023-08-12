@@ -27,9 +27,9 @@ namespace UnitTests.Parquet
             Directory.CreateDirectory(OutputDirectoryPath);
         }
 
-        [TestMethod]
+        [TestMethod, Description("Tests the serialization of PXModel to Parquet format and its correctness.")]
         [DynamicData(nameof(GetPxFilePaths), DynamicDataSourceType.Method)]
-        public void ShouldSerialize(string pxFile)
+        public void ShouldSerializePxModel(string pxFile)
         {
             var model = GetPxModelFromFile(pxFile);
 
@@ -61,8 +61,9 @@ namespace UnitTests.Parquet
             foreach (var variable in model.Meta.Variables)
             {
                 if (variable.IsContentVariable)
-                {   // Each content-variable value is a column
-                    numberOfCols += variable.Values.Count;
+                {
+                    // Each content-variable value is a column, plus an additional symbol column
+                    numberOfCols += variable.Values.Count * 2;
                 }
                 else
                 {
@@ -74,9 +75,9 @@ namespace UnitTests.Parquet
             return numberOfCols;
         }
 
-        private static async Task<Table> ReadBackParquetFileAsync(string parquetFile)
+        private static Task<Table> ReadBackParquetFileAsync(string parquetFile)
         {
-            return await Table.ReadAsync(parquetFile);
+            return Table.ReadAsync(parquetFile);
         }
 
         // Synchronous wrapper around the asynchronous method
@@ -116,7 +117,7 @@ namespace UnitTests.Parquet
         [TestCleanup]
         public void TestCleanup()
         {
-            // Directory.Delete(OutputDirectoryPath, true);
+            Directory.Delete(OutputDirectoryPath, true);
         }
     }
 }

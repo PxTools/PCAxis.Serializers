@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System;
 using Parquet.Meta;
 using System.Diagnostics;
+using System.Collections.ObjectModel;
 
 namespace PCAxis.Serializers
 {
@@ -14,6 +15,8 @@ namespace PCAxis.Serializers
     {
         private readonly PXModel model;
         private readonly Dictionary<string, DateTime> parseCache = new Dictionary<string, DateTime>();
+        private readonly Dictionary<double, string> dataSymbolMap = new Dictionary<double, string>();
+
 
         /// <summary>
         /// Constructs a new instance of the ParquetBuilder class with the specified PXModel.
@@ -22,6 +25,22 @@ namespace PCAxis.Serializers
         public ParquetBuilder(PXModel model)
         {
             this.model = RearrangeValues(model);
+            this.dataSymbolMap = BuildDataSymbolMap(model.Meta);
+        }
+
+        private Dictionary<double, string> BuildDataSymbolMap(PXMeta meta)
+        {
+            return new Dictionary<double, string>
+        {
+            { PXConstant.DATASYMBOL_1, string.IsNullOrEmpty(meta.DataSymbol1) ? PXConstant.DATASYMBOL_1_STRING : meta.DataSymbol1 },
+            { PXConstant.DATASYMBOL_2, string.IsNullOrEmpty(meta.DataSymbol2) ? PXConstant.DATASYMBOL_2_STRING : meta.DataSymbol2 },
+            { PXConstant.DATASYMBOL_3, string.IsNullOrEmpty(meta.DataSymbol3) ? PXConstant.DATASYMBOL_3_STRING : meta.DataSymbol3 },
+            { PXConstant.DATASYMBOL_4, string.IsNullOrEmpty(meta.DataSymbol4) ? PXConstant.DATASYMBOL_4_STRING : meta.DataSymbol4 },
+            { PXConstant.DATASYMBOL_5, string.IsNullOrEmpty(meta.DataSymbol5) ? PXConstant.DATASYMBOL_5_STRING : meta.DataSymbol5 },
+            { PXConstant.DATASYMBOL_6, string.IsNullOrEmpty(meta.DataSymbol6) ? PXConstant.DATASYMBOL_6_STRING : meta.DataSymbol6 },
+            { PXConstant.DATASYMBOL_7, string.IsNullOrEmpty(meta.DataSymbolSum) ? PXConstant.DATASYMBOL_7_STRING : meta.DataSymbolSum },
+            { PXConstant.DATASYMBOL_NIL, string.IsNullOrEmpty(meta.DataSymbolNIL) ? PXConstant.DATASYMBOL_NIL_STRING : meta.DataSymbolNIL }
+         };
         }
 
         /// <summary>
@@ -62,7 +81,6 @@ namespace PCAxis.Serializers
             List<DataField> dataFields = new List<DataField>();
             int variableCount = model.Meta.Variables.Count;
 
-            // Create Parquet schema fields for non-content variables
             for (int i = 0; i < variableCount; i++)
             {
                 var variable = model.Meta.Variables[i];
@@ -72,6 +90,7 @@ namespace PCAxis.Serializers
                     {
                         string columnName = $"{variable.Code}_{value.Code}";
                         dataFields.Add(new DataField(columnName, typeof(double)));
+                        dataFields.Add(new DataField($"{columnName}_symbol", typeof(string))); // Add corresponding symbol column
                     }
                 }
                 else
@@ -79,12 +98,13 @@ namespace PCAxis.Serializers
                     if (variable.IsContentVariable)
                     {
                         dataFields.Add(new DataField("value", typeof(double)));
+                        dataFields.Add(new DataField("value_symbol", typeof(string))); // Add corresponding symbol column
                     }
                     else
                     {
                         dataFields.Add(new DataField(
                             variable.Name,
-                            variable.IsContentVariable ? typeof(double) : (variable.IsTime ? typeof(DateTime) : typeof(string))
+                            variable.IsTime ? typeof(DateTime) : typeof(string)
                         ));
                     }
                 }
@@ -92,6 +112,7 @@ namespace PCAxis.Serializers
 
             return dataFields;
         }
+
 
         /// <summary>
         /// Populates a single row in the Parquet table based on the specified index and data.
@@ -105,8 +126,6 @@ namespace PCAxis.Serializers
         {
             int variableCount = model.Meta.Variables.Count;
             var row = new object[dataFields.Count];
-
-            // Create a dictionary for faster lookups
             Dictionary<string, int> dataFieldIndices = dataFields.Select((field, idx) => new { field.Name, idx })
                                                                  .ToDictionary(x => x.Name, x => x.idx);
 
@@ -119,19 +138,23 @@ namespace PCAxis.Serializers
                     for (int j = 0; j < variable.Values.Count; j++)
                     {
                         string columnName;
+                        string symbolColumnName;
 
                         if (variable.Values.Count > 1)
                         {
                             var value = variable.Values[j];
                             columnName = $"{variable.Code}_{value.Code}";
+                            symbolColumnName = $"{columnName}_symbol"; // Corresponding symbol column name
                         }
                         else
                         {
                             columnName = "value";
+                            symbolColumnName = "value_symbol"; // Corresponding symbol column name
                         }
 
                         int columnIndex = dataFieldIndices[columnName];
-                        int dataIndex = GetDataIndex(index, variableValueCounts); // Dynamic computation
+                        int symbolColumnIndex = dataFieldIndices[symbolColumnName]; // Get index of the symbol column
+                        int dataIndex = GetDataIndex(index, variableValueCounts);
 
                         if (dataIndex + j < data.Length)
                         {
@@ -140,14 +163,22 @@ namespace PCAxis.Serializers
 
                         if (dataIndex >= 0 && dataIndex < data.Length)
                         {
-                            row[columnIndex] = data[dataIndex];
+                            if (dataSymbolMap.ContainsKey(data[dataIndex]))
+                            {
+                                row[symbolColumnIndex] = dataSymbolMap[data[dataIndex]]; // Set the symbol value
+                                row[columnIndex] = double.NaN; // Replace the value with double.NaN
+                            }
+                            else
+                            {
+                                row[columnIndex] = data[dataIndex];
+                                row[symbolColumnIndex] = null; // No symbol
+                            }
                         }
                     }
                 }
                 else
                 {
                     var value = variable.Values[index[i]].Code;
-
                     if (variable.IsTime)
                     {
                         value = variable.Values[index[i]].TimeValue;
@@ -162,6 +193,7 @@ namespace PCAxis.Serializers
 
             return row;
         }
+
 
         /// <summary>
         /// Parses a string representation of a time scale value and returns the start date of the time scale interval.
@@ -214,7 +246,7 @@ namespace PCAxis.Serializers
                         return parseCache[value];
                     }
                     break;
-                    
+
                 // This time ISO-8601 compliant.
                 case TimeScaleType.Weekly:
                     if (int.TryParse(value.Substring(0, 4), out int weekYear) && int.TryParse(value.Substring(4), out int week))
