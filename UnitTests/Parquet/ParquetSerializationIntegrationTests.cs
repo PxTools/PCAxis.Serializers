@@ -65,11 +65,15 @@ namespace UnitTests.Parquet
                     // Each content-variable value is a column, plus an additional symbol column
                     numberOfCols += variable.Values.Count * 2;
                 }
+                else if (variable.IsTime) 
+                {                                  
+                    // Each time-variable have a Parsed-column in DateTime.
+                    numberOfCols += 2;
+                } 
                 else
                 {
                     numberOfCols++;
                 }
-
             }
 
             return numberOfCols;

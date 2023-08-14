@@ -5,9 +5,6 @@ using Parquet.Schema;
 using Parquet.Rows;
 using System.Collections.Generic;
 using System;
-using Parquet.Meta;
-using System.Diagnostics;
-using System.Collections.ObjectModel;
 
 namespace PCAxis.Serializers
 {
@@ -28,6 +25,11 @@ namespace PCAxis.Serializers
             this.dataSymbolMap = BuildDataSymbolMap(model.Meta);
         }
 
+        /// <summary>
+        /// Builds a mapping between PX constants representing data symbols and their corresponding string representations in the PXMeta.
+        /// </summary>
+        /// <param name="meta">The PXMeta object containing metadata.</param>
+        /// <returns>A dictionary where keys are PX constants for data symbols and values are their string representations.</returns>
         private Dictionary<double, string> BuildDataSymbolMap(PXMeta meta)
         {
             return new Dictionary<double, string>
@@ -102,16 +104,23 @@ namespace PCAxis.Serializers
                     }
                     else
                     {
-                        dataFields.Add(new DataField(
-                            variable.Name,
-                            variable.IsTime ? typeof(DateTime) : typeof(string)
-                        ));
+                        if (variable.IsTime)
+                        {
+                            // Add both the original time-value column and the timestamp column for time variables
+                            dataFields.Add(new DataField(variable.Name, typeof(string))); // Original time-value
+                            dataFields.Add(new DataField("timestamp", typeof(DateTime))); // Parsed timestamp
+                        }
+                        else
+                        {
+                            dataFields.Add(new DataField(variable.Name, typeof(string))); // Non-time variable
+                        }
                     }
                 }
             }
 
             return dataFields;
         }
+
 
 
         /// <summary>
@@ -182,11 +191,12 @@ namespace PCAxis.Serializers
                     if (variable.IsTime)
                     {
                         value = variable.Values[index[i]].TimeValue;
-                        row[i] = ParseTimeScale(value, variable.TimeScale);
+                        row[dataFieldIndices[variable.Name]] = value; // Original time-value
+                        row[dataFieldIndices["timestamp"]] = ParseTimeScale(value, variable.TimeScale); // Parsed timestamp
                     }
                     else
                     {
-                        row[i] = value;
+                        row[dataFieldIndices[variable.Name]] = value;
                     }
                 }
             }
