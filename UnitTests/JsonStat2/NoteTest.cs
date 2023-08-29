@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 using PCAxis.Paxiom;
-using System;
 using System.Globalization;
 using System.Linq;
 
@@ -42,7 +41,7 @@ namespace UnitTests.JsonStat2
         public void TestDimensionNotesForPeriod()
         {
             //Variable period have two notes. One is mandatory
-            var expectedPeriodNote = $"[{Environment.NewLine}  \"This note is mandatory! Note for variable period\",{Environment.NewLine}  \"This note is NOT mandatory. Note for variable period\"{Environment.NewLine}]";
+            var expectedPeriodNote = "[\r\n  \"This note is mandatory! Note for variable period\",\r\n  \"This note is NOT mandatory. Note for variable period\"\r\n]".ReplaceLineEndings();
             var actualPeriodNote = jsonstat2AsJObject["dimension"]["period"]["note"].ToString();
             Assert.AreEqual(expectedPeriodNote, actualPeriodNote);
 
