@@ -41,6 +41,9 @@
     <None Update="TestFiles\BE0101A1_show_codes_or.px">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="TestFiles\BE0101A1_with_notes.px">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TestFiles\Issue220Finland.px">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
