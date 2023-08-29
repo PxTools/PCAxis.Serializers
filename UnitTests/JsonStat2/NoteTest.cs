@@ -45,7 +45,7 @@ namespace UnitTests.JsonStat2
             var actualPeriodNote = jsonstat2AsJObject["dimension"]["period"]["note"].ToString();
             Assert.AreEqual(expectedPeriodNote, actualPeriodNote);
 
-            var expectedMandatory = "{\r\n  \"0\": true\r\n}";
+            var expectedMandatory = "{\r\n  \"0\": true\r\n}".ReplaceLineEndings();
             var dimensionNoteIsMandatory = jsonstat2AsJObject["dimension"]["period"]["extension"]["noteMandatory"].ToString();
             Assert.AreEqual(expectedMandatory, dimensionNoteIsMandatory);
         }
