@@ -119,11 +119,14 @@ namespace PCAxis.Serializers
                 var lastUpdatedContentsVariable = model.Meta.ContentVariable.Values.OrderByDescending(x => x.ContentInfo.LastUpdated).FirstOrDefault();
                 pxDateString = lastUpdatedContentsVariable.ContentInfo.LastUpdated;
             }
+            else if (model.Meta.ContentInfo.LastUpdated != null)
+            {
+                pxDateString = model.Meta.ContentInfo.LastUpdated;
+            }
             else
             {
                 pxDateString = model.Meta.CreationDate;
             }
-
            
             dataset.updated = pxDateString.PxDateStringToDateTime().ToString();
 
