@@ -31,8 +31,8 @@ namespace UnitTests.JsonStat2
         [Description("Testing output for noteMandatory (pxfile: BE0101A1_with_notes.px)")]
         public void TestTableNotes()
         {
-            var expectedMandatory = "{\r\n  \"0\": true\r\n}".ReplaceLineEndings();
-            var tableNoteMandatory = jsonstat2AsJObject["extension"]["noteMandatory"].ToString();
+            var expectedMandatory = "True";
+            var tableNoteMandatory = jsonstat2AsJObject["extension"]["noteMandatory"]["0"].ToString();
             Assert.AreEqual(expectedMandatory, tableNoteMandatory);
         }
 
@@ -41,12 +41,13 @@ namespace UnitTests.JsonStat2
         public void TestDimensionNotesForPeriod()
         {
             //Variable period have two notes. One is mandatory
-            var expectedPeriodNote = "[\r\n  \"This note is mandatory! Note for variable period\",\r\n  \"This note is NOT mandatory. Note for variable period\"\r\n]".ReplaceLineEndings();
-            var actualPeriodNote = jsonstat2AsJObject["dimension"]["period"]["note"].ToString();
-            Assert.AreEqual(expectedPeriodNote, actualPeriodNote);
+            var actualPeriodNote1 = jsonstat2AsJObject["dimension"]["period"]["note"][0].ToString();
+            var actualPeriodNote2 = jsonstat2AsJObject["dimension"]["period"]["note"][1].ToString();
+            Assert.AreEqual("This note is mandatory! Note for variable period", actualPeriodNote1);
+            Assert.AreEqual("This note is NOT mandatory. Note for variable period", actualPeriodNote2);
 
-            var expectedMandatory = "{\r\n  \"0\": true\r\n}".ReplaceLineEndings();
-            var dimensionNoteIsMandatory = jsonstat2AsJObject["dimension"]["period"]["extension"]["noteMandatory"].ToString();
+            var expectedMandatory = "True";
+            var dimensionNoteIsMandatory = jsonstat2AsJObject["dimension"]["period"]["extension"]["noteMandatory"]["0"].ToString();
             Assert.AreEqual(expectedMandatory, dimensionNoteIsMandatory);
         }
 
@@ -58,9 +59,13 @@ namespace UnitTests.JsonStat2
             var actualCount = jsonstat2AsJObject["dimension"]["period"]["category"]["note"].Count();
             Assert.AreEqual(expectedCountOfCategoryNotes, actualCount);
 
-            var expectedMandatoryOutput = "{\r\n  \"0\": {\r\n    \"0\": true\r\n  },\r\n  \"1\": {\r\n    \"0\": true\r\n  }\r\n}".ReplaceLineEndings();
-            var actualOutput = jsonstat2AsJObject["dimension"]["period"]["extension"]["categoryNoteMandatory"].ToString();
-            Assert.AreEqual(expectedMandatoryOutput, actualOutput);
+            var actualCategoryNoteMandatory1 = jsonstat2AsJObject["dimension"]["period"]["extension"]["categoryNoteMandatory"]["0"]["0"].ToString();
+            var actualCategoryNoteMandatory2 = jsonstat2AsJObject["dimension"]["period"]["extension"]["categoryNoteMandatory"]["1"]["0"].ToString();
+
+            Assert.AreEqual("True", actualCategoryNoteMandatory1);
+            Assert.AreEqual("True", actualCategoryNoteMandatory2);
+
+            Assert.IsNull(jsonstat2AsJObject["dimension"]["period"]["extension"]["categoryNoteMandatory"]["0"]["1"]);
         }
     }
 }
