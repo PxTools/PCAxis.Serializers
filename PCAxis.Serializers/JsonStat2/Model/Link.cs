@@ -14,7 +14,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
-namespace Serializers.JsonStat2.Model
+namespace PCAxis.Serializers.JsonStat2.Model
 {
     /// <summary>
     /// 

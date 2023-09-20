@@ -11,9 +11,9 @@
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
-using Serializers.JsonStat2.Model.Converters;
+using PCAxis.Serializers.JsonStat2.Model.Converters;
 
-namespace Serializers.JsonStat2.Model
+namespace PCAxis.Serializers.JsonStat2.Model
 {
     /// <summary>
     /// Type of codelist

@@ -13,7 +13,7 @@ using System.Text;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
-namespace Serializers.JsonStat2.Model
+namespace PCAxis.Serializers.JsonStat2.Model
 {
     /// <summary>
     /// Properties corresponds to keywords in the px-file.  See [PX file format](https://www.scb.se/en/services/statistical-programs-for-px-files/px-file-format/) 

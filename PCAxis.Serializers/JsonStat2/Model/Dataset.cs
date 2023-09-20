@@ -16,9 +16,9 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
-using Serializers.JsonStat2.Model.Converters;
+using PCAxis.Serializers.JsonStat2.Model.Converters;
 
-namespace Serializers.JsonStat2.Model
+namespace PCAxis.Serializers.JsonStat2.Model
 { 
     /// <summary>
     /// Representation of TableMetaData/TableData according to JSON-stat 2.0 Dataset Schema (2018-09-05 10:55), see full specification of JSON-stat format [here](https://json-stat.org/full/)  Properties in **extension** are mostly from PX-file format, see [PX file format](https://www.scb.se/en/services/statistical-programs-for-px-files/px-file-format/) 

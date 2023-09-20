@@ -13,7 +13,7 @@ using System.ComponentModel;
 using System.Globalization;
 using Newtonsoft.Json;
 
-namespace Serializers.JsonStat2.Model.Converters
+namespace PCAxis.Serializers.JsonStat2.Model.Converters
 {
     /// <summary>
     /// Custom string to enum converter

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Linq;
-using Serializers.JsonStat2.Model;
+using PCAxis.Serializers.JsonStat2.Model;
 
 namespace PCAxis.Serializers
 {
@@ -90,7 +90,7 @@ namespace PCAxis.Serializers
                         dataset.AddRefPeriod(dimensionValue, variableValue.Code, variableValue.ContentInfo.RefPeriod);
 
                         // Contact
-                        AddContacts(dataset, variableValue.ContentInfo.Contact);
+                        AddContact(dataset, variableValue.ContentInfo);
                     }
                     else
                     {
@@ -99,7 +99,7 @@ namespace PCAxis.Serializers
 
                     dimensionValue.Category.Unit.Add(variableValue.Code, unitValue);
                 }
-
+                
                 //elimination
                 AddEliminationInfo(dimensionValue, variable);
 
@@ -158,7 +158,7 @@ namespace PCAxis.Serializers
             dataset.AddRefPeriod(dimensionValue, "EliminatedValue", model.Meta.ContentInfo.RefPeriod);
 
             // Contact
-            AddContacts(dataset, model.Meta.ContentInfo.Contact);
+            AddContact(dataset, model.Meta.ContentInfo);
         }
 
         private void AddUpdated(PXModel model, Dataset dataset)
@@ -270,26 +270,79 @@ namespace PCAxis.Serializers
             }
         }
 
-        private void AddContacts(Dataset dataset, string contactString)
+        private void AddContact(Dataset dataset, ContInfo contInfo)
         {
-            if (dataset.Extension.Contact != null) return;
-            var contacts = contactString.Split(new[] { "##" },
-                StringSplitOptions.RemoveEmptyEntries);
-
-            foreach (var contact in contacts)
+            if (contInfo.ContactInfo != null && contInfo.ContactInfo.Count > 0)
             {
-                var contactArray = contact.Split('#');
-
-                //Temporary solution for contact information
-                if (contactArray.Length <= 0) continue;
-
-                if (contactArray.Length == 3)
+                foreach (var contact in contInfo.ContactInfo)
                 {
-                    dataset.AddContact(contactArray[0], contactArray[1], contactArray[2], contact);
+                    MapContact(dataset, contact, contInfo);
                 }
-                else
+            }
+            else
+            {
+                MapContact(dataset, contInfo.Contact);
+            }
+        }
+
+        private void MapContact(Dataset dataset, Paxiom.Contact contact, ContInfo contInfo)
+        {
+
+            if (dataset.Extension.Contact == null)
+            {
+                dataset.Extension.Contact = new List<JsonStat2.Model.Contact>();
+            }
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append(contact.Forname);
+            sb.Append(" ");
+            sb.Append(contact.Surname);
+
+            JsonStat2.Model.Contact jsonContact = new JsonStat2.Model.Contact
+            {
+                Name = sb.ToString(),
+                Mail = contact.Email,
+                Phone = contact.PhoneNo
+            };
+
+            if (contInfo.Contact != null)
+            {
+                var contacts = contInfo.Contact.Split(new[] { "##" },StringSplitOptions.RemoveEmptyEntries);
+                var res = contacts.Where(x => x.Contains(contact.Forname) && x.Contains(contact.Surname) && x.Contains(contact.Email) && x.Contains(contact.PhoneNo)).FirstOrDefault();
+
+                if (res != null)
                 {
-                    dataset.AddContact(contact);
+                    jsonContact.Raw = res;
+                }
+            }
+
+            // Only display unique contact once
+            if (!dataset.Extension.Contact.Exists(x => x.Mail.Equals(jsonContact.Mail) && x.Name.Equals(jsonContact.Name) && x.Phone.Equals(jsonContact.Phone)))
+            {
+                dataset.Extension.Contact.Add(jsonContact);
+            }
+        }
+
+        private void MapContact(Dataset dataset, string contactString)
+        {
+            if (contactString != null)
+            {
+                if (dataset.Extension.Contact == null)
+                {
+                    dataset.Extension.Contact = new List<JsonStat2.Model.Contact>();
+                }
+
+                var contacts = contactString.Split(new[] { "##" }, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var contact in contacts )
+                {
+                    if (!dataset.Extension.Contact.Exists(x => x.Raw.Equals(contact)))
+                    {
+                        dataset.Extension.Contact.Add(new JsonStat2.Model.Contact
+                        {
+                            Raw = contact
+                        });
+                    }
                 }
             }
         }

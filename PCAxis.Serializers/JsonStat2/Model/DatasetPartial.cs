@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace Serializers.JsonStat2.Model
+namespace PCAxis.Serializers.JsonStat2.Model
 {
     public partial class Dataset
     {
@@ -46,24 +46,6 @@ namespace Serializers.JsonStat2.Model
             }
 
             Role.Geo.Add(variableCode);
-        }
-
-        public void AddContact(string name, string phone, string mail, string raw)
-        {
-            if (Extension == null) Extension = new ExtensionRoot();
-
-            if (Extension.Contact == null) Extension.Contact = new List<Contact>();
-
-            Extension.Contact.Add(new Contact(){Name = name, Phone = phone, Mail = mail, Raw = raw});
-        }
-
-        public void AddContact(string raw)
-        {
-            if (Extension == null) Extension = new ExtensionRoot();
-
-            if (Extension.Contact == null) Extension.Contact = new List<Contact>();
-
-            Extension.Contact.Add(new Contact() { Raw = raw});
         }
 
         public void CreateExtensionRootPx()
