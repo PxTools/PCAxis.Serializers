@@ -47,7 +47,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// Table will no longer be updated
         /// </summary>
         /// <value>Table will no longer be updated</value>
-        [DataMember(Name="discontinued", EmitDefaultValue=true)]
+        [DataMember(Name="discontinued", EmitDefaultValue=false)]
         public bool? Discontinued { get; set; }
 
         /// <summary>

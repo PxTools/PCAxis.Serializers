@@ -22,7 +22,7 @@ namespace UnitTests.JsonStat2
 
             var expectedResponseString = helper.GetExpectedBE0101A1WithLocalDate();
 
-            Assert.AreEqual(jsonstat2AsString, expectedResponseString);
+            Assert.AreEqual(expectedResponseString, jsonstat2AsString);
         }
     }
 }
