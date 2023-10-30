@@ -1,0 +1,81 @@
+CHARSET="ANSI";
+AXIS-VERSION="2010";
+CODEPAGE="iso-8859-1";
+LANGUAGE="no";
+CREATION-DATE="20230728 12:35";
+DECIMALS=0;
+SHOWDECIMALS=0;
+MATRIX="KOSfolkemengde0000";
+AGGREGALLOWED=NO;
+COPYRIGHT=NO;
+SUBJECT-CODE="al";
+SUBJECT-AREA="Arbeid og lønn";
+TITLE="11820: Utvalgte nøkkeltall befolkningsprofil , etter region, statistikkvariabel og år";
+CONTENTS="11820: Utvalgte nøkkeltall befolkningsprofil ,";
+STUB="region";
+HEADING="statistikkvariabel","år";
+CONTVARIABLE="statistikkvariabel";
+VARIABLECODE("region")="KOKkommuneregion0000";
+VALUES("region")="Halden","Moss";
+VARIABLECODE("statistikkvariabel")="ContentsCode";
+VALUES("statistikkvariabel")="Innbyggere (antall)","Kvinner (antall)","Menn (antall)";
+VARIABLECODE("år")="Tid";
+VALUES("år")="2021","2022";
+TIMEVAL("år")=TLIST(A1),"2021","2022";
+CODES("region")="3001","3002";
+CODES("statistikkvariabel")="KOSfolkemengde0000","KOSkvinne0000","KOSmenn0000";
+CODES("år")="2021","2022";
+PRESTEXT("region")=2;
+PRESTEXT("år")=0;
+MAP("region")="Norge_Kommune";
+UNITS="antall";
+LAST-UPDATED("Innbyggere (antall)")="20230615 08:00";
+STOCKFA("Innbyggere (antall)")="F";
+DAYADJ("Innbyggere (antall)")=NO;
+SEASADJ("Innbyggere (antall)")=NO;
+REFPERIOD("Innbyggere (antall)")="31.12";
+UNITS("Innbyggere (antall)")="antall";
+CONTACT("Innbyggere (antall)")="Kari Solaas Paulsen, Statistisk sentralbyrå# +47 40 90 25 81#krs@ssb.no##Christopher Okazaki Hansen, Statistisk sentralbyrå# +47 409 02 661#coh@ssb.no##";
+LAST-UPDATED("Kvinner (antall)")="20230615 08:00";
+STOCKFA("Kvinner (antall)")="F";
+DAYADJ("Kvinner (antall)")=NO;
+SEASADJ("Kvinner (antall)")=NO;
+REFPERIOD("Kvinner (antall)")="31.12";
+UNITS("Kvinner (antall)")="antall";
+CONTACT("Kvinner (antall)")="Kari Solaas Paulsen, Statistisk sentralbyrå# +47 40 90 25 81#krs@ssb.no##Christopher Okazaki Hansen, Statistisk sentralbyrå# +47 409 02 661#coh@ssb.no##";
+LAST-UPDATED("Menn (antall)")="20230615 08:00";
+STOCKFA("Menn (antall)")="F";
+DAYADJ("Menn (antall)")=NO;
+SEASADJ("Menn (antall)")=NO;
+REFPERIOD("Menn (antall)")="31.12";
+UNITS("Menn (antall)")="antall";
+CONTACT("Menn (antall)")="Kari Solaas Paulsen, Statistisk sentralbyrå# +47 40 90 25 81#krs@ssb.no##Christopher Okazaki Hansen, Statistisk sentralbyrå# +47 409 02 661#coh@ssb.no##";
+DATABASE="Ekstern PRODUKSJON";
+SOURCE="Statistisk sentralbyrå";
+INFOFILE="None";
+NOTE="Noen utvalgte nøkkeltall på befolkningen i kommunene. 
+
+Til publiseringen 15. juni 2023 ble variablene «Innbyggere (antall)», «Kvinner (antall)» og «Menn (antall)» framlagt med 2022-data for 2111 Longyearbyen lokalstyre. Variablene «Enslige forsørgere me"
+"d stønad fra NAV (antall)», «Andel enslige forsørgere med stønad fra NAV (prosent)», «Uføretrygda 18-66 år (antall)» og «Andel uføretrygda 18-66 år (prosent)» ble oppdatert for alle kommuner med 2022-data på samme dag. Siste oppdaterte årgang for variabl"
+"ene «Registrerte arbeidsledige i alderen 15-74 år (antall)» og «Registrerte arbeidsledige i prosent av befolkningen i alderen 15-74 år (prosent)» i denne tabellen var 2020. Registrerte ledige har siden blitt publisert av NAV.##I tabell 11820: Utvalgte nø"
+"kkeltall befolkningsprofil , etter region, statistikkvariabel og år ble variablene «Enslige forsørgere med stønad fra NAV (antall)» og «Andel enslige forsørgere med stønad fra NAV (prosent)» korrigert for årgangene 2020 og 2021. Variablene «Uføretrygda 1"
+"8-66 år (antall)» og «Andel uføretrygda 18-66 år (prosent)» ble korrigert for årgang 2021. Rettelse ble lagt ut 15.06.2022.##<a href='https://www.ssb.no/offentlig-sektor/kommunekatalog/endringer-i-de-regionale-inndelingene' target='footnote'><b>Se liste "
+"over endringer i de regionale inndelingene.</b></a>";
+META-ID="KORTNAVN:kostrahoved";
+META-ID("region")="urn:ssb:classification:klass:231";
+META-ID("statistikkvariabel","Innbyggere (antall)")="urn:ssb:contextvariable:common:5f209206-2e8a-4a49-89c6-2aac5135dffb:59937:KOSfolkemengde0000";
+META-ID("statistikkvariabel","Kvinner (antall)")="urn:ssb:contextvariable:common:5f209206-2e8a-4a49-89c6-2aac5135dffb:59937:KOSkvinne0000";
+META-ID("statistikkvariabel","Menn (antall)")="urn:ssb:contextvariable:common:5f209206-2e8a-4a49-89c6-2aac5135dffb:59937:KOSmenn0000";
+DATASYMBOL1="..";
+DATASYMBOL2="...";
+DATASYMBOL3=":";
+DATASYMBOLSUM=".";
+DATASYMBOLNIL="-";
+DATANOTESUM=".";
+TABLEID="11820";
+VARIABLE-TYPE("region")="G";
+VARIABLE-TYPE("år")="T";
+DATA=
+31444 31730 15563 15720 15881 16010 
+50290 51240 25283 25807 25007 25433 
+;
