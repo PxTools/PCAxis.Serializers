@@ -89,6 +89,6 @@ For support, feature requests, and bug reporting, please open an issue on the [G
 
 ## See Also
 
-- [PCAxis Project Website](http://www.scb.se/en/PC-Axis)
-- [PCAxis on GitHub](https://github.com/PCAxis)
+- [PxWeb Project Website](https://www.scb.se/en/services/statistical-programs-for-px-files/px-web/)
+- [PxWeb on GitHub](https://github.com/statisticssweden/PxWeb)
 - For the C# Serializers, see [PxWeb issue #163](https://github.com/statisticssweden/PxWeb/issues/163).
