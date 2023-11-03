@@ -7,29 +7,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Linq;
-
+using PCAxis.Serializers.JsonStat2.Model;
 
 namespace PCAxis.Serializers
 {
     public class JsonStat2Serializer : IPXModelStreamSerializer
     {
         private static log4net.ILog _logger = log4net.LogManager.GetLogger(typeof(JsonStat2Serializer));
-
-        // Reserved fields in JSON-stat (in no particular order)
-        private const string TIME = "time";
-        private const string METRIC = "metric";
-        private const string UNIT = "unit";
-        private const string BASE = "base";
-        private const string GEO = "geo";
-        private const string SIZE = "size";
-        private const string DECIMALS = "decimals";
-        private const string EXTENSION = "extension";
-        private const string DESCRIBEDBY = "describedby";
-
-		//Field in JSON-Stat, used for PX extention 
-		private const string PX = "px";
-
-		private MetaLinkManager metaLinkManager = new MetaLinkManager();
+        private MetaLinkManager _metaLinkManager = new MetaLinkManager();
 
         private Dictionary<double, string> BuildDataSymbolMap(PXMeta meta)
         {
@@ -48,222 +33,402 @@ namespace PCAxis.Serializers
             return dataSymbolMap;
         }
 
-  
-        
-        private void ExtractValueAndStatus(PXModel model, out double?[] value, out Dictionary<int, string> status)
+        public string BuildJsonStructure(PXModel model)
         {
-            int matrixSize = model.Data.MatrixColumnCount * model.Data.MatrixRowCount;
-            value = new double?[matrixSize];
-            var buffer = new double[model.Data.MatrixColumnCount];
-            var dataSymbolMap = BuildDataSymbolMap(model.Meta);
-            var formatter = new DataFormatter(model);
-            string note = string.Empty;
-            string dataNote = string.Empty;
-            status = new Dictionary<int, string>();
-            int n = 0;
-            var numberFormatInfo = new System.Globalization.NumberFormatInfo();
-            for (int i = 0; i < model.Data.MatrixRowCount; i++)
-            {
-                model.Data.ReadLine(i, buffer);
-                for (int j = 0; j < model.Data.MatrixColumnCount; j++)
-                {
-                    string symbol = null;
+            var dataset = new Dataset();
 
-                    if (dataSymbolMap.TryGetValue(buffer[j], out symbol))
+            //Updated
+            AddUpdated(model, dataset);
+
+            //Source
+            dataset.AddSource(model.Meta.Source);
+
+            //Label
+            dataset.AddLabel(model.Meta.Title);
+
+            //Extension PX
+            AddPxToExtension(model, dataset);
+
+            // Dimension
+            //Handle Elminated content variable
+
+            if (model.Meta.ContentVariable == null)
+            {
+                AddInfoForEliminatedContentVariable(model, dataset);
+            }
+
+            foreach (var variable in model.Meta.Variables)
+            {
+                //temporary collector storage
+                var metaIdsHelper = new Dictionary<string, string>();
+             
+                dataset.AddDimensionValue(variable.Code, variable.Name, out var dimensionValue);
+                
+                var indexCounter = 0;
+
+                foreach (var variableValue in variable.Values)
+                {
+                    dimensionValue.Category.Label.Add(variableValue.Code, variableValue.Value);
+                    dimensionValue.Category.Index.Add(variableValue.Code, indexCounter++);
+
+                    CollectMetaIdsForValue(variableValue, ref metaIdsHelper);
+
+                    // ValueNote
+                    AddValueNotes(variableValue, dataset, dimensionValue);
+
+                    if (!variable.IsContentVariable) continue;
+
+                    var unitDecimals = (variableValue.HasPrecision()) ? variableValue.Precision : model.Meta.ShowDecimals;
+                    dataset.AddUnitValue(dimensionValue.Category, out var unitValue);
+
+                    if (variableValue.ContentInfo != null)
                     {
-                        value[n] = null;
-                        status.Add(n, symbol);
+                        unitValue.VarBase = variableValue.ContentInfo.Units;
+                        unitValue.Decimals = unitDecimals;
+
+                        //refPeriod extension dimension
+                        dataset.AddRefPeriod(dimensionValue, variableValue.Code, variableValue.ContentInfo.RefPeriod);
+
+                        // Contact
+                        AddContact(dataset, variableValue.ContentInfo);
                     }
                     else
                     {
-                        value[n] = Convert.ToDouble(formatter.ReadElement(i, j, ref note, ref dataNote, ref numberFormatInfo), numberFormatInfo);
-                        if (!string.IsNullOrEmpty(dataNote))
-                        {
-                            status.Add(n, dataNote);
-                        }
+                        _logger.Warn("Category" + variableValue.Code + " lacks ContentInfo. Unit, refPeriod and contact not set");
                     }
-                    n++;
+
+                    dimensionValue.Category.Unit.Add(variableValue.Code, unitValue);
                 }
+                
+                //elimination
+                AddEliminationInfo(dimensionValue, variable);
+
+                //Show
+                AddShow(dimensionValue, variable);
+
+                //Variable notes
+                AddVariableNotes(variable, dataset, dimensionValue);
+
+                CollectMetaIdsForVariable(variable, ref metaIdsHelper);
+
+                if (metaIdsHelper.Count > 0)
+                {
+                    dataset.AddDimensionLink(dimensionValue, metaIdsHelper);
+                }
+
+                dataset.Size.Add(variable.Values.Count);
+                dataset.Id.Add(variable.Code);
+
+                //Role
+                AddRoles(variable, dataset);
             }
 
+            AddTableNotes(model, dataset);
 
+
+            GetValueAndStatus(model, out var value, out var status);
+
+            //Value
+            dataset.Value = value;
+
+            //Status
+            dataset.Status = status.Count == 0 ? null : status;
+
+            // override converter to stop adding ".0" after interger values.
+            var result = JsonConvert.SerializeObject(dataset, new DecimalJsonConverter());
+
+            return result;
         }
 
- 
-
-
-
-        public string BuildJsonStructure(PXModel model)
+        private void AddInfoForEliminatedContentVariable(PXModel model, Dataset dataset)
         {
+            dataset.AddDimensionValue("ContentsCode", "EliminatedContents", out var dimensionValue);
+            dimensionValue.Category.Label.Add("EliminatedValue", model.Meta.Contents);
+            dimensionValue.Category.Index.Add("EliminatedValue", 0);
 
-            var jsonStat = new JsonStat2.Model.JsonStat();
+            dataset.AddUnitValue(dimensionValue.Category, out var unitValue);
+            unitValue.VarBase = model.Meta.ContentInfo.Units;
+            unitValue.Decimals = model.Meta.Decimals;
 
-            var value = new double?[model.Data.Matrix.Length];
-            var status = new Dictionary<int, string>();
-            var id = new List<string>();
-            var size = new List<int>();
+            dimensionValue.Category.Unit.Add("EliminatedValue", unitValue);
 
-            // Role collectors
-            var roleTimeList = new List<string>();
-            var roleMetricList = new List<string>();
-            var roleGeoList = new List<string>();
+            dimensionValue.Extension.Elimination = true;
 
-            ExtractValueAndStatus(model, out value, out status);
+            //refPeriod extension dimension
+            dataset.AddRefPeriod(dimensionValue, "EliminatedValue", model.Meta.ContentInfo.RefPeriod);
 
-            jsonStat.Value = value;
-            jsonStat.Status = status.Count == 0 ? null : status;
-            jsonStat.Source = model.Meta.Source;
-            jsonStat.Label = model.Meta.Title;
+            // Contact
+            AddContact(dataset, model.Meta.ContentInfo);
+        }
 
-
+        private void AddUpdated(PXModel model, Dataset dataset)
+        {
+            DateTime tempDateTime;
             if (model.Meta.ContentVariable != null && model.Meta.ContentVariable.Values.Count > 0)
             {
-                var lastUpdatedContentsVariable = model.Meta.ContentVariable.Values.OrderByDescending(x => x.ContentInfo.LastUpdated).FirstOrDefault();
-                jsonStat.Updated = lastUpdatedContentsVariable.ContentInfo.LastUpdated.PxDateStringToDateTime().ToString();
+                var lastUpdatedContentsVariable = model.Meta.ContentVariable.Values
+                    .OrderByDescending(x => x.ContentInfo.LastUpdated)
+                    .FirstOrDefault();
+
+                // ReSharper disable once PossibleNullReferenceException
+                tempDateTime = lastUpdatedContentsVariable.ContentInfo.LastUpdated.PxDateStringToDateTime();
+            }
+            else if (model.Meta.ContentInfo.LastUpdated != null)
+            {
+                tempDateTime = model.Meta.ContentInfo.LastUpdated.PxDateStringToDateTime();
             }
             else
             {
-                jsonStat.Updated = model.Meta.CreationDate.PxDateStringToDateTime().ToString();
+                tempDateTime = model.Meta.CreationDate.PxDateStringToDateTime();
             }
 
-            // Dimension
-            jsonStat.Dimension = new Dictionary<string, object>();
-
-            for (var i = 0; i < model.Meta.Variables.Count; i++)
-            {
-                var variable = model.Meta.Variables[i];
-                var link = new Dictionary<string, object>();
-                var dimension = new JsonStat2.Model.Dimension();
-                dimension.Label = variable.Name;
-
-                // Category
-                var category = new JsonStat2.Model.Category();
-                var unit = new Dictionary<string, Dictionary<string, object>>();
-
-                for (var j = 0; j < variable.Values.Count; j++)
-                {
-                    var varvalue = variable.Values[j];
-
-                    category.Label.Add(varvalue.Code, varvalue.Value);
-                    category.Index.Add(varvalue.Code, j);
-
-                    
-                    
-
-                    if (variable.IsContentVariable)
-                    {
-                        var unitContent = new Dictionary<string, object>();
-
-                        if (varvalue.ContentInfo != null)
-                        {
-                            unitContent.Add(BASE, varvalue.ContentInfo.Units);
-
-                        }
-                        else
-                        {
-                            _logger.Warn("Category" + varvalue.Code + " lacks ContentInfo. Unit not set");
-                        }
-
-                        var decimals = (varvalue.HasPrecision()) ? varvalue.Precision : model.Meta.ShowDecimals;
-
-                        unitContent.Add(DECIMALS, decimals);
-                        unit.Add(varvalue.Code, unitContent);
-
-                        category.Unit = unit;
-                    }
-                }
-
-                dimension.Category = new JsonStat2.Model.Category();
-                dimension.Category = category;
-                var extensions = GetAllSerializedMetaIdsForVariable(variable);
-                if (extensions.Count > 0)
-                {
-                    link.Add(DESCRIBEDBY, new List<object> { extensions });
-                    dimension.Link = link;
-                }
-                
-                PresentationFormType presentationForm;
-                Enum.TryParse<PresentationFormType>(variable.PresentationText.ToString(), out presentationForm);
-
-                if (presentationForm.ToString() != null)
-                {
-                    dimension.Extension = new Dictionary<string, object>();
-                    dimension.Extension.Add("show", presentationForm.ToString().ToLower());
-                }
-                
-                jsonStat.Dimension.Add(variable.Code, dimension);
-                
-                size.Add(variable.Values.Count);
-                id.Add(variable.Code);
-
-                // Role
-                if (variable.IsTime)
-                {
-                    roleTimeList.Add(variable.Code);
-                }
-
-                if (variable.IsContentVariable)
-                {
-                    roleMetricList.Add(variable.Code);
-                }
-                if (variable.VariableType != null)
-                {
-                    if (variable.VariableType.ToUpper() == "G" || (variable.Map != null))
-                    {
-                        roleGeoList.Add(variable.Code);
-                    }
-                }
-
-
-
-            }
-
-            // Id
-            jsonStat.Id = new string[id.Count];
-            jsonStat.Id = id.ToArray();
-
-            // Size
-            jsonStat.Size = new int[size.Count];
-            jsonStat.Size = size.ToArray();
-
-            // Role
-            jsonStat.Role = new Dictionary<string, string[]>();
-
-			//Extension, PX 
-			if (model.Meta.InfoFile != null || model.Meta.TableID != null || model.Meta.Decimals != -1)
-			{
-				jsonStat.Extension = new Dictionary<string, object>();
-				var px = new JsonStat2.Model.Px();
-
-				px.infofile = model.Meta.InfoFile;
-				px.tableid = model.Meta.TableID;
-				//If not Showdecimal has value use Decimal
-				var decimals = model.Meta.ShowDecimals < 0 ? model.Meta.Decimals : model.Meta.ShowDecimals;
-				px.decimals = decimals;
-
-				jsonStat.Extension.Add(PX, px);
-			}
-
-
-			if (roleTimeList.Count > 0) { jsonStat.Role.Add(TIME, roleTimeList.ToArray()); }
-            if (roleMetricList.Count > 0) { jsonStat.Role.Add(METRIC, roleMetricList.ToArray()); }
-            if (roleGeoList.Count > 0) { jsonStat.Role.Add(GEO, roleGeoList.ToArray()); }
-
-
-
-            // override converter to stop adding ".0" after interger values.
-            string result = JsonConvert.SerializeObject(jsonStat,new DecimalJsonConverter());
- 
-            return result;
+            dataset.SetUpdatedAsUtcString(tempDateTime);
         }
-        
 
-        public void Serialize(PXModel model, Stream stream)
+        private void AddPxToExtension(PXModel model, Dataset dataset)
         {
-            var result = BuildJsonStructure(model);
+            var decimals = model.Meta.ShowDecimals < 0 ? model.Meta.Decimals : model.Meta.ShowDecimals;
 
-            byte[] jsonData = Encoding.UTF8.GetBytes(result);
-            stream.Write(jsonData, 0, jsonData.Length);
+            dataset.CreateExtensionRootPx();
+            dataset.AddInfoFile(model.Meta.InfoFile);
+            dataset.AddTableId(model.Meta.TableID);
+            dataset.AddDecimals(decimals);
+            dataset.AddDescription(model.Meta.Description);
+            dataset.AddLanguage(model.Meta.Language);
+            dataset.AddOfficialStatistics(model.Meta.OfficialStatistics);
+            dataset.AddMatrix(model.Meta.Matrix);
+            dataset.AddSubjectCode(model.Meta.SubjectCode);
+            dataset.AddAggRegAllowed(model.Meta.AggregAllowed);
+        }
+
+        private void AddTableNotes(PXModel model, Dataset dataset)
+        {
+            var notes = model.Meta.Notes.Where(note => note.Type == NoteType.Table);
+
+            var noteIndex = 0;
+            foreach (var note in notes)
+            {
+
+                dataset.AddTableNote(note.Text);
+
+                if (note.Mandantory)
+                    dataset.AddIsMandatoryForTableNote(noteIndex.ToString());
+
+                noteIndex++;
+                
+            }
+        }
+
+        private void AddEliminationInfo(DatasetDimensionValue dimensionValue, Variable variable)
+        {
+            dimensionValue.Extension.Elimination = variable.Elimination;
+
+            if (!variable.Elimination || variable.EliminationValue == null) return;
+
+            if (string.IsNullOrEmpty(variable.EliminationValue.Code)) return;
+            dimensionValue.Extension.EliminationValueCode = variable.EliminationValue.Code;
+        }
+
+        private void AddShow(DatasetDimensionValue dimensionValue, Variable variable)
+        {
+            if (Enum.TryParse(variable.PresentationText.ToString(), out PresentationFormType presentationForm))
+            {
+                dimensionValue.Extension.Show = presentationForm.ToString().ToLower();
+            }
+        }
+
+        private void AddValueNotes(Value variableValue, Dataset dataset, DatasetDimensionValue dimensionValue)
+        {
+            if (variableValue.Notes == null) return;
+
+            var index = 0;
+            foreach (var note in variableValue.Notes)
+            {
+                //dataset.AddValueNoteToDimension(dimensionValue, variableValue.Code, note.Mandantory, note.Text);
+                dataset.AddValueNoteToCategory(dimensionValue, variableValue.Code, note.Text);
+
+                if (note.Mandantory)
+                    dataset.AddIsMandatoryForCategoryNote(dimensionValue, variableValue.Code, index.ToString());
+                
+                index++;
+            }
+        }
+
+        private void AddVariableNotes(Variable variable, Dataset dataset, DatasetDimensionValue dimensionValue)
+        {
+            if (variable.Notes == null) return;
+
+            var noteIndex = 0;
+            foreach (var note in variable.Notes)
+            {
+                dataset.AddNoteToDimension(dimensionValue, note.Text);
+
+                if (note.Mandantory)
+                    dataset.AddIsMandatoryForDimensionNote(dimensionValue, noteIndex.ToString());
+
+                noteIndex++;
+            }
+        }
+
+        private void AddContact(Dataset dataset, ContInfo contInfo)
+        {
+            if (contInfo.ContactInfo != null && contInfo.ContactInfo.Count > 0)
+            {
+                foreach (var contact in contInfo.ContactInfo)
+                {
+                    MapContact(dataset, contact, contInfo);
+                }
+            }
+            else
+            {
+                MapContact(dataset, contInfo.Contact);
+            }
+        }
+
+        private void MapContact(Dataset dataset, Paxiom.Contact contact, ContInfo contInfo)
+        {
+
+            if (dataset.Extension.Contact == null)
+            {
+                dataset.Extension.Contact = new List<JsonStat2.Model.Contact>();
+            }
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append(contact.Forname);
+            sb.Append(" ");
+            sb.Append(contact.Surname);
+
+            JsonStat2.Model.Contact jsonContact = new JsonStat2.Model.Contact
+            {
+                Name = sb.ToString(),
+                Mail = contact.Email,
+                Phone = contact.PhoneNo
+            };
+
+            if (contInfo.Contact != null)
+            {
+                var contacts = contInfo.Contact.Split(new[] { "##" },StringSplitOptions.RemoveEmptyEntries);
+                var res = contacts.Where(x => x.Contains(contact.Forname) && x.Contains(contact.Surname) && x.Contains(contact.Email) && x.Contains(contact.PhoneNo)).FirstOrDefault();
+
+                if (res != null)
+                {
+                    jsonContact.Raw = res;
+                }
+            }
+
+            // Only display unique contact once
+            if (!dataset.Extension.Contact.Exists(x => x.Mail.Equals(jsonContact.Mail) && x.Name.Equals(jsonContact.Name) && x.Phone.Equals(jsonContact.Phone)))
+            {
+                dataset.Extension.Contact.Add(jsonContact);
+            }
+        }
+
+        private void MapContact(Dataset dataset, string contactString)
+        {
+            if (contactString != null)
+            {
+                if (dataset.Extension.Contact == null)
+                {
+                    dataset.Extension.Contact = new List<JsonStat2.Model.Contact>();
+                }
+
+                var contacts = contactString.Split(new[] { "##" }, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var contact in contacts )
+                {
+                    if (!dataset.Extension.Contact.Exists(x => x.Raw.Equals(contact)))
+                    {
+                        dataset.Extension.Contact.Add(new JsonStat2.Model.Contact
+                        {
+                            Raw = contact
+                        });
+                    }
+                }
+            }
+        }
+
+        private void AddRoles(Variable variable, Dataset dataset)
+        {
+            if (variable.IsTime)
+            {
+                dataset.AddToTimeRole(variable.Code);
+            }
+
+            if (variable.IsContentVariable)
+            {
+                dataset.AddToMetricRole(variable.Code);
+            }
+
+            if (variable.VariableType == null) return;
+            if (variable.VariableType.ToUpper() == "G" || (variable.Map != null))
+            {
+                dataset.AddToGeoRole(variable.Code);
+            }
+        }
+
+        private void CollectMetaIdsForVariable(Variable variable, ref Dictionary<string, string> metaIds)
+        {
+            if (!string.IsNullOrWhiteSpace(variable.MetaId))
+            {
+                metaIds.Add(variable.Code, SerializeMetaIds(variable.MetaId));
+            }
+        }
+
+        private void CollectMetaIdsForValue(Value value, ref Dictionary<string, string> metaIds)
+        {
+            if (!string.IsNullOrWhiteSpace(value.MetaId))
+            {
+                metaIds.Add(value.Code, SerializeMetaIds(value.MetaId));
+            }
+        }
+
+        private string SerializeMetaIds(string metaId)
+        {
+            var metaIds = metaId.Split(_metaLinkManager.GetSystemSeparator(), StringSplitOptions.RemoveEmptyEntries);
+            var metaIdsAsString = new List<string>();
+            foreach (var meta in metaIds)
+            {
+                var metaLinks = meta.Split(_metaLinkManager.GetParamSeparator(), StringSplitOptions.RemoveEmptyEntries);
+                if (metaLinks.Length > 0)
+                {
+                    metaIdsAsString.Add(meta);
+                }
+            }
+            return (string.Join(" ", metaIdsAsString));
+        }
+
+        private void GetValueAndStatus(PXModel model, out List<double?> value, out Dictionary<string, string> status)
+        {
+            value = new List<double?>();
+            var buffer = new double[model.Data.MatrixColumnCount];
+            var dataSymbolMap = BuildDataSymbolMap(model.Meta);
+            var formatter = new DataFormatter(model);
+            var note = string.Empty;
+            var dataNote = string.Empty;
+            status = new Dictionary<string, string>();
+            var index = 0;
+            var numberFormatInfo = new System.Globalization.NumberFormatInfo();
+            for (var i = 0; i < model.Data.MatrixRowCount; i++)
+            {
+                model.Data.ReadLine(i, buffer);
+                for (var j = 0; j < model.Data.MatrixColumnCount; j++)
+                {
+                    if (dataSymbolMap.TryGetValue(buffer[j], out var symbol))
+                    {
+                        value.Add(null);
+                        status.Add(index.ToString(), symbol);
+                    }
+                    else
+                    {
+                        value.Add(Convert.ToDouble(formatter.ReadElement(i, j, ref note, ref dataNote, ref numberFormatInfo), numberFormatInfo));
+                        if (!string.IsNullOrEmpty(dataNote))
+                        {
+                            status.Add(index.ToString(), dataNote);
+                        }
+                    }
+                    index++;
+                }
+            }
         }
 
         public void Serialize(PXModel model, string path)
@@ -275,42 +440,12 @@ namespace PCAxis.Serializers
             File.WriteAllText(path + fileName, result, encoding);
         }
 
-        private Dictionary<string, object> GetAllSerializedMetaIdsForVariable(Variable variable)
+        public void Serialize(PXModel model, Stream stream)
         {
-            var metaIds = new Dictionary<string, object>();
-            var extension = new Dictionary<string, object>();
-            if (!string.IsNullOrWhiteSpace(variable.MetaId))
-            {
-                metaIds.Add(variable.Code, SerializeMetaIds(variable.MetaId));
-            }
-            foreach (var value in variable.Values)
-            {
-                if (!string.IsNullOrWhiteSpace(value.MetaId))
-                {
-                    metaIds.Add(value.Code, SerializeMetaIds(value.MetaId));
-                }
-            }
-            if (metaIds.Count > 0)
-            {
-                extension.Add(EXTENSION, metaIds);
-            }
-            return extension;
-        }
-        
-        private string SerializeMetaIds(string metaId)
-        {
-            var metaIds = metaId.Split(metaLinkManager.GetSystemSeparator(), StringSplitOptions.RemoveEmptyEntries);
-            List<string> metaIdsAsString = new List<string>();
-            foreach (var meta in metaIds)
-            {
-                var metaLinks = meta.Split(metaLinkManager.GetParamSeparator(), StringSplitOptions.RemoveEmptyEntries);
-                if (metaLinks.Length > 0)
-                {
-                    metaIdsAsString.Add(meta);
-                }
-            }
-            return (string.Join(" ", metaIdsAsString));
+            var result = BuildJsonStructure(model);
+
+            byte[] jsonData = Encoding.UTF8.GetBytes(result);
+            stream.Write(jsonData, 0, jsonData.Length);
         }
     }
-
 }

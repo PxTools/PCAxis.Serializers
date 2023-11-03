@@ -27,24 +27,33 @@ namespace PCAxis.Serializers
                 formatter.DecimalSeparator = ".";
                 formatter.ThousandSeparator = "";
 
+            string pxDateString;
 
-			var lastUpdatedContentsVariable = new Value();
-			if (model.Meta.ContentVariable != null && model.Meta.ContentVariable.Values.Count > 0)
-			{
-				lastUpdatedContentsVariable = model.Meta.ContentVariable.Values.OrderByDescending(x => x.ContentInfo.LastUpdated).FirstOrDefault();
-			}			
-			// Add Metadata
-			tableResponse.Metadata.Add(new TableResponseMetadata
+            if (model.Meta.ContentVariable != null && model.Meta.ContentVariable.Values.Count > 0)
+            {
+                var lastUpdatedContentsVariable = model.Meta.ContentVariable.Values.OrderByDescending(x => x.ContentInfo.LastUpdated).FirstOrDefault();
+                pxDateString = lastUpdatedContentsVariable.ContentInfo.LastUpdated;
+            }
+            else if (model.Meta.ContentInfo.LastUpdated != null)
+            {
+                pxDateString = model.Meta.ContentInfo.LastUpdated;
+            }
+            else
+            {
+                pxDateString = model.Meta.CreationDate;
+            }
+
+            // Add Metadata
+            tableResponse.Metadata.Add(new TableResponseMetadata
 			{
 				Infofile = pivotedModel.Meta.InfoFile,
 				Source = pivotedModel.Meta.Source,
 				Label = pivotedModel.Meta.Title,
-				Updated = model.Meta.ContentVariable != null && model.Meta.ContentVariable.Values.Count > 0 ? lastUpdatedContentsVariable.ContentInfo.LastUpdated.PxDateStringToDateTime().ToString() : model.Meta.CreationDate.PxDateStringToDateTime().ToString()
+                Updated = pxDateString.PxDateStringToDateTime().ToString()
+            });
 
-			});
-
-			// Add stub
-			tableResponse.Columns.AddRange(pivotedModel.Meta.Stub.Select(s => new TableResponseColumn
+            // Add stub
+            tableResponse.Columns.AddRange(pivotedModel.Meta.Stub.Select(s => new TableResponseColumn
                 {
                     Code = s.Code,
                     Text = s.Name,
