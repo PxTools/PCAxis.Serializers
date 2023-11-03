@@ -7,15 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.3" />
-    <PackageReference Include="MSTest.TestAdapter" Version="3.0.4" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.0.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.1.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
     <PackageReference Include="coverlet.collector" Version="6.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     
-
+    <PackageReference Include="Parquet.Net" Version="4.16.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="PCAxis.Core" Version="1.2.3" />
   </ItemGroup>
@@ -26,37 +26,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="ExceptationFiles\PR0101B3_sdmx_data.txt">
+    <None Update="ExceptationFiles\*.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="ExceptationFiles\PR0101B3_sdmx_structure.txt">
+    <None Update="TestFiles\*.px">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\BE0101A1.px">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="TestFiles\BE0101A1_20200914-143936.px">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="TestFiles\BE0101A1_contact.px">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="TestFiles\BE0101A1_show_codes_or.px">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="TestFiles\BE0101A1_with_notes.px">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="TestFiles\BE0101N1.px">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="TestFiles\Issue220Finland.px">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="TestFiles\PR0101B3.px">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+</ItemGroup>
 
   <ItemGroup>
     <Folder Include="ExceptationFiles\" />
