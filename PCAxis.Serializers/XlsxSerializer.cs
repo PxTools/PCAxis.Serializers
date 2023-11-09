@@ -81,7 +81,7 @@ namespace PCAxis.Serializers
 		{
             if (value != null)
                 if (type == CellContentType.Comment)
-                    cell.Comment.AddText(value.ToString());
+                    cell.GetComment().AddText(value.ToString());
                 else
                     cell.SetValue(value); //Change from cell.Value = value to SetValue(..) For not format e.g 10-11 to date
 		}
