@@ -33,7 +33,7 @@
     <PackageReference Include="PCAxis.Query" Version="1.0.8" />
     <PackageReference Include="ClosedXML" Version="0.97.0" />
 
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
