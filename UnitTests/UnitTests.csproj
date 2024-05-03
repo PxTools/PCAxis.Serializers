@@ -17,7 +17,7 @@
     
     <PackageReference Include="Parquet.Net" Version="4.23.5" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="PCAxis.Core" Version="1.2.3" />
+    <PackageReference Include="PCAxis.Core" Version="1.2.4" />
   </ItemGroup>
 
 
