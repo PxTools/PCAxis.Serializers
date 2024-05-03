@@ -9,24 +9,29 @@
  */
 
 using System;
+using System.Linq;
 using System.Text;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using PCAxis.Serializers.JsonStat2.Model.Converters;
 
 namespace PCAxis.Serializers.JsonStat2.Model
-{
+{ 
     /// <summary>
     /// 
     /// </summary>
     [DataContract]
-    public partial class JsonstatCategoryUnitValue : IEquatable<JsonstatCategoryUnitValue>
+    public class JsonstatCategoryUnitValue : IEquatable<JsonstatCategoryUnitValue>
     {
         /// <summary>
         /// It is the base unit (person, gram, euro, etc.).
         /// </summary>
         /// <value>It is the base unit (person, gram, euro, etc.).</value>
         [DataMember(Name="base", EmitDefaultValue=false)]
-        public string VarBase { get; set; }
+        public string Base { get; set; }
 
         /// <summary>
         /// Number of decimals
@@ -43,7 +48,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
         {
             var sb = new StringBuilder();
             sb.Append("class JsonstatCategoryUnitValue {\n");
-            sb.Append("  VarBase: ").Append(VarBase).Append("\n");
+            sb.Append("  Base: ").Append(Base).Append("\n");
             sb.Append("  Decimals: ").Append(Decimals).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
@@ -55,7 +60,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented);
         }
 
         /// <summary>
@@ -82,9 +87,9 @@ namespace PCAxis.Serializers.JsonStat2.Model
 
             return 
                 (
-                    VarBase == other.VarBase ||
-                    VarBase != null &&
-                    VarBase.Equals(other.VarBase)
+                    Base == other.Base ||
+                    Base != null &&
+                    Base.Equals(other.Base)
                 ) && 
                 (
                     Decimals == other.Decimals ||
@@ -103,8 +108,8 @@ namespace PCAxis.Serializers.JsonStat2.Model
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                    if (VarBase != null)
-                    hashCode = hashCode * 59 + VarBase.GetHashCode();
+                    if (Base != null)
+                    hashCode = hashCode * 59 + Base.GetHashCode();
                     
                     hashCode = hashCode * 59 + Decimals.GetHashCode();
                 return hashCode;

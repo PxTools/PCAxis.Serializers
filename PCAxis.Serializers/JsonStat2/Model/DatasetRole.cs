@@ -12,16 +12,19 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using PCAxis.Serializers.JsonStat2.Model.Converters;
 
 namespace PCAxis.Serializers.JsonStat2.Model
-{
+{ 
     /// <summary>
     /// Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#role)
     /// </summary>
     [DataContract]
-    public partial class DatasetRole : IEquatable<DatasetRole>
+    public class DatasetRole : IEquatable<DatasetRole>
     {
         /// <summary>
         /// Gets or Sets Time
@@ -62,7 +65,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented);
         }
 
         /// <summary>
