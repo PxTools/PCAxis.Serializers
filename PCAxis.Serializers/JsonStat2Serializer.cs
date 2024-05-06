@@ -187,6 +187,7 @@ namespace PCAxis.Serializers
 
         private void AddPxToExtension(PXModel model, Dataset dataset)
         {
+            // TODO should we have included both Decimals and ShowDecimals?
             var decimals = model.Meta.ShowDecimals < 0 ? model.Meta.Decimals : model.Meta.ShowDecimals;
 
             dataset.CreateExtensionRootPx();
@@ -196,8 +197,8 @@ namespace PCAxis.Serializers
             dataset.AddContents(model.Meta.Contents);
             dataset.AddDescription(model.Meta.Description);
             dataset.AddDescriptiondefault(model.Meta.DescriptionDefault);
-            dataset.AddStub(model.Meta.Stub.Select(v => v.Code).ToList());
-            dataset.AddHeading(model.Meta.Heading.Select(v => v.Code).ToList());
+            dataset.AddStub(model.Meta.Stub.Select(v => v.Name).ToList());
+            dataset.AddHeading(model.Meta.Heading.Select(v => v.Name).ToList());
             dataset.AddLanguage(model.Meta.Language);
             dataset.AddOfficialStatistics(model.Meta.OfficialStatistics);
             dataset.AddMatrix(model.Meta.Matrix);
