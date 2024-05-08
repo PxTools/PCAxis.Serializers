@@ -85,7 +85,7 @@ This project is licensed under the Apache-2.0 License - see the [LICENSE](LICENS
 
 ## Support and Feedback
 
-For support, feature requests, and bug reporting, please open an issue on the [GitHub project page](https://github.com/statisticssweden/PCAxis.Serializers/issues).
+For support, feature requests, and bug reporting, please open an issue on the [GitHub project page](https://github.com/PxTools/PCAxis.Serializers/issues).
 
 ## See Also
 
