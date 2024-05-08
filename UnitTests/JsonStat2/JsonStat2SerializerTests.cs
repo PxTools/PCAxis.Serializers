@@ -47,6 +47,7 @@ namespace UnitTests.JsonStat2
 
             var updated = _jsonstat["updated"].ToObject<DateTime>();
             updated = TimeZoneInfo.ConvertTimeFromUtc(updated, localTimeZone);
+            updated = DateTime.SpecifyKind(updated, DateTimeKind.Unspecified);
             updated = TimeZoneInfo.ConvertTimeToUtc(updated, helsinkiTimeZone);
 
             var actual = updated.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
