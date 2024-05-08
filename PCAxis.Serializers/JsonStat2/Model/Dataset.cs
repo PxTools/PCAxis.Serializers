@@ -31,9 +31,9 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// JSON-stat version 2.0
         /// </summary>
         /// <value>JSON-stat version 2.0</value>
-        [TypeConverter(typeof(CustomEnumConverter<VarVersionEnum>))]
+        [TypeConverter(typeof(CustomEnumConverter<VersionEnum>))]
         [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public enum VarVersionEnum
+        public enum VersionEnum
         {
             
             /// <summary>
@@ -49,32 +49,14 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// <value>JSON-stat version 2.0</value>
         [Required]
         [DataMember(Name="version", EmitDefaultValue=true)]
-        public VarVersionEnum VarVersion { get; set; } = VarVersionEnum._20Enum;
-
-
-        /// <summary>
-        /// Is always dataset
-        /// </summary>
-        /// <value>Is always dataset</value>
-        [TypeConverter(typeof(CustomEnumConverter<ClassEnum>))]
-        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public enum ClassEnum
-        {
-            
-            /// <summary>
-            /// Enum DatasetEnum for dataset
-            /// </summary>
-            [EnumMember(Value = "dataset")]
-            DatasetEnum = 1
-        }
+        public VersionEnum _Version { get; set; } = VersionEnum._20Enum;
 
         /// <summary>
-        /// Is always dataset
+        /// Gets or Sets Class
         /// </summary>
-        /// <value>Is always dataset</value>
         [Required]
         [DataMember(Name="class", EmitDefaultValue=true)]
-        public ClassEnum VarClass { get; set; } = ClassEnum.DatasetEnum;
+        public ClassType Class { get; set; }
 
         /// <summary>
         /// Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#href)
@@ -176,8 +158,8 @@ namespace PCAxis.Serializers.JsonStat2.Model
         {
             var sb = new StringBuilder();
             sb.Append("class Dataset {\n");
-            sb.Append("  VarVersion: ").Append(VarVersion).Append("\n");
-            sb.Append("  VarClass: ").Append(VarClass).Append("\n");
+            sb.Append("  _Version: ").Append(_Version).Append("\n");
+            sb.Append("  Class: ").Append(Class).Append("\n");
             sb.Append("  Href: ").Append(Href).Append("\n");
             sb.Append("  Label: ").Append(Label).Append("\n");
             sb.Append("  Source: ").Append(Source).Append("\n");
@@ -201,7 +183,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented);
         }
 
         /// <summary>
@@ -228,14 +210,14 @@ namespace PCAxis.Serializers.JsonStat2.Model
 
             return 
                 (
-                    VarVersion == other.VarVersion ||
+                    _Version == other._Version ||
                     
-                    VarVersion.Equals(other.VarVersion)
+                    _Version.Equals(other._Version)
                 ) && 
                 (
-                    VarClass == other.VarClass ||
+                    Class == other.Class ||
                     
-                    VarClass.Equals(other.VarClass)
+                    Class.Equals(other.Class)
                 ) && 
                 (
                     Href == other.Href ||
@@ -322,9 +304,9 @@ namespace PCAxis.Serializers.JsonStat2.Model
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
                     
-                    hashCode = hashCode * 59 + VarVersion.GetHashCode();
+                    hashCode = hashCode * 59 + _Version.GetHashCode();
                     
-                    hashCode = hashCode * 59 + VarClass.GetHashCode();
+                    hashCode = hashCode * 59 + Class.GetHashCode();
                     if (Href != null)
                     hashCode = hashCode * 59 + Href.GetHashCode();
                     if (Label != null)

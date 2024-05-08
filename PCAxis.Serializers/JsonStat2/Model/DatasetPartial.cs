@@ -10,6 +10,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
         {
             Id = new List<string>();
             Size = new List<int>();
+            Class = ClassType.DatasetEnum;
         }
 
         public void AddToTimeRole(string variableCode)
@@ -87,6 +88,28 @@ namespace PCAxis.Serializers.JsonStat2.Model
             }
         }
 
+        public void AddContents(string contents)
+        {
+            if (contents != null)
+            {
+                Extension.Px.Contents = contents;
+            }
+        }
+
+        public void AddHeading(List<string> heading)
+        {
+            if (heading != null)
+            {
+                Extension.Px.Heading = heading;
+            }
+        }
+        public void AddStub(List<string> stub)
+        {
+            if (stub != null)
+            {
+                Extension.Px.Stub = stub;
+            }
+        }
         public void AddOfficialStatistics(bool isOfficialStatistics)
         {
             Extension.Px.OfficialStatistics = isOfficialStatistics;
@@ -108,6 +131,14 @@ namespace PCAxis.Serializers.JsonStat2.Model
             }
         }
 
+        public void AddSubjectArea(string subjectArea)
+        {
+            if (subjectArea != null)
+            {
+                Extension.Px.SubjectArea = subjectArea;
+            }
+        }
+
         public void AddAggRegAllowed(bool isAggRegAllowed)
         {
             Extension.Px.Aggregallowed = isAggRegAllowed;
@@ -119,6 +150,11 @@ namespace PCAxis.Serializers.JsonStat2.Model
             {
                 Extension.Px.Description = description;
             }
+        }
+
+        public void AddDescriptiondefault(bool isDescriptiondefault)
+        {
+            Extension.Px.Descriptiondefault = isDescriptiondefault;
         }
 
         public void AddSource(string source)
@@ -138,7 +174,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
         }
 
         public void AddTableNote(string text)
-        {  
+        {
             if (text != null)
             {
                 if (Note == null) Note = new List<string>();
@@ -164,7 +200,8 @@ namespace PCAxis.Serializers.JsonStat2.Model
                 Extension = new ExtensionDimension(),
                 Category = new JsonstatCategory()
                 {
-                    Label = new Dictionary<string, string>(), Index = new Dictionary<string, int>()
+                    Label = new Dictionary<string, string>(),
+                    Index = new Dictionary<string, int>()
                 }
             };
             Dimension.Add(dimensionKey, dimensionValue);
@@ -186,7 +223,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
 
         public void AddValueNoteToCategory(DatasetDimensionValue dimensionValue, string valueNoteKey, string text)
         {
-            if (dimensionValue.Category.Note == null) dimensionValue.Category.Note = new Dictionary<string,List<string>>();
+            if (dimensionValue.Category.Note == null) dimensionValue.Category.Note = new Dictionary<string, List<string>>();
 
             if (dimensionValue.Category.Note.ContainsKey(valueNoteKey))
             {
@@ -218,14 +255,14 @@ namespace PCAxis.Serializers.JsonStat2.Model
 
         public void AddUnitValue(JsonstatCategory category, out JsonstatCategoryUnitValue unitValue)
         {
-            if(category.Unit == null) category.Unit = new Dictionary<string, JsonstatCategoryUnitValue>();
+            if (category.Unit == null) category.Unit = new Dictionary<string, JsonstatCategoryUnitValue>();
 
             unitValue = new JsonstatCategoryUnitValue();
         }
 
         public void AddRefPeriod(DatasetDimensionValue dimensionValue, string valueCode, string refPeriod)
         {
-            if(refPeriod == null) return;
+            if (refPeriod == null) return;
 
             if (dimensionValue.Extension.Refperiod == null)
                 dimensionValue.Extension.Refperiod = new Dictionary<string, string>();

@@ -21,24 +21,18 @@ using PCAxis.Serializers.JsonStat2.Model.Converters;
 namespace PCAxis.Serializers.JsonStat2.Model
 { 
         /// <summary>
-        /// Type of codelist
+        /// Is always dataset
         /// </summary>
-        /// <value>Type of codelist</value>
-        [TypeConverter(typeof(CustomEnumConverter<CodeListType>))]
+        /// <value>Is always dataset</value>
+        [TypeConverter(typeof(CustomEnumConverter<ClassType>))]
         [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public enum CodeListType
+        public enum ClassType
         {
             
             /// <summary>
-            /// Enum AggregationEnum for Aggregation
+            /// Enum DatasetEnum for dataset
             /// </summary>
-            [EnumMember(Value = "Aggregation")]
-            AggregationEnum = 1,
-            
-            /// <summary>
-            /// Enum ValuesetEnum for Valueset
-            /// </summary>
-            [EnumMember(Value = "Valueset")]
-            ValuesetEnum = 2
+            [EnumMember(Value = "dataset")]
+            DatasetEnum = 1
         }
 }

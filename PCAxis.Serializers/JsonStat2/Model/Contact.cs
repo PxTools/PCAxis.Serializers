@@ -9,37 +9,41 @@
  */
 
 using System;
+using System.Linq;
 using System.Text;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using PCAxis.Serializers.JsonStat2.Model.Converters;
 
 namespace PCAxis.Serializers.JsonStat2.Model
-{
+{ 
     /// <summary>
     /// 
     /// </summary>
     [DataContract]
-    public partial class Contact : IEquatable<Contact>
+    public class Contact : IEquatable<Contact>
     {
         /// <summary>
         /// Gets or Sets Name
         /// </summary>
-        /// <example>Inga Svensson</example>
+        /// <example>&quot;Inga Svensson&quot;</example>
         [DataMember(Name="name", EmitDefaultValue=false)]
         public string Name { get; set; }
 
         /// <summary>
         /// Gets or Sets Phone
         /// </summary>
-        /// <example>+46101111111</example>
+        /// <example>&quot;+46101111111&quot;</example>
         [DataMember(Name="phone", EmitDefaultValue=false)]
         public string Phone { get; set; }
 
         /// <summary>
         /// Gets or Sets Mail
         /// </summary>
-        /// <example>testmail@testmail.com</example>
+        /// <example>&quot;testmail@testmail.com&quot;</example>
         [DataMember(Name="mail", EmitDefaultValue=false)]
         public string Mail { get; set; }
 
@@ -73,7 +77,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented);
         }
 
         /// <summary>

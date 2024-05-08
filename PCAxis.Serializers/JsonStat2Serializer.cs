@@ -61,9 +61,9 @@ namespace PCAxis.Serializers
             {
                 //temporary collector storage
                 var metaIdsHelper = new Dictionary<string, string>();
-             
+
                 dataset.AddDimensionValue(variable.Code, variable.Name, out var dimensionValue);
-                
+
                 var indexCounter = 0;
 
                 foreach (var variableValue in variable.Values)
@@ -83,7 +83,7 @@ namespace PCAxis.Serializers
 
                     if (variableValue.ContentInfo != null)
                     {
-                        unitValue.VarBase = variableValue.ContentInfo.Units;
+                        unitValue.Base = variableValue.ContentInfo.Units;
                         unitValue.Decimals = unitDecimals;
 
                         //refPeriod extension dimension
@@ -99,7 +99,7 @@ namespace PCAxis.Serializers
 
                     dimensionValue.Category.Unit.Add(variableValue.Code, unitValue);
                 }
-                
+
                 //elimination
                 AddEliminationInfo(dimensionValue, variable);
 
@@ -147,7 +147,7 @@ namespace PCAxis.Serializers
             dimensionValue.Category.Index.Add("EliminatedValue", 0);
 
             dataset.AddUnitValue(dimensionValue.Category, out var unitValue);
-            unitValue.VarBase = model.Meta.ContentInfo.Units;
+            unitValue.Base = model.Meta.ContentInfo.Units;
             unitValue.Decimals = model.Meta.Decimals;
 
             dimensionValue.Category.Unit.Add("EliminatedValue", unitValue);
@@ -187,17 +187,23 @@ namespace PCAxis.Serializers
 
         private void AddPxToExtension(PXModel model, Dataset dataset)
         {
+            // TODO should we have included both Decimals and ShowDecimals?
             var decimals = model.Meta.ShowDecimals < 0 ? model.Meta.Decimals : model.Meta.ShowDecimals;
 
             dataset.CreateExtensionRootPx();
             dataset.AddInfoFile(model.Meta.InfoFile);
             dataset.AddTableId(model.Meta.TableID);
             dataset.AddDecimals(decimals);
+            dataset.AddContents(model.Meta.Contents);
             dataset.AddDescription(model.Meta.Description);
+            dataset.AddDescriptiondefault(model.Meta.DescriptionDefault);
+            dataset.AddStub(model.Meta.Stub.Select(v => v.Name).ToList());
+            dataset.AddHeading(model.Meta.Heading.Select(v => v.Name).ToList());
             dataset.AddLanguage(model.Meta.Language);
             dataset.AddOfficialStatistics(model.Meta.OfficialStatistics);
             dataset.AddMatrix(model.Meta.Matrix);
             dataset.AddSubjectCode(model.Meta.SubjectCode);
+            dataset.AddSubjectArea(model.Meta.SubjectArea);
             dataset.AddAggRegAllowed(model.Meta.AggregAllowed);
         }
 
@@ -215,7 +221,7 @@ namespace PCAxis.Serializers
                     dataset.AddIsMandatoryForTableNote(noteIndex.ToString());
 
                 noteIndex++;
-                
+
             }
         }
 
@@ -249,7 +255,7 @@ namespace PCAxis.Serializers
 
                 if (note.Mandantory)
                     dataset.AddIsMandatoryForCategoryNote(dimensionValue, variableValue.Code, index.ToString());
-                
+
                 index++;
             }
         }
@@ -307,7 +313,7 @@ namespace PCAxis.Serializers
 
             if (contInfo.Contact != null)
             {
-                var contacts = contInfo.Contact.Split(new[] { "##" },StringSplitOptions.RemoveEmptyEntries);
+                var contacts = contInfo.Contact.Split(new[] { "##" }, StringSplitOptions.RemoveEmptyEntries);
                 var res = contacts.Where(x => x.Contains(contact.Forname) && x.Contains(contact.Surname) && x.Contains(contact.Email) && x.Contains(contact.PhoneNo)).FirstOrDefault();
 
                 if (res != null)
@@ -334,7 +340,7 @@ namespace PCAxis.Serializers
 
                 var contacts = contactString.Split(new[] { "##" }, StringSplitOptions.RemoveEmptyEntries);
 
-                foreach (var contact in contacts )
+                foreach (var contact in contacts)
                 {
                     if (!dataset.Extension.Contact.Exists(x => x.Raw.Equals(contact)))
                     {
