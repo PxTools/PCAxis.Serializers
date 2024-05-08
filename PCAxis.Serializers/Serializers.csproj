@@ -10,8 +10,8 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Copyright></Copyright>
     <Description>Paxiom serializers for formats like Excel, jsonstat, jsonstat2, sdmx </Description>
-    <PackageProjectUrl>https://github.com/statisticssweden/PCAxis.Serializers</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/statisticssweden/PCAxis.Serializers.git</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/PxTools/PCAxis.Serializers</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/PxTools/PCAxis.Serializers.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>PX</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
