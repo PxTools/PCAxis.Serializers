@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -20,12 +21,6 @@ namespace UnitTests.JsonStat2
         {
             var helper = new JsonStat2Helper();
 
-            // CultureInfo ci = new("fi-FI");
-            // CultureInfo ci = new("no-NO");
-            // CultureInfo ci = new("sv-SE");
-            // System.Threading.Thread.CurrentThread.CurrentCulture = ci;
-            // System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
-
             PXModel myModel = helper.GetSelectAllModel("HalfYearStatistics.px");
 
             var actual = helper.GetActual(myModel);
@@ -34,16 +29,37 @@ namespace UnitTests.JsonStat2
         }
 
         [TestMethod]
-        public void Check_RootLevel_Elements()
+        public void Check_Root_Label_Element()
+        {
+            // TODO: the PxcMeta fileds should be resolved with languages files in these tests
+            var actualLabel = _jsonstat["label"].ToString();
+            actualLabel = actualLabel.Replace("PxcMetaTitleBy", "by");
+            actualLabel = actualLabel.Replace("PxcMetaTitleAnd", "and");
+
+            Assert.AreEqual("Wage and salary indices by industry 2015=100 by Half-year, Industry and Information", actualLabel);
+
+        }
+        [TestMethod]
+        public void Check_Root_Updated_Element()
+        {
+            var localTimeZone = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneInfo.Local.Id);
+            var helsinkiTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/Helsinki");
+
+            var updated = _jsonstat["updated"].ToObject<DateTime>();
+            updated = TimeZoneInfo.ConvertTimeFromUtc(updated, localTimeZone);
+            updated = TimeZoneInfo.ConvertTimeToUtc(updated, helsinkiTimeZone);
+
+            var actual = updated.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
+
+            Assert.AreEqual("2023-07-13T05:00:00Z", actual);
+        }
+
+        [TestMethod]
+        public void Check_More_Root_Elements()
         {
             Assert.AreEqual("2.0", _jsonstat["version"]);
             Assert.AreEqual("dataset", _jsonstat["class"]);
-            // Assert.AreEqual("Wage and salary indices by industry 2015=100 by Half-year, Industry and Information", _jsonstat["label"]);
             Assert.AreEqual("Statistics Finland, wage and salary indices", _jsonstat["source"]);
-            // Assert.AreEqual("2023-07-13 05:00:00Z", _jsonstat["updated"]);
-            // Assert.AreEqual("", _jsonstat[""]);
-            // Assert.AreEqual("", _jsonstat[""]);
-            // Assert.AreEqual("", _jsonstat[""]);
         }
 
         [TestMethod]
