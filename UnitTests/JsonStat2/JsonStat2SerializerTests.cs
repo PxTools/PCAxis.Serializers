@@ -74,9 +74,9 @@ namespace UnitTests.JsonStat2
             Assert.AreEqual("Wage and salary indices by industry 2015=100", _jsonstat["extension"]["px"]["contents"]);
             Assert.AreEqual("111p -- Wage and salary indices by industry semiannually (2015=100), 1995H1-2022H2", _jsonstat["extension"]["px"]["description"]);
             Assert.AreEqual(false, _jsonstat["extension"]["px"]["descriptiondefault"]);
-            Assert.AreEqual("Industry", _jsonstat["extension"]["px"]["heading"][0]);
-            Assert.AreEqual("Information", _jsonstat["extension"]["px"]["heading"][1]);
-            Assert.AreEqual("Half-year", _jsonstat["extension"]["px"]["stub"][0]);
+            Assert.AreEqual("Toimiala", _jsonstat["extension"]["px"]["heading"][0]);
+            Assert.AreEqual("Tiedot", _jsonstat["extension"]["px"]["heading"][1]);
+            Assert.AreEqual("Puolivuosi", _jsonstat["extension"]["px"]["stub"][0]);
             Assert.AreEqual("001_111p_2023m05", _jsonstat["extension"]["px"]["matrix"]);
             Assert.AreEqual("KTPS", _jsonstat["extension"]["px"]["subject-code"]);
             Assert.AreEqual("ktps", _jsonstat["extension"]["px"]["subject-area"]);
