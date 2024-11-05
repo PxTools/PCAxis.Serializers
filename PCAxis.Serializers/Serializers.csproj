@@ -19,7 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="log4net" Version="3.0.1" />
+    <PackageReference Include="log4net" Version="3.0.2" />
 
     <PackageReference Include="MinVer" Version="6.0.0">
       <PrivateAssets>all</PrivateAssets>
@@ -31,7 +31,7 @@
     <PackageReference Include="PCAxis.Core" Version="1.2.4" />
     <PackageReference Include="PCAxis.Metadata" Version="1.0.3" />
     <PackageReference Include="PCAxis.Query" Version="1.0.9" />
-    <PackageReference Include="ClosedXML" Version="0.97.0" />
+    <PackageReference Include="ClosedXML" Version="0.104.1" />
 
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
