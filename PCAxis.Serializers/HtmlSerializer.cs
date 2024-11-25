@@ -145,27 +145,14 @@ namespace PCAxis.Serializers
                     for (int j = 0; (j <= (timesToWrite - 1)); j++)
                     {
                         Paxiom.Values headingValues = heading[index].Values;
-                        for (int ix = 0; (ix
-                                    <= (headingValues.Count - 1)); ix++)
+                        for (int ix = 0; (ix <= (headingValues.Count - 1)); ix++)
                         {
-
-                            if (index == heading.Count - 1)
-                            {
-                                wr.Write(@"<th scope=""col""");
-                            }
-                            else
-                            {
-                                wr.Write("<th colspan=");
-                                wr.Write(subHeadings[index]);
-                            }
-
-                            wr.Write(">");
+                            WriteHeadingOpeningTag(wr, heading, subHeadings[index], index);
                             wr.Write(GetLabel(headingValues[ix]));
                             wr.WriteLine("</th>");
 
                             timesWritten += 1;
                         }
-
                     }
 
                     timesToWrite = timesWritten;
@@ -175,6 +162,20 @@ namespace PCAxis.Serializers
 
             }
 
+        }
+
+        private static void WriteHeadingOpeningTag(StreamWriter wr, Variables heading, int spanSize, int index)
+        {
+            if (index == heading.Count - 1)
+            {
+                wr.Write(@"<th scope=""col"">");
+            }
+            else
+            {
+                wr.Write("<th colspan=");
+                wr.Write(spanSize);
+                wr.Write(">");
+            }
         }
 
         private static void WriteEmptyHeadingForStub(StreamWriter wr, PXModel model)
