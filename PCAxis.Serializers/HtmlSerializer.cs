@@ -123,33 +123,26 @@ namespace PCAxis.Serializers
         private void WriteHeadings(System.IO.StreamWriter wr, PCAxis.Paxiom.PXModel model)
         {
             Variables heading = model.Meta.Heading;
-            if (heading != null)
+            if (heading != null && heading.Count > 0)
             {
-                int[] subHeadings = new int[2];
-                if ((heading.Count > 0))
-                {
-                    Array.Resize(ref subHeadings, heading.Count);
-                }
-
+                int[] subHeadings = new int[heading.Count];
                 CalculateSubValues(heading, 0, ref subHeadings);
-                int timesToWrite = 1;
+
                 //  This keep track of the number of times the current heading shall be written
-                int timesWritten = 0;
+                int timesToWrite = 1;
+
                 //  This keep track of the number of times the current heading has been written
+                int timesWritten = 0;
+
                 for (int index = 0; (index
                             <= (heading.Count - 1)); index++)
                 {
                     wr.WriteLine("<tr>");
-                    if ((model.Meta.Stub.Count > 0))
-                    {
 
-                        wr.WriteLine("<th></th>");
-
-                    }
+                    WriteEmptyHeadingForStub(wr, model);
 
                     //  Write the heading
-                    for (int j = 0; (j
-                                <= (timesToWrite - 1)); j++)
+                    for (int j = 0; (j <= (timesToWrite - 1)); j++)
                     {
                         Paxiom.Values headingValues = heading[index].Values;
                         for (int ix = 0; (ix
@@ -169,7 +162,8 @@ namespace PCAxis.Serializers
                             wr.Write(">");
                             wr.Write(GetLabel(headingValues[ix]));
                             wr.WriteLine("</th>");
-                            timesWritten = (timesWritten + 1);
+
+                            timesWritten += 1;
                         }
 
                     }
@@ -181,6 +175,14 @@ namespace PCAxis.Serializers
 
             }
 
+        }
+
+        private static void WriteEmptyHeadingForStub(StreamWriter wr, PXModel model)
+        {
+            if ((model.Meta.Stub.Count > 0))
+            {
+                wr.WriteLine("<th></th>");
+            }
         }
 
         private string GetLabel(Value value)
