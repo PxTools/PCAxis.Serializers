@@ -9,7 +9,6 @@ namespace PCAxis.Serializers
 {
     public class HtmlSerializer : PCAxis.Paxiom.IPXModelStreamSerializer
     {
-
         public enum LablePreference
         {
             None,
