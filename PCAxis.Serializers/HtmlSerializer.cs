@@ -55,10 +55,14 @@ namespace PCAxis.Serializers
 
             if (!stream.CanWrite)
             {
-                throw new ArgumentNullException("stream", "The stream does not support writing");
+                throw new ArgumentException("stream", "The stream does not support writing");
             }
 
-            var writer = new System.IO.StreamWriter(stream, System.Text.Encoding.GetEncoding(model.Meta.CodePage));
+
+            //Defaults To UTF-8 if no code page is set
+            var codePage = model.Meta.CodePage??"UTF-8";
+
+            var writer = new System.IO.StreamWriter(stream, System.Text.Encoding.GetEncoding(codePage));
 
             DoSerialize(model, writer);
         }
