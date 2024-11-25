@@ -55,7 +55,7 @@ namespace PCAxis.Serializers
 
             if (!stream.CanWrite)
             {
-                throw new ArgumentException("stream", "The stream does not support writing");
+                throw new ArgumentException("The stream does not support writing", "stream");
             }
 
 
