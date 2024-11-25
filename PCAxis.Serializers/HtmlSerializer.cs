@@ -66,7 +66,6 @@ namespace PCAxis.Serializers
         private void DoSerialize(PXModel model, StreamWriter wr)
         {
             Paxiom.Variables stub = model.Meta.Stub;
-            Paxiom.PXData data = model.Data;
 
             wr.WriteLine(@"<table id=""" + model.Meta.Matrix + "_" + Guid.NewGuid().ToString() + @""" >"); //@""" aria-describedby="" "
 
