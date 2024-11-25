@@ -9,13 +9,17 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
+using PCAxis.Serializers.JsonStat2.Model.Converters;
 
 namespace PCAxis.Serializers.JsonStat2.Model
-{
+{ 
     /// <summary>
     /// 
     /// </summary>
@@ -26,34 +30,34 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#index)
         /// </summary>
         /// <value>Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#index)</value>
-        [DataMember(Name = "index", EmitDefaultValue = false)]
+        [DataMember(Name="index", EmitDefaultValue=false)]
         public Dictionary<string, int> Index { get; set; }
 
         /// <summary>
         /// Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#label)
         /// </summary>
         /// <value>Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#label)</value>
-        [DataMember(Name = "label", EmitDefaultValue = false)]
+        [DataMember(Name="label", EmitDefaultValue=false)]
         public Dictionary<string, string> Label { get; set; }
 
         /// <summary>
         /// Notes for values
         /// </summary>
         /// <value>Notes for values</value>
-        [DataMember(Name = "note", EmitDefaultValue = false)]
+        [DataMember(Name="note", EmitDefaultValue=false)]
         public Dictionary<string, List<string>> Note { get; set; }
 
         /// <summary>
         /// Gets or Sets Child
         /// </summary>
-        [DataMember(Name = "child", EmitDefaultValue = false)]
+        [DataMember(Name="child", EmitDefaultValue=false)]
         public Dictionary<string, List<string>> Child { get; set; }
 
         /// <summary>
         /// Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#unit)
         /// </summary>
         /// <value>Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#unit)</value>
-        [DataMember(Name = "unit", EmitDefaultValue = false)]
+        [DataMember(Name="unit", EmitDefaultValue=false)]
         public Dictionary<string, JsonstatCategoryUnitValue> Unit { get; set; }
 
         /// <summary>
@@ -104,31 +108,31 @@ namespace PCAxis.Serializers.JsonStat2.Model
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return
+            return 
                 (
                     Index == other.Index ||
                     Index != null &&
                     other.Index != null &&
                     Index.SequenceEqual(other.Index)
-                ) &&
+                ) && 
                 (
                     Label == other.Label ||
                     Label != null &&
                     other.Label != null &&
                     Label.SequenceEqual(other.Label)
-                ) &&
+                ) && 
                 (
                     Note == other.Note ||
                     Note != null &&
                     other.Note != null &&
                     Note.SequenceEqual(other.Note)
-                ) &&
+                ) && 
                 (
                     Child == other.Child ||
                     Child != null &&
                     other.Child != null &&
                     Child.SequenceEqual(other.Child)
-                ) &&
+                ) && 
                 (
                     Unit == other.Unit ||
                     Unit != null &&
@@ -147,22 +151,22 @@ namespace PCAxis.Serializers.JsonStat2.Model
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                if (Index != null)
+                    if (Index != null)
                     hashCode = hashCode * 59 + Index.GetHashCode();
-                if (Label != null)
+                    if (Label != null)
                     hashCode = hashCode * 59 + Label.GetHashCode();
-                if (Note != null)
+                    if (Note != null)
                     hashCode = hashCode * 59 + Note.GetHashCode();
-                if (Child != null)
+                    if (Child != null)
                     hashCode = hashCode * 59 + Child.GetHashCode();
-                if (Unit != null)
+                    if (Unit != null)
                     hashCode = hashCode * 59 + Unit.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-#pragma warning disable 1591
+        #pragma warning disable 1591
 
         public static bool operator ==(JsonstatCategory left, JsonstatCategory right)
         {
@@ -174,7 +178,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
             return !Equals(left, right);
         }
 
-#pragma warning restore 1591
+        #pragma warning restore 1591
         #endregion Operators
     }
 }

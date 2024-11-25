@@ -1,8 +1,6 @@
-using System;
-
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using PCAxis.Serializers.Excel;
+using System;
 
 namespace UnitTests.Excel
 {

@@ -1,11 +1,8 @@
-﻿using System.Globalization;
-using System.Linq;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
-
 using PCAxis.Paxiom;
+using System.Globalization;
+using System.Linq;
 
 namespace UnitTests.JsonStat2
 {

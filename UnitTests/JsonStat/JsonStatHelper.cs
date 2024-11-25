@@ -1,46 +1,46 @@
-﻿using System;
+﻿using PCAxis.Paxiom;
+using PCAxis.Serializers;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-using PCAxis.Paxiom;
-using PCAxis.Serializers;
-
 namespace UnitTests.JsonStat
 {
-    internal class JsonStatHelper : UnitTests.Helper
-    {
+	internal class JsonStatHelper : UnitTests.Helper
+	{
 
-        internal string GetActual(PXModel myModel)
+		internal string GetActual(PXModel myModel)
+		{
+			string actual = "";
+
+
+			using (MemoryStream memStream = new MemoryStream(1000))
+			{
+				JsonStatSerializer jss = new JsonStatSerializer();
+				jss.Serialize(myModel, memStream);
+
+				actual = Encoding.UTF8.GetString(memStream.GetBuffer(), 0, (int)memStream.Length);
+			}
+			return actual;
+		}
+
+
+
+		/// <summary>
+		/// The "updated" is in utc. Its value is (for some, depending on stuff
+		///   in the PX-file like  model.Meta.ContentVariable ) a transformation of a string without explisit timezone.
+		///   In PR0101B3 CREATION-DATE="20060705 14:21";
+		///   This means it depends on the timezone where the server is located,
+		///   so the UTC value will not be the same in London and Oslo. 
+		///   This means the expected value has to change with where the test is run.
+		/// </summary>
+		/// <returns></returns>
+		internal string GetExpectedPR0101B3ForServerTimezone()
         {
-            string actual = "";
-
-
-            using (MemoryStream memStream = new MemoryStream(1000))
-            {
-                JsonStatSerializer jss = new JsonStatSerializer();
-                jss.Serialize(myModel, memStream);
-
-                actual = Encoding.UTF8.GetString(memStream.GetBuffer(), 0, (int)memStream.Length);
-            }
-            return actual;
-        }
-
-
-
-        /// <summary>
-        /// The "updated" is in utc. Its value is (for some, depending on stuff
-        ///   in the PX-file like  model.Meta.ContentVariable ) a transformation of a string without explisit timezone.
-        ///   In PR0101B3 CREATION-DATE="20060705 14:21";
-        ///   This means it depends on the timezone where the server is located,
-        ///   so the UTC value will not be the same in London and Oslo. 
-        ///   This means the expected value has to change with where the test is run.
-        /// </summary>
-        /// <returns></returns>
-        internal string GetExpectedPR0101B3ForServerTimezone()
-        {
-            var timeZone = TimeZoneInfo.Local;
-            var t1 = timeZone.BaseUtcOffset.Hours;  //Will this value change in winter, and break the tests?
-
+			var timeZone = TimeZoneInfo.Local;
+			var t1 = timeZone.BaseUtcOffset.Hours;  //Will this value change in winter, and break the tests?
+			
             if (t1 == 1)
             {
                 //Oslo   
@@ -57,11 +57,11 @@ namespace UnitTests.JsonStat
 
             else
             {
-                throw new Exception(String.Format("Your timeZone.BaseUtcOffset.Hours is {0}, is not supported yet. Please add it here.", t1));
+				throw new Exception(String.Format("Your timeZone.BaseUtcOffset.Hours is {0}, is not supported yet. Please add it here.", t1));
             }
 
-        }
+		}
 
 
-    }
+	}
 }

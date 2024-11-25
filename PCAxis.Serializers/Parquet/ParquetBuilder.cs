@@ -1,12 +1,10 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-
-using Parquet.Rows;
-using Parquet.Schema;
-
 using PCAxis.Paxiom;
 using PCAxis.Paxiom.Operations;
+using Parquet.Schema;
+using Parquet.Rows;
+using System.Collections.Generic;
+using System;
 
 namespace PCAxis.Serializers
 {

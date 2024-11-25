@@ -9,14 +9,17 @@
  */
 
 using System;
+using System.Linq;
+using System.Text;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
-using System.Text;
-
 using Newtonsoft.Json;
+using PCAxis.Serializers.JsonStat2.Model.Converters;
 
 namespace PCAxis.Serializers.JsonStat2.Model
-{
+{ 
     /// <summary>
     /// 
     /// </summary>
@@ -27,21 +30,21 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// Gets or Sets Name
         /// </summary>
         /// <example>&quot;Inga Svensson&quot;</example>
-        [DataMember(Name = "name", EmitDefaultValue = false)]
+        [DataMember(Name="name", EmitDefaultValue=false)]
         public string Name { get; set; }
 
         /// <summary>
         /// Gets or Sets Phone
         /// </summary>
         /// <example>&quot;+46101111111&quot;</example>
-        [DataMember(Name = "phone", EmitDefaultValue = false)]
+        [DataMember(Name="phone", EmitDefaultValue=false)]
         public string Phone { get; set; }
 
         /// <summary>
         /// Gets or Sets Mail
         /// </summary>
         /// <example>&quot;testmail@testmail.com&quot;</example>
-        [DataMember(Name = "mail", EmitDefaultValue = false)]
+        [DataMember(Name="mail", EmitDefaultValue=false)]
         public string Mail { get; set; }
 
         /// <summary>
@@ -49,7 +52,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// </summary>
         /// <value>Raw contact information for compatability with PX files</value>
         [Required]
-        [DataMember(Name = "raw", EmitDefaultValue = false)]
+        [DataMember(Name="raw", EmitDefaultValue=false)]
         public string Raw { get; set; }
 
         /// <summary>
@@ -99,22 +102,22 @@ namespace PCAxis.Serializers.JsonStat2.Model
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return
+            return 
                 (
                     Name == other.Name ||
                     Name != null &&
                     Name.Equals(other.Name)
-                ) &&
+                ) && 
                 (
                     Phone == other.Phone ||
                     Phone != null &&
                     Phone.Equals(other.Phone)
-                ) &&
+                ) && 
                 (
                     Mail == other.Mail ||
                     Mail != null &&
                     Mail.Equals(other.Mail)
-                ) &&
+                ) && 
                 (
                     Raw == other.Raw ||
                     Raw != null &&
@@ -132,20 +135,20 @@ namespace PCAxis.Serializers.JsonStat2.Model
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                if (Name != null)
+                    if (Name != null)
                     hashCode = hashCode * 59 + Name.GetHashCode();
-                if (Phone != null)
+                    if (Phone != null)
                     hashCode = hashCode * 59 + Phone.GetHashCode();
-                if (Mail != null)
+                    if (Mail != null)
                     hashCode = hashCode * 59 + Mail.GetHashCode();
-                if (Raw != null)
+                    if (Raw != null)
                     hashCode = hashCode * 59 + Raw.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-#pragma warning disable 1591
+        #pragma warning disable 1591
 
         public static bool operator ==(Contact left, Contact right)
         {
@@ -157,7 +160,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
             return !Equals(left, right);
         }
 
-#pragma warning restore 1591
+        #pragma warning restore 1591
         #endregion Operators
     }
 }

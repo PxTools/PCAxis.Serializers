@@ -1,5 +1,4 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using PCAxis.Sdmx.ExtensionMethods;
 
 namespace UnitTests.Sdmx
@@ -13,7 +12,7 @@ namespace UnitTests.Sdmx
             var idToClean = "  tab1  subtab2   ";
             var cleanId = SdmxStringExtensions.CleanID(idToClean);
 
-            Assert.AreEqual("tab1subtab2", cleanId);
+            Assert.AreEqual("tab1subtab2",cleanId);
         }
     }
 }

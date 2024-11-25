@@ -9,13 +9,17 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
+using PCAxis.Serializers.JsonStat2.Model.Converters;
 
 namespace PCAxis.Serializers.JsonStat2.Model
-{
+{ 
     /// <summary>
     /// Properties corresponds to keywords in the px-file.  See [PX file format](https://www.scb.se/en/services/statistical-programs-for-px-files/px-file-format/) 
     /// </summary>
@@ -26,105 +30,105 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// Name of a file containing more information for the statistics**
         /// </summary>
         /// <value>Name of a file containing more information for the statistics**</value>
-        [DataMember(Name = "infofile", EmitDefaultValue = false)]
+        [DataMember(Name="infofile", EmitDefaultValue=false)]
         public string Infofile { get; set; }
 
         /// <summary>
         /// A text that is the identity of the table
         /// </summary>
         /// <value>A text that is the identity of the table</value>
-        [DataMember(Name = "tableid", EmitDefaultValue = false)]
+        [DataMember(Name="tableid", EmitDefaultValue=false)]
         public string Tableid { get; set; }
 
         /// <summary>
         /// The number of decimals in the table cells
         /// </summary>
         /// <value>The number of decimals in the table cells</value>
-        [DataMember(Name = "decimals", EmitDefaultValue = true)]
+        [DataMember(Name="decimals", EmitDefaultValue=true)]
         public int Decimals { get; set; }
 
         /// <summary>
         /// Indicates if the data table is included in the official statistics of the organization
         /// </summary>
         /// <value>Indicates if the data table is included in the official statistics of the organization</value>
-        [DataMember(Name = "official-statistics", EmitDefaultValue = true)]
+        [DataMember(Name="official-statistics", EmitDefaultValue=true)]
         public bool OfficialStatistics { get; set; }
 
         /// <summary>
         /// If the contents of the table cannot be aggregated
         /// </summary>
         /// <value>If the contents of the table cannot be aggregated</value>
-        [DataMember(Name = "aggregallowed", EmitDefaultValue = true)]
+        [DataMember(Name="aggregallowed", EmitDefaultValue=true)]
         public bool Aggregallowed { get; set; }
 
         /// <summary>
         /// Copyright is given as YES or NO
         /// </summary>
         /// <value>Copyright is given as YES or NO</value>
-        [DataMember(Name = "copyright", EmitDefaultValue = false)]
+        [DataMember(Name="copyright", EmitDefaultValue=false)]
         public string Copyright { get; set; }
 
         /// <summary>
         /// code (two characters) for language
         /// </summary>
         /// <value>code (two characters) for language</value>
-        [DataMember(Name = "language", EmitDefaultValue = false)]
+        [DataMember(Name="language", EmitDefaultValue=false)]
         public string Language { get; set; }
 
         /// <summary>
         /// Information about the contents, which makes up the first part of a title created when retrieving tables from PC-Axis.
         /// </summary>
         /// <value>Information about the contents, which makes up the first part of a title created when retrieving tables from PC-Axis.</value>
-        [DataMember(Name = "contents", EmitDefaultValue = false)]
+        [DataMember(Name="contents", EmitDefaultValue=false)]
         public string Contents { get; set; }
 
         /// <summary>
         /// See _description_ in [PX file format](https://www.scb.se/en/services/statistical-programs-for-px-files/px-file-format/)
         /// </summary>
         /// <value>See _description_ in [PX file format](https://www.scb.se/en/services/statistical-programs-for-px-files/px-file-format/)</value>
-        [DataMember(Name = "description", EmitDefaultValue = false)]
+        [DataMember(Name="description", EmitDefaultValue=false)]
         public string Description { get; set; }
 
         /// <summary>
         /// For some languages it is difficult to build a table title dynamically. The keyword descriptiondefault &#x3D; True; means that the text after keyword Description will be used as title for the table
         /// </summary>
         /// <value>For some languages it is difficult to build a table title dynamically. The keyword descriptiondefault &#x3D; True; means that the text after keyword Description will be used as title for the table</value>
-        [DataMember(Name = "descriptiondefault", EmitDefaultValue = true)]
+        [DataMember(Name="descriptiondefault", EmitDefaultValue=true)]
         public bool Descriptiondefault { get; set; }
 
         /// <summary>
         /// List of suggested variables for table head
         /// </summary>
         /// <value>List of suggested variables for table head</value>
-        [DataMember(Name = "heading", EmitDefaultValue = false)]
+        [DataMember(Name="heading", EmitDefaultValue=false)]
         public List<string> Heading { get; set; }
 
         /// <summary>
         /// List of suggested variables for table stub
         /// </summary>
         /// <value>List of suggested variables for table stub</value>
-        [DataMember(Name = "stub", EmitDefaultValue = false)]
+        [DataMember(Name="stub", EmitDefaultValue=false)]
         public List<string> Stub { get; set; }
 
         /// <summary>
         /// The name of the matrix
         /// </summary>
         /// <value>The name of the matrix</value>
-        [DataMember(Name = "matrix", EmitDefaultValue = false)]
+        [DataMember(Name="matrix", EmitDefaultValue=false)]
         public string Matrix { get; set; }
 
         /// <summary>
         /// Subject area code
         /// </summary>
         /// <value>Subject area code</value>
-        [DataMember(Name = "subject-code", EmitDefaultValue = false)]
+        [DataMember(Name="subject-code", EmitDefaultValue=false)]
         public string SubjectCode { get; set; }
 
         /// <summary>
         /// Subject area
         /// </summary>
         /// <value>Subject area</value>
-        [DataMember(Name = "subject-area", EmitDefaultValue = false)]
+        [DataMember(Name="subject-area", EmitDefaultValue=false)]
         public string SubjectArea { get; set; }
 
         /// <summary>
@@ -185,79 +189,79 @@ namespace PCAxis.Serializers.JsonStat2.Model
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return
+            return 
                 (
                     Infofile == other.Infofile ||
                     Infofile != null &&
                     Infofile.Equals(other.Infofile)
-                ) &&
+                ) && 
                 (
                     Tableid == other.Tableid ||
                     Tableid != null &&
                     Tableid.Equals(other.Tableid)
-                ) &&
+                ) && 
                 (
                     Decimals == other.Decimals ||
-
+                    
                     Decimals.Equals(other.Decimals)
-                ) &&
+                ) && 
                 (
                     OfficialStatistics == other.OfficialStatistics ||
-
+                    
                     OfficialStatistics.Equals(other.OfficialStatistics)
-                ) &&
+                ) && 
                 (
                     Aggregallowed == other.Aggregallowed ||
-
+                    
                     Aggregallowed.Equals(other.Aggregallowed)
-                ) &&
+                ) && 
                 (
                     Copyright == other.Copyright ||
                     Copyright != null &&
                     Copyright.Equals(other.Copyright)
-                ) &&
+                ) && 
                 (
                     Language == other.Language ||
                     Language != null &&
                     Language.Equals(other.Language)
-                ) &&
+                ) && 
                 (
                     Contents == other.Contents ||
                     Contents != null &&
                     Contents.Equals(other.Contents)
-                ) &&
+                ) && 
                 (
                     Description == other.Description ||
                     Description != null &&
                     Description.Equals(other.Description)
-                ) &&
+                ) && 
                 (
                     Descriptiondefault == other.Descriptiondefault ||
-
+                    
                     Descriptiondefault.Equals(other.Descriptiondefault)
-                ) &&
+                ) && 
                 (
                     Heading == other.Heading ||
                     Heading != null &&
                     other.Heading != null &&
                     Heading.SequenceEqual(other.Heading)
-                ) &&
+                ) && 
                 (
                     Stub == other.Stub ||
                     Stub != null &&
                     other.Stub != null &&
                     Stub.SequenceEqual(other.Stub)
-                ) &&
+                ) && 
                 (
                     Matrix == other.Matrix ||
                     Matrix != null &&
                     Matrix.Equals(other.Matrix)
-                ) &&
+                ) && 
                 (
                     SubjectCode == other.SubjectCode ||
                     SubjectCode != null &&
                     SubjectCode.Equals(other.SubjectCode)
-                ) &&
+                ) && 
                 (
                     SubjectArea == other.SubjectArea ||
                     SubjectArea != null &&
@@ -275,42 +279,42 @@ namespace PCAxis.Serializers.JsonStat2.Model
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                if (Infofile != null)
+                    if (Infofile != null)
                     hashCode = hashCode * 59 + Infofile.GetHashCode();
-                if (Tableid != null)
+                    if (Tableid != null)
                     hashCode = hashCode * 59 + Tableid.GetHashCode();
-
-                hashCode = hashCode * 59 + Decimals.GetHashCode();
-
-                hashCode = hashCode * 59 + OfficialStatistics.GetHashCode();
-
-                hashCode = hashCode * 59 + Aggregallowed.GetHashCode();
-                if (Copyright != null)
+                    
+                    hashCode = hashCode * 59 + Decimals.GetHashCode();
+                    
+                    hashCode = hashCode * 59 + OfficialStatistics.GetHashCode();
+                    
+                    hashCode = hashCode * 59 + Aggregallowed.GetHashCode();
+                    if (Copyright != null)
                     hashCode = hashCode * 59 + Copyright.GetHashCode();
-                if (Language != null)
+                    if (Language != null)
                     hashCode = hashCode * 59 + Language.GetHashCode();
-                if (Contents != null)
+                    if (Contents != null)
                     hashCode = hashCode * 59 + Contents.GetHashCode();
-                if (Description != null)
+                    if (Description != null)
                     hashCode = hashCode * 59 + Description.GetHashCode();
-
-                hashCode = hashCode * 59 + Descriptiondefault.GetHashCode();
-                if (Heading != null)
+                    
+                    hashCode = hashCode * 59 + Descriptiondefault.GetHashCode();
+                    if (Heading != null)
                     hashCode = hashCode * 59 + Heading.GetHashCode();
-                if (Stub != null)
+                    if (Stub != null)
                     hashCode = hashCode * 59 + Stub.GetHashCode();
-                if (Matrix != null)
+                    if (Matrix != null)
                     hashCode = hashCode * 59 + Matrix.GetHashCode();
-                if (SubjectCode != null)
+                    if (SubjectCode != null)
                     hashCode = hashCode * 59 + SubjectCode.GetHashCode();
-                if (SubjectArea != null)
+                    if (SubjectArea != null)
                     hashCode = hashCode * 59 + SubjectArea.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-#pragma warning disable 1591
+        #pragma warning disable 1591
 
         public static bool operator ==(ExtensionRootPx left, ExtensionRootPx right)
         {
@@ -322,7 +326,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
             return !Equals(left, right);
         }
 
-#pragma warning restore 1591
+        #pragma warning restore 1591
         #endregion Operators
     }
 }

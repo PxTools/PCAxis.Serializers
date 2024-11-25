@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Xml.Serialization;
-
-using org.sdmx;
-
+﻿using org.sdmx;
 using PCAxis.Paxiom;
 using PCAxis.Paxiom.Operations;
 using PCAxis.Sdmx.ExtensionMethods;
+using System;
+using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace PCAxis.Serializers
 {
-    public class SdmxStructureSerializer : IPXModelStreamSerializer
+    public class SdmxStructureSerializer : IPXModelStreamSerializer 
     {
 
         #region IPXModelStreamSerializer Members
@@ -20,7 +18,7 @@ namespace PCAxis.Serializers
             PXModel m = RearrangeVariables(model);
 
             StructureType structure = createStructure(m);
-
+            
             //TODO encoding
             //System.Text.Encoding encoding;
             //encoding = EncodingUtil.GetEncoding(model.Meta.CodePage);
@@ -54,7 +52,7 @@ namespace PCAxis.Serializers
         #endregion
 
         #region "Bla bla"
-
+        
 
         /// <summary>
         /// Checks all precondition for the model to determin if it can be serialized to a SDMX structure file.
@@ -75,8 +73,7 @@ namespace PCAxis.Serializers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        internal static PXModel RearrangeVariables(PXModel model)
-        {
+        internal static PXModel RearrangeVariables(PXModel model) { 
             //Verify all preconditions are ok.
             if (!CanConvertModel(model)) throw new PXSerializationException();
 

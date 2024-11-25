@@ -1,12 +1,10 @@
-﻿using System;
+﻿using org.sdmx;
+using PCAxis.Paxiom;
+using PCAxis.Sdmx.ExtensionMethods;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
-
-using org.sdmx;
-
-using PCAxis.Paxiom;
-using PCAxis.Sdmx.ExtensionMethods;
 
 namespace PCAxis.Serializers
 {

@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel;
 using System.Globalization;
-
 using Newtonsoft.Json;
 
 namespace PCAxis.Serializers.JsonStat2.Model.Converters

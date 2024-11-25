@@ -1,4 +1,7 @@
 ﻿using PCAxis.Paxiom;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace UnitTests
 {
@@ -6,17 +9,17 @@ namespace UnitTests
     {
 
 
-        public PXModel GetSelectAllModel(string file)
-        {
-            PCAxis.Paxiom.IPXModelBuilder builder = new PXFileBuilder();
+		public PXModel GetSelectAllModel(string file)
+		{
+			PCAxis.Paxiom.IPXModelBuilder builder = new PXFileBuilder();
 
-            builder.SetPath(file);
-            builder.BuildForSelection();
+			builder.SetPath(file);
+			builder.BuildForSelection();
 
-            PXMeta meta = builder.Model.Meta;
-            builder.BuildForPresentation(Selection.SelectAll(meta));
+			PXMeta meta = builder.Model.Meta;
+			builder.BuildForPresentation(Selection.SelectAll(meta));
 
-            return builder.Model;
-        }
-    }
+			return builder.Model;
+		}
+	}
 }

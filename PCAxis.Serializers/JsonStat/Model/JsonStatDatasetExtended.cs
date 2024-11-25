@@ -1,6 +1,7 @@
 ﻿namespace PCAxis.Serializers.JsonStat.Model
 {
     using System;
+    using System.Collections.Generic;
 
     [Serializable]
     public class JsonStatDatasetExtended : JsonStatDatasetBase

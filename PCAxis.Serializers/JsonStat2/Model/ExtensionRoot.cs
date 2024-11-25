@@ -9,13 +9,17 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
+using PCAxis.Serializers.JsonStat2.Model.Converters;
 
 namespace PCAxis.Serializers.JsonStat2.Model
-{
+{ 
     /// <summary>
     /// extension at root level
     /// </summary>
@@ -26,34 +30,34 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// Describes if a note of a certain index is mandatory.
         /// </summary>
         /// <value>Describes if a note of a certain index is mandatory.</value>
-        [DataMember(Name = "noteMandatory", EmitDefaultValue = false)]
+        [DataMember(Name="noteMandatory", EmitDefaultValue=false)]
         public Dictionary<string, bool> NoteMandatory { get; set; }
 
         /// <summary>
         /// Gets or Sets Px
         /// </summary>
-        [DataMember(Name = "px", EmitDefaultValue = false)]
+        [DataMember(Name="px", EmitDefaultValue=false)]
         public ExtensionRootPx Px { get; set; }
 
         /// <summary>
         /// Tag for table
         /// </summary>
         /// <value>Tag for table</value>
-        [DataMember(Name = "tags", EmitDefaultValue = false)]
+        [DataMember(Name="tags", EmitDefaultValue=false)]
         public List<string> Tags { get; set; }
 
         /// <summary>
         /// Table will no longer be updated
         /// </summary>
         /// <value>Table will no longer be updated</value>
-        [DataMember(Name = "discontinued", EmitDefaultValue = false)]
+        [DataMember(Name="discontinued", EmitDefaultValue=false)]
         public bool? Discontinued { get; set; }
 
         /// <summary>
         /// A list of contacts associated with the table.
         /// </summary>
         /// <value>A list of contacts associated with the table.</value>
-        [DataMember(Name = "contact", EmitDefaultValue = false)]
+        [DataMember(Name="contact", EmitDefaultValue=false)]
         public List<Contact> Contact { get; set; }
 
         /// <summary>
@@ -104,29 +108,29 @@ namespace PCAxis.Serializers.JsonStat2.Model
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return
+            return 
                 (
                     NoteMandatory == other.NoteMandatory ||
                     NoteMandatory != null &&
                     other.NoteMandatory != null &&
                     NoteMandatory.SequenceEqual(other.NoteMandatory)
-                ) &&
+                ) && 
                 (
                     Px == other.Px ||
                     Px != null &&
                     Px.Equals(other.Px)
-                ) &&
+                ) && 
                 (
                     Tags == other.Tags ||
                     Tags != null &&
                     other.Tags != null &&
                     Tags.SequenceEqual(other.Tags)
-                ) &&
+                ) && 
                 (
                     Discontinued == other.Discontinued ||
                     Discontinued != null &&
                     Discontinued.Equals(other.Discontinued)
-                ) &&
+                ) && 
                 (
                     Contact == other.Contact ||
                     Contact != null &&
@@ -145,22 +149,22 @@ namespace PCAxis.Serializers.JsonStat2.Model
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                if (NoteMandatory != null)
+                    if (NoteMandatory != null)
                     hashCode = hashCode * 59 + NoteMandatory.GetHashCode();
-                if (Px != null)
+                    if (Px != null)
                     hashCode = hashCode * 59 + Px.GetHashCode();
-                if (Tags != null)
+                    if (Tags != null)
                     hashCode = hashCode * 59 + Tags.GetHashCode();
-                if (Discontinued != null)
+                    if (Discontinued != null)
                     hashCode = hashCode * 59 + Discontinued.GetHashCode();
-                if (Contact != null)
+                    if (Contact != null)
                     hashCode = hashCode * 59 + Contact.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-#pragma warning disable 1591
+        #pragma warning disable 1591
 
         public static bool operator ==(ExtensionRoot left, ExtensionRoot right)
         {
@@ -172,7 +176,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
             return !Equals(left, right);
         }
 
-#pragma warning restore 1591
+        #pragma warning restore 1591
         #endregion Operators
     }
 }

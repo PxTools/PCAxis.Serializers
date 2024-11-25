@@ -1,5 +1,4 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using PCAxis.Serializers;
 
 namespace UnitTests.Json

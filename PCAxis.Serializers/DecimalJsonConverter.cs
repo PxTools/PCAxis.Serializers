@@ -23,19 +23,19 @@ namespace PCAxis.Serializers
 
         public override bool CanConvert(Type objectType)
         {
-            return (objectType == typeof(double?));
+            return (objectType ==  typeof(double?));
         }
 
         public override void WriteJson(Newtonsoft.Json.JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer)
         {
-            if (DecimalJsonConverter.IsWholeValue(value))
-            {
-                writer.WriteRawValue(Newtonsoft.Json.JsonConvert.ToString(Convert.ToInt64(value)));
-            }
-            else
-            {
-                writer.WriteRawValue(Newtonsoft.Json.JsonConvert.ToString(value));
-            }
+                if (DecimalJsonConverter.IsWholeValue(value))
+                {
+                    writer.WriteRawValue(Newtonsoft.Json.JsonConvert.ToString(Convert.ToInt64(value)));
+                }
+                else
+                {
+                    writer.WriteRawValue(Newtonsoft.Json.JsonConvert.ToString(value));
+                }
         }
 
         private static bool IsWholeValue(object value)

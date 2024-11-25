@@ -9,13 +9,17 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
+using PCAxis.Serializers.JsonStat2.Model.Converters;
 
 namespace PCAxis.Serializers.JsonStat2.Model
-{
+{ 
     /// <summary>
     /// Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#role)
     /// </summary>
@@ -25,19 +29,19 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// <summary>
         /// Gets or Sets Time
         /// </summary>
-        [DataMember(Name = "time", EmitDefaultValue = false)]
+        [DataMember(Name="time", EmitDefaultValue=false)]
         public List<string> Time { get; set; }
 
         /// <summary>
         /// Gets or Sets Geo
         /// </summary>
-        [DataMember(Name = "geo", EmitDefaultValue = false)]
+        [DataMember(Name="geo", EmitDefaultValue=false)]
         public List<string> Geo { get; set; }
 
         /// <summary>
         /// Gets or Sets Metric
         /// </summary>
-        [DataMember(Name = "metric", EmitDefaultValue = false)]
+        [DataMember(Name="metric", EmitDefaultValue=false)]
         public List<string> Metric { get; set; }
 
         /// <summary>
@@ -86,19 +90,19 @@ namespace PCAxis.Serializers.JsonStat2.Model
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return
+            return 
                 (
                     Time == other.Time ||
                     Time != null &&
                     other.Time != null &&
                     Time.SequenceEqual(other.Time)
-                ) &&
+                ) && 
                 (
                     Geo == other.Geo ||
                     Geo != null &&
                     other.Geo != null &&
                     Geo.SequenceEqual(other.Geo)
-                ) &&
+                ) && 
                 (
                     Metric == other.Metric ||
                     Metric != null &&
@@ -117,18 +121,18 @@ namespace PCAxis.Serializers.JsonStat2.Model
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                if (Time != null)
+                    if (Time != null)
                     hashCode = hashCode * 59 + Time.GetHashCode();
-                if (Geo != null)
+                    if (Geo != null)
                     hashCode = hashCode * 59 + Geo.GetHashCode();
-                if (Metric != null)
+                    if (Metric != null)
                     hashCode = hashCode * 59 + Metric.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-#pragma warning disable 1591
+        #pragma warning disable 1591
 
         public static bool operator ==(DatasetRole left, DatasetRole right)
         {
@@ -140,7 +144,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
             return !Equals(left, right);
         }
 
-#pragma warning restore 1591
+        #pragma warning restore 1591
         #endregion Operators
     }
 }

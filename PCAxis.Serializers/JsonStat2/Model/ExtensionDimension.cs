@@ -9,13 +9,17 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
+using PCAxis.Serializers.JsonStat2.Model.Converters;
 
 namespace PCAxis.Serializers.JsonStat2.Model
-{
+{ 
     /// <summary>
     /// extension at dimension
     /// </summary>
@@ -26,70 +30,70 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// Can dimension be elminated
         /// </summary>
         /// <value>Can dimension be elminated</value>
-        [DataMember(Name = "elimination", EmitDefaultValue = true)]
+        [DataMember(Name="elimination", EmitDefaultValue=true)]
         public bool Elimination { get; set; }
 
         /// <summary>
         /// Elimination value code
         /// </summary>
         /// <value>Elimination value code</value>
-        [DataMember(Name = "eliminationValueCode", EmitDefaultValue = false)]
+        [DataMember(Name="eliminationValueCode", EmitDefaultValue=false)]
         public string EliminationValueCode { get; set; }
 
         /// <summary>
         /// Describes if a note of a certain index is mandatory.
         /// </summary>
         /// <value>Describes if a note of a certain index is mandatory.</value>
-        [DataMember(Name = "noteMandatory", EmitDefaultValue = false)]
+        [DataMember(Name="noteMandatory", EmitDefaultValue=false)]
         public Dictionary<string, bool> NoteMandatory { get; set; }
 
         /// <summary>
         /// Describes which value note are mandatory
         /// </summary>
         /// <value>Describes which value note are mandatory</value>
-        [DataMember(Name = "categoryNoteMandatory", EmitDefaultValue = false)]
+        [DataMember(Name="categoryNoteMandatory", EmitDefaultValue=false)]
         public Dictionary<string, Dictionary<string, bool>> CategoryNoteMandatory { get; set; }
 
         /// <summary>
         /// Text with information on the exact period for the statistics
         /// </summary>
         /// <value>Text with information on the exact period for the statistics</value>
-        [DataMember(Name = "refperiod", EmitDefaultValue = false)]
+        [DataMember(Name="refperiod", EmitDefaultValue=false)]
         public Dictionary<string, string> Refperiod { get; set; }
 
         /// <summary>
         /// Information about how variables are presented
         /// </summary>
         /// <value>Information about how variables are presented</value>
-        [DataMember(Name = "show", EmitDefaultValue = false)]
+        [DataMember(Name="show", EmitDefaultValue=false)]
         public string Show { get; set; }
 
         /// <summary>
         /// Available codelists for this dimension
         /// </summary>
         /// <value>Available codelists for this dimension</value>
-        [DataMember(Name = "codeLists", EmitDefaultValue = false)]
+        [DataMember(Name="codeLists", EmitDefaultValue=false)]
         public List<CodeListInformation> CodeLists { get; set; }
 
         /// <summary>
         /// How often a table is updated
         /// </summary>
         /// <value>How often a table is updated</value>
-        [DataMember(Name = "frequency", EmitDefaultValue = false)]
+        [DataMember(Name="frequency", EmitDefaultValue=false)]
         public string Frequency { get; set; }
 
         /// <summary>
         /// Earliest time period in table
         /// </summary>
         /// <value>Earliest time period in table</value>
-        [DataMember(Name = "firstPeriod", EmitDefaultValue = false)]
+        [DataMember(Name="firstPeriod", EmitDefaultValue=false)]
         public string FirstPeriod { get; set; }
 
         /// <summary>
         /// Latest time period in table
         /// </summary>
         /// <value>Latest time period in table</value>
-        [DataMember(Name = "lastPeriod", EmitDefaultValue = false)]
+        [DataMember(Name="lastPeriod", EmitDefaultValue=false)]
         public string LastPeriod { get; set; }
 
         /// <summary>
@@ -145,56 +149,56 @@ namespace PCAxis.Serializers.JsonStat2.Model
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return
+            return 
                 (
                     Elimination == other.Elimination ||
-
+                    
                     Elimination.Equals(other.Elimination)
-                ) &&
+                ) && 
                 (
                     EliminationValueCode == other.EliminationValueCode ||
                     EliminationValueCode != null &&
                     EliminationValueCode.Equals(other.EliminationValueCode)
-                ) &&
+                ) && 
                 (
                     NoteMandatory == other.NoteMandatory ||
                     NoteMandatory != null &&
                     other.NoteMandatory != null &&
                     NoteMandatory.SequenceEqual(other.NoteMandatory)
-                ) &&
+                ) && 
                 (
                     CategoryNoteMandatory == other.CategoryNoteMandatory ||
                     CategoryNoteMandatory != null &&
                     other.CategoryNoteMandatory != null &&
                     CategoryNoteMandatory.SequenceEqual(other.CategoryNoteMandatory)
-                ) &&
+                ) && 
                 (
                     Refperiod == other.Refperiod ||
                     Refperiod != null &&
                     other.Refperiod != null &&
                     Refperiod.SequenceEqual(other.Refperiod)
-                ) &&
+                ) && 
                 (
                     Show == other.Show ||
                     Show != null &&
                     Show.Equals(other.Show)
-                ) &&
+                ) && 
                 (
                     CodeLists == other.CodeLists ||
                     CodeLists != null &&
                     other.CodeLists != null &&
                     CodeLists.SequenceEqual(other.CodeLists)
-                ) &&
+                ) && 
                 (
                     Frequency == other.Frequency ||
                     Frequency != null &&
                     Frequency.Equals(other.Frequency)
-                ) &&
+                ) && 
                 (
                     FirstPeriod == other.FirstPeriod ||
                     FirstPeriod != null &&
                     FirstPeriod.Equals(other.FirstPeriod)
-                ) &&
+                ) && 
                 (
                     LastPeriod == other.LastPeriod ||
                     LastPeriod != null &&
@@ -212,32 +216,32 @@ namespace PCAxis.Serializers.JsonStat2.Model
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-
-                hashCode = hashCode * 59 + Elimination.GetHashCode();
-                if (EliminationValueCode != null)
+                    
+                    hashCode = hashCode * 59 + Elimination.GetHashCode();
+                    if (EliminationValueCode != null)
                     hashCode = hashCode * 59 + EliminationValueCode.GetHashCode();
-                if (NoteMandatory != null)
+                    if (NoteMandatory != null)
                     hashCode = hashCode * 59 + NoteMandatory.GetHashCode();
-                if (CategoryNoteMandatory != null)
+                    if (CategoryNoteMandatory != null)
                     hashCode = hashCode * 59 + CategoryNoteMandatory.GetHashCode();
-                if (Refperiod != null)
+                    if (Refperiod != null)
                     hashCode = hashCode * 59 + Refperiod.GetHashCode();
-                if (Show != null)
+                    if (Show != null)
                     hashCode = hashCode * 59 + Show.GetHashCode();
-                if (CodeLists != null)
+                    if (CodeLists != null)
                     hashCode = hashCode * 59 + CodeLists.GetHashCode();
-                if (Frequency != null)
+                    if (Frequency != null)
                     hashCode = hashCode * 59 + Frequency.GetHashCode();
-                if (FirstPeriod != null)
+                    if (FirstPeriod != null)
                     hashCode = hashCode * 59 + FirstPeriod.GetHashCode();
-                if (LastPeriod != null)
+                    if (LastPeriod != null)
                     hashCode = hashCode * 59 + LastPeriod.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-#pragma warning disable 1591
+        #pragma warning disable 1591
 
         public static bool operator ==(ExtensionDimension left, ExtensionDimension right)
         {
@@ -249,7 +253,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
             return !Equals(left, right);
         }
 
-#pragma warning restore 1591
+        #pragma warning restore 1591
         #endregion Operators
     }
 }
