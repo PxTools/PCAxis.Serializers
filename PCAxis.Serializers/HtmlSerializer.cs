@@ -65,8 +65,6 @@ namespace PCAxis.Serializers
 
         private void DoSerialize(PXModel model, StreamWriter wr)
         {
-            Paxiom.Variables stub = model.Meta.Stub;
-
             wr.WriteLine(@"<table id=""" + model.Meta.Matrix + "_" + Guid.NewGuid().ToString() + @""" >"); //@""" aria-describedby="" "
 
             // Only write title if it is set to be included
@@ -77,44 +75,25 @@ namespace PCAxis.Serializers
                 wr.WriteLine("</caption>");
             }
 
+            //Write table headings
             wr.WriteLine("<thead>");
-
-            int tableColspan = 1;
-            Variables headings = model.Meta.Heading;
-
-            if (headings != null)
-            {
-                for (int i = 0; (i
-                            <= (model.Meta.Heading.Count - 1)); i++)
-                {
-                    tableColspan = (tableColspan * model.Meta.Heading[i].Values.Count);
-                }
-
-            }
-
-            tableColspan = (tableColspan + stub.Count);
-
-            Array.Resize(ref _subStubValues, stub.Count + 1);
-
-
-            CalculateSubValues(stub, 0, ref _subStubValues);
             WriteHeadings(wr, model);
-
             wr.WriteLine("</thead>");
 
-            wr.WriteLine("<tbody>");
+            // Calculate sub value sizes
+            Paxiom.Variables stub = model.Meta.Stub;
+            Array.Resize(ref _subStubValues, stub.Count + 1);
+            CalculateSubValues(stub, 0, ref _subStubValues);
 
+
+            // Write the table, start at row zero
+            wr.WriteLine("<tbody>");
             int levels = stub.Count;
             int row = 0;
-            //  Start at row zero
-            //  Write the table
             WriteTable(wr, model, levels, 0, model.Meta.ShowDecimals, ref row);
+
             wr.WriteLine("</tbody>");
-
-
             wr.WriteLine("</table>");
-
-            // wr.WriteLine(@"<style type=""text/css""> td, th{ border: 1px solid #ddd; padding: 10px; }</ style >");
             wr.Flush();
         }
 
