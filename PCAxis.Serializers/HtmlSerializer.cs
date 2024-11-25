@@ -55,7 +55,7 @@ namespace PCAxis.Serializers
 
             if (!stream.CanWrite)
             {
-                throw new ArgumentNullException("The stream does not support writing");
+                throw new ArgumentNullException("stream", "The stream does not support writing");
             }
 
             var writer = new System.IO.StreamWriter(stream, System.Text.Encoding.GetEncoding(model.Meta.CodePage));
