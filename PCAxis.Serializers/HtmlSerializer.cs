@@ -90,7 +90,7 @@ namespace PCAxis.Serializers
             wr.WriteLine("<tbody>");
             int levels = stub.Count;
             int row = 0;
-            WriteTable(wr, model, levels, 0, model.Meta.ShowDecimals, ref row);
+            WriteTable(wr, model, levels, 0, ref row);
 
             wr.WriteLine("</tbody>");
             wr.WriteLine("</table>");
@@ -123,7 +123,7 @@ namespace PCAxis.Serializers
         private void WriteHeadings(System.IO.StreamWriter wr, PCAxis.Paxiom.PXModel model)
         {
             Variables heading = model.Meta.Heading;
-            if (!(heading == null))
+            if (heading != null)
             {
                 int[] subHeadings = new int[2];
                 if ((heading.Count > 0))
@@ -148,7 +148,6 @@ namespace PCAxis.Serializers
                     }
 
                     //  Write the heading
-                    int valuesCount = heading[index].Values.Count;
                     for (int j = 0; (j
                                 <= (timesToWrite - 1)); j++)
                     {
@@ -199,7 +198,7 @@ namespace PCAxis.Serializers
             }
         }
 
-        private void WriteDataLine(System.IO.StreamWriter wr, PCAxis.Paxiom.PXModel model, System.Globalization.CultureInfo ci, int precision, int row)
+        private void WriteDataLine(System.IO.StreamWriter wr, PCAxis.Paxiom.PXModel model, int row)
         {
             string value;
             string n = String.Empty;
@@ -217,16 +216,14 @@ namespace PCAxis.Serializers
 
         }
 
-        private void WriteTable(System.IO.StreamWriter wr, Paxiom.PXModel model, int levels, int level, int precision, ref int row)
+        private void WriteTable(System.IO.StreamWriter wr, Paxiom.PXModel model, int levels, int level, ref int row)
         {
-            System.Globalization.CultureInfo ci = System.Globalization.CultureInfo.InvariantCulture;
             _fmt = new DataFormatter(model);
-            Variables heading = model.Meta.Heading;
 
             if ((level == levels))
             {
                 //  Time to write the data to the file
-                WriteDataLine(wr, model, ci, precision, row);
+                WriteDataLine(wr, model, row);
                 //  Close this row. The closing tag is not writen if level + 1 < levels, se
                 //  the else clause below
                 wr.WriteLine("</tr>");
@@ -245,11 +242,6 @@ namespace PCAxis.Serializers
                     wr.WriteLine("</th>");
                     _fmt = new DataFormatter(model);
 
-                    int decimals = model.Meta.ShowDecimals;
-                    if (values[i].HasPrecision())
-                    {
-                        decimals = values[i].Precision;
-                    }
 
                     if (level + 1 < levels)
                     {
@@ -261,7 +253,7 @@ namespace PCAxis.Serializers
                     }
 
 
-                    WriteTable(wr, model, levels, nextLevel, decimals, ref row);
+                    WriteTable(wr, model, levels, nextLevel, ref row);
                 }
 
             }
