@@ -81,7 +81,8 @@ namespace PCAxis.Serializers
 
             int tableColspan = 1;
             Variables headings = model.Meta.Heading;
-            if (!(headings == null))
+
+            if (headings != null)
             {
                 for (int i = 0; (i
                             <= (model.Meta.Heading.Count - 1)); i++)
