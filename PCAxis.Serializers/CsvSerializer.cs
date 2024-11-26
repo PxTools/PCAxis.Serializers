@@ -21,6 +21,87 @@ namespace PCAxis.Paxiom
         private bool _useShortDescription = false;
         #endregion
 
+        #region Public properties
+
+
+        public char DecimalSeparator
+        {
+            get { return _decimalSeparator; }
+            set { _decimalSeparator = value; }
+        }
+
+        public bool DoubleColumn
+        {
+            get { return _doubleColumn; }
+            set { _doubleColumn = value; }
+        }
+
+        public bool IncludeTitle
+        {
+            get { return _includeTitle; }
+            set { _includeTitle = value; }
+        }
+
+        public bool ThousandSeparator
+        {
+            get { return _thousandSeparator; }
+            set { _thousandSeparator = value; }
+        }
+
+        public bool WrapTextWithQuote
+        {
+            get { return _wrapTextWithQuote; }
+            set { _wrapTextWithQuote = value; }
+        }
+
+        protected bool UseShortDescription
+        {
+            get { return _useShortDescription; }
+            set { _useShortDescription = value; }
+        }
+
+        protected PXModel Model
+        {
+            get { return _model; }
+            set { _model = value; }
+        }
+
+
+        private Delimiters _valueDelimiter = Delimiters.Comma;
+        public Delimiters Delimiter
+        {
+            get
+            {
+                return _valueDelimiter;
+            }
+            set
+            {
+                _valueDelimiter = value;
+                switch (value)
+                {
+                    case Delimiters.Comma:
+                        _delimiter = ',';
+                        break;
+                    case Delimiters.Semicolon:
+                        _delimiter = ';';
+                        break;
+                    case Delimiters.Tab:
+                        _delimiter = '\t';
+                        break;
+                    case Delimiters.Space:
+                        _delimiter = ' ';
+                        break;
+                    default:
+                        _delimiter = ',';
+                        break;
+                }
+            }
+        }
+
+        public LablePreference ValueLablesDisplay { get; set; } = LablePreference.None;
+
+        #endregion
+
         #region Constructors
         public CsvSerializer() { }
         #endregion
@@ -91,6 +172,35 @@ namespace PCAxis.Paxiom
             else
             {
                 wr.WriteLine(value);
+            }
+        }
+
+        protected string GetLabel(Variable variable)
+        {
+            switch (ValueLablesDisplay)
+            {
+                case LablePreference.Code:
+                    return variable.Code;
+                case LablePreference.Text:
+                    return variable.Name;
+                case LablePreference.BothCodeAndText:
+                    return $"{variable.Code} - {variable.Name}";
+                default:
+                    return variable.Code;
+            }
+        }
+        protected string GetLabel(Value value)
+        {
+            switch (ValueLablesDisplay)
+            {
+                case LablePreference.Code:
+                    return value.Code;
+                case LablePreference.Text:
+                    return value.Text;
+                case LablePreference.BothCodeAndText:
+                    return $"{value.Code} - {value.Text}";
+                default:
+                    return value.Code;
             }
         }
 
@@ -324,83 +434,7 @@ namespace PCAxis.Paxiom
             return sb.ToString();
         }
 
-        #region Public properties
 
-
-        public char DecimalSeparator
-        {
-            get { return _decimalSeparator; }
-            set { _decimalSeparator = value; }
-        }
-
-        public bool DoubleColumn
-        {
-            get { return _doubleColumn; }
-            set { _doubleColumn = value; }
-        }
-
-        public bool IncludeTitle
-        {
-            get { return _includeTitle; }
-            set { _includeTitle = value; }
-        }
-
-        public bool ThousandSeparator
-        {
-            get { return _thousandSeparator; }
-            set { _thousandSeparator = value; }
-        }
-
-        public bool WrapTextWithQuote
-        {
-            get { return _wrapTextWithQuote; }
-            set { _wrapTextWithQuote = value; }
-        }
-
-        protected bool UseShortDescription
-        {
-            get { return _useShortDescription; }
-            set { _useShortDescription = value; }
-        }
-
-        protected PXModel Model
-        {
-            get { return _model; }
-            set { _model = value; }
-        }
-
-
-        private Delimiters _valueDelimiter = Delimiters.Comma;
-        public Delimiters Delimiter
-        {
-            get { 
-                return _valueDelimiter; 
-            }
-            set { 
-                _valueDelimiter = value;
-                switch (value)
-                {
-                    case Delimiters.Comma:
-                        _delimiter = ',';
-                        break;
-                    case Delimiters.Semicolon:
-                        _delimiter = ';';
-                        break;
-                    case Delimiters.Tab:
-                        _delimiter = '\t';
-                        break;
-                    case Delimiters.Space:
-                        _delimiter = ' ';
-                        break;
-                    default:
-                        _delimiter = ',';
-                        break;
-                }
-            }
-        }
-
-
-        #endregion
 
         public enum Delimiters
         {
@@ -410,5 +444,14 @@ namespace PCAxis.Paxiom
             Space
         }
 
+        public enum LablePreference
+        {
+            None,
+            Code,
+            Text,
+            BothCodeAndText
+        }
+
+        
     }
 }
