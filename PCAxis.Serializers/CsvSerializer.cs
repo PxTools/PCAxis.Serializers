@@ -290,11 +290,7 @@ namespace PCAxis.Paxiom
             StringCollection sc;
 
             string value = "";
-            bool containsDataCellNotes = _model.Meta.DataNoteCells.Count > 0;
             DataFormatter df = CreateDataFormater();
-
-            bool haveStubVariables = _model.Meta.Stub.Count > 0;
-
 
 
             if (_model.Meta.Stub.Count > 0)
@@ -339,40 +335,6 @@ namespace PCAxis.Paxiom
         }
 
         
-
-        /// <summary>
-        /// Get the stub value and code
-        /// </summary>
-        /// <param name="stubIndex">Index of the stub variable</param>
-        /// <param name="valueIndex">Index of the value</param>
-        /// <returns>
-        /// Returns the value. If the variable has code and double column is true both code
-        /// and value are returned separated by the delimiter.
-        /// </returns>
-        private string TableStub(int stubIndex, int valueIndex)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            if (this.DoubleColumn && _model.Meta.Stub[stubIndex].DoubleColumn)
-            {
-                if (_model.Meta.Stub[stubIndex].Values[valueIndex].HasCode())
-                {
-                    sb.Append('"');
-                    sb.Append(_model.Meta.Stub[stubIndex].Values[valueIndex].Code);
-                    sb.Append('"');
-                    sb.Append(this._delimiter);
-                }
-            }
-
-            sb.Append('"');
-            sb.Append(GetLabel(_model.Meta.Stub[stubIndex].Values[valueIndex]));
-            sb.Append('"');
-
-            return sb.ToString();
-        }
-
-
-
-        
+      
     }
 }
