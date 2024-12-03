@@ -13,17 +13,12 @@ namespace PCAxis.Paxiom
         #region Private fields
         private PXModel _model;
         private char _delimiter = ',';
-        private char _decimalSeparator = '.';
         private bool _doubleColumn = false;
         private bool _includeTitle = false;
         #endregion
 
         #region Public properties
-        public char DecimalSeparator
-        {
-            get { return _decimalSeparator; }
-            set { _decimalSeparator = value; }
-        }
+
 
         public bool DoubleColumn
         {
@@ -44,8 +39,13 @@ namespace PCAxis.Paxiom
         }
 
 
+        public char Delimiter
+        {
+            get { return _delimiter; }
+        }
+
         private Delimiters _valueDelimiter = Delimiters.Comma;
-        public Delimiters Delimiter
+        public Delimiters DelimiterType
         {
             get
             {
@@ -345,7 +345,7 @@ namespace PCAxis.Paxiom
         private DataFormatter CreateDataFormater()
         {
             DataFormatter df = new DataFormatter(Model);
-            df.DecimalSeparator = this.DecimalSeparator.ToString();
+            df.DecimalSeparator = ".";
             df.ShowDataNotes = false;
             df.ThousandSeparator = "";
             return df;
