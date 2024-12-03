@@ -16,14 +16,9 @@ namespace PCAxis.Paxiom
         private char _decimalSeparator = '.';
         private bool _doubleColumn = false;
         private bool _includeTitle = false;
-        private bool _thousandSeparator = false;
-        private bool _wrapTextWithQuote = true;
-        private bool _useShortDescription = false;
         #endregion
 
         #region Public properties
-
-
         public char DecimalSeparator
         {
             get { return _decimalSeparator; }
@@ -40,24 +35,6 @@ namespace PCAxis.Paxiom
         {
             get { return _includeTitle; }
             set { _includeTitle = value; }
-        }
-
-        public bool ThousandSeparator
-        {
-            get { return _thousandSeparator; }
-            set { _thousandSeparator = value; }
-        }
-
-        public bool WrapTextWithQuote
-        {
-            get { return _wrapTextWithQuote; }
-            set { _wrapTextWithQuote = value; }
-        }
-
-        protected bool UseShortDescription
-        {
-            get { return _useShortDescription; }
-            set { _useShortDescription = value; }
         }
 
         protected PXModel Model
@@ -163,16 +140,9 @@ namespace PCAxis.Paxiom
         /// <param name="value">String value to write</param>
         protected void WriteStringValue(StreamWriter wr, string value)
         {
-            if (this.WrapTextWithQuote)
-            {
                 wr.Write('"');
                 wr.Write(value);
                 wr.WriteLine('"');
-            }
-            else
-            {
-                wr.WriteLine(value);
-            }
         }
 
         protected string GetLabel(Variable variable)
@@ -233,7 +203,7 @@ namespace PCAxis.Paxiom
                     WriteStringValue(wr, Model.Meta.Stub[i].Code);
                     wr.Write(this.Delimiter);
                 }
-                WriteStringValue(wr, this.UseShortDescription ? Model.Meta.Stub[i].Code : Model.Meta.Stub[i].Name);
+                WriteStringValue(wr, GetLabel(Model.Meta.Stub[i]));
             }
 
             // Write concatenated heading variable values
@@ -255,10 +225,11 @@ namespace PCAxis.Paxiom
             {
                 // All parameters are in the Stub
                 wr.Write(this.Delimiter);
-                WriteStringValue(wr, this.UseShortDescription ? Model.Meta.TableID : Model.Meta.Contents);
+                WriteStringValue(wr, Model.Meta.Matrix);
                 wr.WriteLine();
             }
         }
+
 
         /// <summary>
         /// Creates the heading texts by finding all the possible combinations of the heading variables.
@@ -296,13 +267,10 @@ namespace PCAxis.Paxiom
         protected void WriteTable(StreamWriter wr)
         {
             StringCollection sc;
-            DataFormatter df = new DataFormatter(Model);
+
             string value = "";
             bool containsDataCellNotes = Model.Meta.DataNoteCells.Count > 0;
-
-            df.DecimalSeparator = this.DecimalSeparator.ToString();
-            df.ShowDataNotes = false;
-            if (!this.ThousandSeparator) df.ThousandSeparator = "";
+            DataFormatter df = CreateDataFormater();
 
             if (Model.Meta.Stub.Count > 0)
             {
@@ -374,6 +342,15 @@ namespace PCAxis.Paxiom
             }
         }
 
+        private DataFormatter CreateDataFormater()
+        {
+            DataFormatter df = new DataFormatter(Model);
+            df.DecimalSeparator = this.DecimalSeparator.ToString();
+            df.ShowDataNotes = false;
+            df.ThousandSeparator = "";
+            return df;
+        }
+
         /// <summary>
         /// Concatenates the stub values 
         /// </summary>
@@ -420,21 +397,19 @@ namespace PCAxis.Paxiom
             {
                 if (Model.Meta.Stub[stubIndex].Values[valueIndex].HasCode())
                 {
-                    if (this.WrapTextWithQuote) sb.Append('"');
+                    sb.Append('"');
                     sb.Append(Model.Meta.Stub[stubIndex].Values[valueIndex].Code);
-                    if (this.WrapTextWithQuote) sb.Append('"');
+                    sb.Append('"');
                     sb.Append(this.Delimiter);
                 }
             }
 
-            if (this.WrapTextWithQuote) sb.Append('"');
-            sb.Append(this.UseShortDescription ? Model.Meta.Stub[stubIndex].Values[valueIndex].Code : Model.Meta.Stub[stubIndex].Values[valueIndex].Text);
-            if (this.WrapTextWithQuote) sb.Append('"');
+            sb.Append('"');
+            sb.Append(GetLabel(Model.Meta.Stub[stubIndex].Values[valueIndex]));
+            sb.Append('"');
 
             return sb.ToString();
         }
-
-
 
         public enum Delimiters
         {
