@@ -10,42 +10,40 @@ namespace PCAxis.Paxiom
     /// </summary>
     public class CsvSerializer : IPXModelStreamSerializer
     {
+
+        #region "Enunms"
+        public enum Delimiters
+        {
+            Comma,
+            Semicolon,
+            Tab,
+            Space
+        }
+        public enum LablePreference
+        {
+            None,
+            Code,
+            Text,
+            BothCodeAndText
+        }
+        #endregion
+
         #region Private fields
-        private PXModel _model;
+
         private char _delimiter = ',';
-        private bool _doubleColumn = false;
-        private bool _includeTitle = false;
+        protected PXModel _model;
+
         #endregion
 
         #region Public properties
 
+        public bool DoubleColumn { get; set; } = false;
 
-        public bool DoubleColumn
-        {
-            get { return _doubleColumn; }
-            set { _doubleColumn = value; }
-        }
+        public bool IncludeTitle { get; set; } = false;
 
-        public bool IncludeTitle
-        {
-            get { return _includeTitle; }
-            set { _includeTitle = value; }
-        }
-
-        protected PXModel Model
-        {
-            get { return _model; }
-            set { _model = value; }
-        }
-
-
-        public char Delimiter
-        {
-            get { return _delimiter; }
-        }
 
         private Delimiters _valueDelimiter = Delimiters.Comma;
-        public Delimiters DelimiterType
+        public Delimiters ValueDelimiter
         {
             get
             {
@@ -127,7 +125,7 @@ namespace PCAxis.Paxiom
         /// <param name="wr">The stream to serialize to</param>
         protected virtual void DoSerialize(PXModel model, StreamWriter wr)
         {
-            this.Model = model;
+            this._model = model;
             WriteTitle(wr);
             WriteHeading(wr);
             WriteTable(wr);
@@ -138,11 +136,11 @@ namespace PCAxis.Paxiom
         /// </summary>
         /// <param name="wr">stream to write to</param>
         /// <param name="value">String value to write</param>
-        protected void WriteStringValue(StreamWriter wr, string value)
+        protected static void WriteStringValue(StreamWriter wr, string value)
         {
-                wr.Write('"');
-                wr.Write(value);
-                wr.WriteLine('"');
+            wr.Write('"');
+            wr.Write(value);
+            wr.WriteLine('"');
         }
 
         protected string GetLabel(Variable variable)
@@ -182,7 +180,7 @@ namespace PCAxis.Paxiom
         {
             if (this.IncludeTitle)
             {
-                WriteStringValue(wr, Util.GetModelTitle(Model));
+                WriteStringValue(wr, Util.GetModelTitle(_model));
                 wr.WriteLine();
             }
         }
@@ -194,38 +192,32 @@ namespace PCAxis.Paxiom
         protected void WriteHeading(StreamWriter wr)
         {
             // Write stub variable names 
-            for (int i = 0; i < Model.Meta.Stub.Count; i++)
+            for (int i = 0; i < _model.Meta.Stub.Count; i++)
             {
-                if (i > 0) wr.Write(this.Delimiter);
+                if (i > 0) wr.Write(this._delimiter);
 
-                if (this.DoubleColumn && Model.Meta.Stub[i].DoubleColumn)
-                {
-                    WriteStringValue(wr, Model.Meta.Stub[i].Code);
-                    wr.Write(this.Delimiter);
-                }
-                WriteStringValue(wr, GetLabel(Model.Meta.Stub[i]));
+                WriteStringValue(wr, GetLabel(_model.Meta.Stub[i]));
             }
 
             // Write concatenated heading variable values
-            if (Model.Meta.Heading.Count > 0)
+            if (_model.Meta.Heading.Count > 0)
             {
                 StringCollection sc = ConcatHeadingValues(0);
-                wr.Write(this.Delimiter);
+                wr.Write(this._delimiter);
 
                 for (int i = 0; i < sc.Count; i++)
                 {
-                    if (i > 0) wr.Write(this.Delimiter);
+                    if (i > 0) wr.Write(this._delimiter);
 
                     WriteStringValue(wr, sc[i]);
-
                 }
                 wr.WriteLine();
             }
             else
             {
                 // All parameters are in the Stub
-                wr.Write(this.Delimiter);
-                WriteStringValue(wr, Model.Meta.Matrix);
+                wr.Write(this._delimiter);
+                WriteStringValue(wr, _model.Meta.Matrix);
                 wr.WriteLine();
             }
         }
@@ -239,22 +231,51 @@ namespace PCAxis.Paxiom
         private StringCollection ConcatHeadingValues(int headingIndex)
         {
             StringCollection sc = new StringCollection();
-            if (headingIndex < Model.Meta.Heading.Count - 1)
+            if (headingIndex < _model.Meta.Heading.Count - 1)
             {
                 StringCollection sc2 = ConcatHeadingValues(headingIndex + 1);
-                for (int valueIndex = 0; valueIndex < Model.Meta.Heading[headingIndex].Values.Count; valueIndex++)
+                for (int valueIndex = 0; valueIndex < _model.Meta.Heading[headingIndex].Values.Count; valueIndex++)
                 {
                     for (int j = 0; j < sc2.Count; j++)
                     {
-                        sc.Add(Model.Meta.Heading[headingIndex].Values[valueIndex].Text + " " + sc2[j]);
+                        sc.Add(GetLabel(_model.Meta.Heading[headingIndex].Values[valueIndex]) + " " + sc2[j]);
                     }
                 }
             }
             else
             {
-                for (int valueIndex = 0; valueIndex < Model.Meta.Heading[headingIndex].Values.Count; valueIndex++)
+                for (int valueIndex = 0; valueIndex < _model.Meta.Heading[headingIndex].Values.Count; valueIndex++)
                 {
-                    sc.Add(Model.Meta.Heading[headingIndex].Values[valueIndex].Text);
+                    sc.Add(GetLabel(_model.Meta.Heading[headingIndex].Values[valueIndex]));
+                }
+            }
+            return sc;
+        }
+
+        /// <summary>
+        /// Concatenates the stub values 
+        /// </summary>
+        /// <param name="stubIndex">The index of the stub variable</param>
+        /// <returns>String collection with all the concatenated stub values for the given index</returns>
+        private StringCollection ConcatStubValues(int stubIndex)
+        {
+            StringCollection sc = new StringCollection();
+            if (stubIndex < _model.Meta.Stub.Count - 1)
+            {
+                StringCollection sc2 = ConcatStubValues(stubIndex + 1);
+                for (int valueIndex = 0; valueIndex < _model.Meta.Stub[stubIndex].Values.Count; valueIndex++)
+                {
+                    for (int j = 0; j < sc2.Count; j++)
+                    {
+                        sc.Add($"\"{GetLabel(_model.Meta.Stub[stubIndex].Values[valueIndex])}\"{this._delimiter}{sc2[j]}");
+                    }
+                }
+            }
+            else
+            {
+                for (int valueIndex = 0; valueIndex < _model.Meta.Stub[stubIndex].Values.Count; valueIndex++)
+                {
+                    sc.Add($"\"{GetLabel(_model.Meta.Stub[stubIndex].Values[valueIndex])}\"");
                 }
             }
             return sc;
@@ -269,14 +290,18 @@ namespace PCAxis.Paxiom
             StringCollection sc;
 
             string value = "";
-            bool containsDataCellNotes = Model.Meta.DataNoteCells.Count > 0;
+            bool containsDataCellNotes = _model.Meta.DataNoteCells.Count > 0;
             DataFormatter df = CreateDataFormater();
 
-            if (Model.Meta.Stub.Count > 0)
+            bool haveStubVariables = _model.Meta.Stub.Count > 0;
+
+
+
+            if (_model.Meta.Stub.Count > 0)
             {
                 sc = ConcatStubValues(0);
 
-                if (sc.Count != Model.Data.MatrixRowCount)
+                if (sc.Count != _model.Data.MatrixRowCount)
                 {
                     throw new PXSerializationException("Stub values do not match the data", "");
                 }
@@ -284,59 +309,21 @@ namespace PCAxis.Paxiom
                 for (int i = 0; i < sc.Count; i++)
                 {
                     wr.Write(sc[i]);
-                    for (int c = 0; c < Model.Data.MatrixColumnCount; c++)
+                    for (int c = 0; c < _model.Data.MatrixColumnCount; c++)
                     {
                         value = df.ReadElement(i, c);
-
-                        if (containsDataCellNotes)
-                        {
-                            if (df.DataNotePlacment == DataNotePlacementType.After)
-                            {
-                                if (!char.IsDigit(value[value.Length - 1]))
-                                {
-                                    value = value.Substring(0, value.Length - 1);
-                                }
-                            }
-                            else if (df.DataNotePlacment == DataNotePlacementType.Before)
-                            {
-                                if (!char.IsDigit(value[0]))
-                                {
-                                    value = value.Substring(1);
-                                }
-                            }
-                        }
-
-                        wr.Write(this.Delimiter);
+                        wr.Write(this._delimiter);
                         wr.Write(value);
                     }
                     wr.WriteLine();
                 }
             }
-            else if (Model.Meta.Heading.Count > 0)
+            else if (_model.Meta.Heading.Count > 0)
             {
-                for (int c = 0; c < Model.Data.MatrixColumnCount; c++)
+                for (int c = 0; c < _model.Data.MatrixColumnCount; c++)
                 {
                     value = df.ReadElement(0, c);
-
-                    if (containsDataCellNotes)
-                    {
-                        if (df.DataNotePlacment == DataNotePlacementType.After)
-                        {
-                            if (!char.IsDigit(value[value.Length - 1]))
-                            {
-                                value = value.Substring(0, value.Length - 1);
-                            }
-                        }
-                        else if (df.DataNotePlacment == DataNotePlacementType.Before)
-                        {
-                            if (!char.IsDigit(value[0]))
-                            {
-                                value = value.Substring(1);
-                            }
-                        }
-                    }
-
-                    wr.Write(this.Delimiter);
+                    wr.Write(this._delimiter);
                     wr.Write(value);
                 }
             }
@@ -344,41 +331,14 @@ namespace PCAxis.Paxiom
 
         private DataFormatter CreateDataFormater()
         {
-            DataFormatter df = new DataFormatter(Model);
+            DataFormatter df = new DataFormatter(_model);
             df.DecimalSeparator = ".";
             df.ShowDataNotes = false;
             df.ThousandSeparator = "";
             return df;
         }
 
-        /// <summary>
-        /// Concatenates the stub values 
-        /// </summary>
-        /// <param name="stubIndex">The index of the stub variable</param>
-        /// <returns>String collection with all the concatenated stub values for the given index</returns>
-        private StringCollection ConcatStubValues(int stubIndex)
-        {
-            StringCollection sc = new StringCollection();
-            if (stubIndex < Model.Meta.Stub.Count - 1)
-            {
-                StringCollection sc2 = ConcatStubValues(stubIndex + 1);
-                for (int valueIndex = 0; valueIndex < Model.Meta.Stub[stubIndex].Values.Count; valueIndex++)
-                {
-                    for (int j = 0; j < sc2.Count; j++)
-                    {
-                        sc.Add(TableStub(stubIndex, valueIndex) + this.Delimiter + sc2[j]);
-                    }
-                }
-            }
-            else
-            {
-                for (int valueIndex = 0; valueIndex < Model.Meta.Stub[stubIndex].Values.Count; valueIndex++)
-                {
-                    sc.Add(TableStub(stubIndex, valueIndex));
-                }
-            }
-            return sc;
-        }
+        
 
         /// <summary>
         /// Get the stub value and code
@@ -393,39 +353,25 @@ namespace PCAxis.Paxiom
         {
             StringBuilder sb = new StringBuilder();
 
-            if (this.DoubleColumn && Model.Meta.Stub[stubIndex].DoubleColumn)
+            if (this.DoubleColumn && _model.Meta.Stub[stubIndex].DoubleColumn)
             {
-                if (Model.Meta.Stub[stubIndex].Values[valueIndex].HasCode())
+                if (_model.Meta.Stub[stubIndex].Values[valueIndex].HasCode())
                 {
                     sb.Append('"');
-                    sb.Append(Model.Meta.Stub[stubIndex].Values[valueIndex].Code);
+                    sb.Append(_model.Meta.Stub[stubIndex].Values[valueIndex].Code);
                     sb.Append('"');
-                    sb.Append(this.Delimiter);
+                    sb.Append(this._delimiter);
                 }
             }
 
             sb.Append('"');
-            sb.Append(GetLabel(Model.Meta.Stub[stubIndex].Values[valueIndex]));
+            sb.Append(GetLabel(_model.Meta.Stub[stubIndex].Values[valueIndex]));
             sb.Append('"');
 
             return sb.ToString();
         }
 
-        public enum Delimiters
-        {
-            Comma,
-            Semicolon,
-            Tab,
-            Space
-        }
 
-        public enum LablePreference
-        {
-            None,
-            Code,
-            Text,
-            BothCodeAndText
-        }
 
         
     }
