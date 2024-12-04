@@ -37,8 +37,6 @@ namespace PCAxis.Paxiom
 
         #region Public properties
 
-        public bool DoubleColumn { get; set; } = false;
-
         public bool IncludeTitle { get; set; } = false;
 
 
