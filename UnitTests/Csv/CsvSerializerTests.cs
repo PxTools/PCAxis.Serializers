@@ -10,30 +10,27 @@ namespace PCAxis.Serializers.Tests.Csv
     public class CsvSerializerTests
     {
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Serialize_NullModel_ThrowsArgumentNullException()
         {
             var serializer = new CsvSerializer();
-            serializer.Serialize(null, "path");
+            Assert.ThrowsException<ArgumentNullException>(() => serializer.Serialize(null, "path"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Serialize_NullStream_ThrowsArgumentNullException()
         {
             var serializer = new CsvSerializer();
             var model = new PXModel();
-            serializer.Serialize(model, (Stream)null);
+            Assert.ThrowsException<ArgumentNullException>(() => serializer.Serialize(model, (Stream)null));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
         public void Serialize_UnwritableStream_ThrowsArgumentException()
         {
             var serializer = new CsvSerializer();
             var model = new PXModel();
             var stream = new MemoryStream(new byte[0], false);
-            serializer.Serialize(model, stream);
+            Assert.ThrowsException<ArgumentException>(() => serializer.Serialize(model, stream));
         }
 
         [TestMethod]
