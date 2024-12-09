@@ -9,17 +9,14 @@
  */
 
 using System;
-using System.Linq;
-using System.Text;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using System.Text;
+
 using Newtonsoft.Json;
-using PCAxis.Serializers.JsonStat2.Model.Converters;
 
 namespace PCAxis.Serializers.JsonStat2.Model
-{ 
+{
     /// <summary>
     /// 
     /// </summary>
@@ -31,7 +28,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// </summary>
         /// <value>the link relation, see https://www.iana.org/assignments/link-relations/link-relations.xhtml</value>
         [Required]
-        [DataMember(Name="rel", EmitDefaultValue=false)]
+        [DataMember(Name = "rel", EmitDefaultValue = false)]
         public string Rel { get; set; }
 
         /// <summary>
@@ -39,7 +36,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// </summary>
         /// <value>The language that is used for the link, see https://moz.com/learn/seo/hreflang-tag</value>
         [Required]
-        [DataMember(Name="hreflang", EmitDefaultValue=false)]
+        [DataMember(Name = "hreflang", EmitDefaultValue = false)]
         public string Hreflang { get; set; }
 
         /// <summary>
@@ -47,7 +44,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// </summary>
         /// <value>the link to the resource</value>
         [Required]
-        [DataMember(Name="href", EmitDefaultValue=false)]
+        [DataMember(Name = "href", EmitDefaultValue = false)]
         public string Href { get; set; }
 
         /// <summary>
@@ -96,17 +93,17 @@ namespace PCAxis.Serializers.JsonStat2.Model
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return 
+            return
                 (
                     Rel == other.Rel ||
                     Rel != null &&
                     Rel.Equals(other.Rel)
-                ) && 
+                ) &&
                 (
                     Hreflang == other.Hreflang ||
                     Hreflang != null &&
                     Hreflang.Equals(other.Hreflang)
-                ) && 
+                ) &&
                 (
                     Href == other.Href ||
                     Href != null &&
@@ -124,18 +121,18 @@ namespace PCAxis.Serializers.JsonStat2.Model
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                    if (Rel != null)
+                if (Rel != null)
                     hashCode = hashCode * 59 + Rel.GetHashCode();
-                    if (Hreflang != null)
+                if (Hreflang != null)
                     hashCode = hashCode * 59 + Hreflang.GetHashCode();
-                    if (Href != null)
+                if (Href != null)
                     hashCode = hashCode * 59 + Href.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-        #pragma warning disable 1591
+#pragma warning disable 1591
 
         public static bool operator ==(Link left, Link right)
         {
@@ -147,7 +144,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
             return !Equals(left, right);
         }
 
-        #pragma warning restore 1591
+#pragma warning restore 1591
         #endregion Operators
     }
 }

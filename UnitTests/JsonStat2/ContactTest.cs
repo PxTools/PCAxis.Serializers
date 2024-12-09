@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
-using PCAxis.Paxiom;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using Newtonsoft.Json.Linq;
+
+using PCAxis.Paxiom;
 
 namespace UnitTests.JsonStat2
 {
@@ -47,7 +47,7 @@ namespace UnitTests.JsonStat2
             var expectedFirstContact = "Ann-Marie Persson, SCB# +46 010-479 63 38#ann-marie.persson@scb.se";
             var expectedSecondContact = " Statistikservice, SCB# +46 010-479 50 00#information@scb.se";
             var expectedThirdContact = "Rasmus Andersson, SCB# +46 010-479 66 55#rasmus.andersson@scb.se";
-            
+
             var actualFirstContact = jsonstat2AsJObject["extension"]["contact"][0]["raw"].ToString();
             var actualSecondContact = jsonstat2AsJObject["extension"]["contact"][1]["raw"].ToString();
             var actualThirdContact = jsonstat2AsJObject["extension"]["contact"][2]["raw"].ToString();
@@ -93,7 +93,7 @@ namespace UnitTests.JsonStat2
         public void TestContactInformation()
         {
             var expectedContact = "   Befolkningsstatistik, SCB#Tel: 019-17 60 10#E-mail: befolkning@scb.se";
-            
+
             var actualContact = jsonstat2AsJObject["extension"]["contact"][0]["raw"].ToString();
 
             Assert.AreEqual(expectedContact, actualContact);

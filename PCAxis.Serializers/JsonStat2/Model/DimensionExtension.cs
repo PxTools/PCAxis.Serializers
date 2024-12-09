@@ -9,17 +9,13 @@
  */
 
 using System;
-using System.Linq;
-using System.Text;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using PCAxis.Serializers.JsonStat2.Model.Converters;
+using System.Text;
 
 namespace PCAxis.Serializers.JsonStat2.Model
-{ 
+{
     /// <summary>
     /// 
     /// </summary>
@@ -30,7 +26,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// A extension object
         /// </summary>
         /// <value>A extension object</value>
-        [DataMember(Name="extension", EmitDefaultValue=false)]
+        [DataMember(Name = "extension", EmitDefaultValue = false)]
         public Dictionary<string, string> Extension { get; set; }
 
         /// <summary>
@@ -77,7 +73,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return 
+            return
                 (
                     Extension == other.Extension ||
                     Extension != null &&
@@ -96,14 +92,14 @@ namespace PCAxis.Serializers.JsonStat2.Model
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                    if (Extension != null)
+                if (Extension != null)
                     hashCode = hashCode * 59 + Extension.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-        #pragma warning disable 1591
+#pragma warning disable 1591
 
         public static bool operator ==(DimensionExtension left, DimensionExtension right)
         {
@@ -115,7 +111,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
             return !Equals(left, right);
         }
 
-        #pragma warning restore 1591
+#pragma warning restore 1591
         #endregion Operators
     }
 }

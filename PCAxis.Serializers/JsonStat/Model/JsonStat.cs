@@ -18,7 +18,7 @@
             set { _dataset = value; }
         }
 
-        public JsonStat()  { }
+        public JsonStat() { }
 
     }
 }

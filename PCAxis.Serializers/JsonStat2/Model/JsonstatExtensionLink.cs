@@ -9,17 +9,13 @@
  */
 
 using System;
-using System.Linq;
-using System.Text;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using PCAxis.Serializers.JsonStat2.Model.Converters;
+using System.Text;
 
 namespace PCAxis.Serializers.JsonStat2.Model
-{ 
+{
     /// <summary>
     /// 
     /// </summary>
@@ -29,7 +25,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// <summary>
         /// Gets or Sets Describedby
         /// </summary>
-        [DataMember(Name="describedby", EmitDefaultValue=false)]
+        [DataMember(Name = "describedby", EmitDefaultValue = false)]
         public List<DimensionExtension> Describedby { get; set; }
 
         /// <summary>
@@ -76,7 +72,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return 
+            return
                 (
                     Describedby == other.Describedby ||
                     Describedby != null &&
@@ -95,14 +91,14 @@ namespace PCAxis.Serializers.JsonStat2.Model
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                    if (Describedby != null)
+                if (Describedby != null)
                     hashCode = hashCode * 59 + Describedby.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-        #pragma warning disable 1591
+#pragma warning disable 1591
 
         public static bool operator ==(JsonstatExtensionLink left, JsonstatExtensionLink right)
         {
@@ -114,7 +110,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
             return !Equals(left, right);
         }
 
-        #pragma warning restore 1591
+#pragma warning restore 1591
         #endregion Operators
     }
 }

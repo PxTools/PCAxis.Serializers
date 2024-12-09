@@ -1,93 +1,92 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json;
-using PCAxis.Paxiom;
 using System;
 using System.Globalization;
-using System.IO;
-using System.Text;
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using PCAxis.Paxiom;
 
 namespace UnitTests.JsonStat
 {
-	[TestClass]
-	[DeploymentItem("TestFiles/PR0101B3.px")]
-	[DeploymentItem("TestFiles/Issue220Finland.px")]
-	public class NoCrashTests_Issue220
-	{
-		private JsonStatHelper helper = new JsonStatHelper();
+    [TestClass]
+    [DeploymentItem("TestFiles/PR0101B3.px")]
+    [DeploymentItem("TestFiles/Issue220Finland.px")]
+    public class NoCrashTests_Issue220
+    {
+        private JsonStatHelper helper = new JsonStatHelper();
 
 
-		[TestMethod]
-		public void PR0101B3_CultureInfoFinnish()
-		{
-			CultureInfo ci = new CultureInfo("fi-FI");
-			System.Threading.Thread.CurrentThread.CurrentCulture = ci;
-			System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
+        [TestMethod]
+        public void PR0101B3_CultureInfoFinnish()
+        {
+            CultureInfo ci = new CultureInfo("fi-FI");
+            System.Threading.Thread.CurrentThread.CurrentCulture = ci;
+            System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
 
 
-			PXModel myModel = helper.GetSelectAllModel("PR0101B3.px");
+            PXModel myModel = helper.GetSelectAllModel("PR0101B3.px");
 
 
-			try
-			{
-				string actual = helper.GetActual(myModel);
+            try
+            {
+                string actual = helper.GetActual(myModel);
 
-				Assert.IsTrue(actual.Length >= 1, "Made it!");
-			}
-			catch (Exception)
-			{
-				Assert.Fail();
-			}
-		}
-
-
-		[TestMethod]
-		public void NoCrash_CultureInfoFinnish()
-		{
-			CultureInfo ci = new CultureInfo("fi-FI");
-			System.Threading.Thread.CurrentThread.CurrentCulture = ci;
-			System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
+                Assert.IsTrue(actual.Length >= 1, "Made it!");
+            }
+            catch (Exception)
+            {
+                Assert.Fail();
+            }
+        }
 
 
-			PXModel myModel = helper.GetSelectAllModel("Issue220Finland.px");
+        [TestMethod]
+        public void NoCrash_CultureInfoFinnish()
+        {
+            CultureInfo ci = new CultureInfo("fi-FI");
+            System.Threading.Thread.CurrentThread.CurrentCulture = ci;
+            System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
 
 
-			try
-			{
-				string actual = helper.GetActual(myModel);
-
-				Assert.IsTrue(actual.Length >= 1, "Made it!");
-			}
-			catch (Exception)
-			{
-				Assert.Fail();
-			}
-		}
+            PXModel myModel = helper.GetSelectAllModel("Issue220Finland.px");
 
 
+            try
+            {
+                string actual = helper.GetActual(myModel);
 
-		[TestMethod]
-		public void NoCrash_CultureInfoNorway()
-		{
-
-			CultureInfo ci = new CultureInfo("nb-NO");
-			System.Threading.Thread.CurrentThread.CurrentCulture = ci;
-			System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
-
-
-			PXModel myModel = helper.GetSelectAllModel("Issue220Finland.px");
+                Assert.IsTrue(actual.Length >= 1, "Made it!");
+            }
+            catch (Exception)
+            {
+                Assert.Fail();
+            }
+        }
 
 
 
-			try
-			{
-				string actual = helper.GetActual(myModel);
+        [TestMethod]
+        public void NoCrash_CultureInfoNorway()
+        {
 
-				Assert.IsTrue(actual.Length >= 1, "Made it!");
-			}
-			catch (Exception)
-			{
-				Assert.Fail();
-			}
-		}
-	}
+            CultureInfo ci = new CultureInfo("nb-NO");
+            System.Threading.Thread.CurrentThread.CurrentCulture = ci;
+            System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
+
+
+            PXModel myModel = helper.GetSelectAllModel("Issue220Finland.px");
+
+
+
+            try
+            {
+                string actual = helper.GetActual(myModel);
+
+                Assert.IsTrue(actual.Length >= 1, "Made it!");
+            }
+            catch (Exception)
+            {
+                Assert.Fail();
+            }
+        }
+    }
 }

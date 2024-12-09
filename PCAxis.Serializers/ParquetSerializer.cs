@@ -1,7 +1,9 @@
 using System.IO;
 using System.Threading.Tasks;
+
 using Parquet;
 using Parquet.Rows;
+
 using PCAxis.Paxiom;
 
 namespace PCAxis.Serializers

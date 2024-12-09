@@ -1,8 +1,9 @@
 using System;
 using System.IO;
-using PCAxis.Paxiom;
-using PCAxis.Serializers;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using PCAxis.Paxiom;
 
 namespace PCAxis.Serializers.Tests
 {
@@ -53,7 +54,7 @@ namespace PCAxis.Serializers.Tests
 
         private PXModel CreateTestModel()
         {
-            
+
             PXMeta meta = new PXMeta();
 
             // Create time variable

@@ -9,17 +9,16 @@
  */
 
 using System;
-using System.Linq;
-using System.Text;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
+
 using Newtonsoft.Json;
-using PCAxis.Serializers.JsonStat2.Model.Converters;
 
 namespace PCAxis.Serializers.JsonStat2.Model
-{ 
+{
     /// <summary>
     /// 
     /// </summary>
@@ -31,7 +30,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// </summary>
         /// <value>The identity of the CodeList</value>
         [Required]
-        [DataMember(Name="id", EmitDefaultValue=false)]
+        [DataMember(Name = "id", EmitDefaultValue = false)]
         public string Id { get; set; }
 
         /// <summary>
@@ -39,14 +38,14 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// </summary>
         /// <value>A textual name for the CodeList</value>
         [Required]
-        [DataMember(Name="label", EmitDefaultValue=false)]
+        [DataMember(Name = "label", EmitDefaultValue = false)]
         public string Label { get; set; }
 
         /// <summary>
         /// Gets or Sets Type
         /// </summary>
         [Required]
-        [DataMember(Name="type", EmitDefaultValue=true)]
+        [DataMember(Name = "type", EmitDefaultValue = true)]
         public CodeListType Type { get; set; }
 
         /// <summary>
@@ -54,7 +53,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// </summary>
         /// <value>Links to associated information about the code list</value>
         [Required]
-        [DataMember(Name="links", EmitDefaultValue=false)]
+        [DataMember(Name = "links", EmitDefaultValue = false)]
         public List<Link> Links { get; set; }
 
         /// <summary>
@@ -104,22 +103,22 @@ namespace PCAxis.Serializers.JsonStat2.Model
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return 
+            return
                 (
                     Id == other.Id ||
                     Id != null &&
                     Id.Equals(other.Id)
-                ) && 
+                ) &&
                 (
                     Label == other.Label ||
                     Label != null &&
                     Label.Equals(other.Label)
-                ) && 
+                ) &&
                 (
                     Type == other.Type ||
-                    
+
                     Type.Equals(other.Type)
-                ) && 
+                ) &&
                 (
                     Links == other.Links ||
                     Links != null &&
@@ -138,20 +137,20 @@ namespace PCAxis.Serializers.JsonStat2.Model
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                    if (Id != null)
+                if (Id != null)
                     hashCode = hashCode * 59 + Id.GetHashCode();
-                    if (Label != null)
+                if (Label != null)
                     hashCode = hashCode * 59 + Label.GetHashCode();
-                    
-                    hashCode = hashCode * 59 + Type.GetHashCode();
-                    if (Links != null)
+
+                hashCode = hashCode * 59 + Type.GetHashCode();
+                if (Links != null)
                     hashCode = hashCode * 59 + Links.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-        #pragma warning disable 1591
+#pragma warning disable 1591
 
         public static bool operator ==(CodeListInformation left, CodeListInformation right)
         {
@@ -163,7 +162,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
             return !Equals(left, right);
         }
 
-        #pragma warning restore 1591
+#pragma warning restore 1591
         #endregion Operators
     }
 }

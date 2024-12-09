@@ -9,17 +9,13 @@
  */
 
 using System;
-using System.Linq;
-using System.Text;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using PCAxis.Serializers.JsonStat2.Model.Converters;
+using System.Text;
 
 namespace PCAxis.Serializers.JsonStat2.Model
-{ 
+{
     /// <summary>
     /// 
     /// </summary>
@@ -30,32 +26,32 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#label)
         /// </summary>
         /// <value>Specification on json-stat.org -&gt; [here](https://json-stat.org/full/#label)</value>
-        [DataMember(Name="label", EmitDefaultValue=false)]
+        [DataMember(Name = "label", EmitDefaultValue = false)]
         public string Label { get; set; }
 
         /// <summary>
         /// Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#note)
         /// </summary>
         /// <value>Spesification on json-stat.org -&gt; [here](https://json-stat.org/full/#note)</value>
-        [DataMember(Name="note", EmitDefaultValue=false)]
+        [DataMember(Name = "note", EmitDefaultValue = false)]
         public List<string> Note { get; set; }
 
         /// <summary>
         /// Gets or Sets Category
         /// </summary>
-        [DataMember(Name="category", EmitDefaultValue=false)]
+        [DataMember(Name = "category", EmitDefaultValue = false)]
         public JsonstatCategory Category { get; set; }
 
         /// <summary>
         /// Gets or Sets Extension
         /// </summary>
-        [DataMember(Name="extension", EmitDefaultValue=false)]
+        [DataMember(Name = "extension", EmitDefaultValue = false)]
         public ExtensionDimension Extension { get; set; }
 
         /// <summary>
         /// Gets or Sets Link
         /// </summary>
-        [DataMember(Name="link", EmitDefaultValue=false)]
+        [DataMember(Name = "link", EmitDefaultValue = false)]
         public JsonstatExtensionLink Link { get; set; }
 
         /// <summary>
@@ -106,28 +102,28 @@ namespace PCAxis.Serializers.JsonStat2.Model
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return 
+            return
                 (
                     Label == other.Label ||
                     Label != null &&
                     Label.Equals(other.Label)
-                ) && 
+                ) &&
                 (
                     Note == other.Note ||
                     Note != null &&
                     other.Note != null &&
                     Note.SequenceEqual(other.Note)
-                ) && 
+                ) &&
                 (
                     Category == other.Category ||
                     Category != null &&
                     Category.Equals(other.Category)
-                ) && 
+                ) &&
                 (
                     Extension == other.Extension ||
                     Extension != null &&
                     Extension.Equals(other.Extension)
-                ) && 
+                ) &&
                 (
                     Link == other.Link ||
                     Link != null &&
@@ -145,22 +141,22 @@ namespace PCAxis.Serializers.JsonStat2.Model
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                    if (Label != null)
+                if (Label != null)
                     hashCode = hashCode * 59 + Label.GetHashCode();
-                    if (Note != null)
+                if (Note != null)
                     hashCode = hashCode * 59 + Note.GetHashCode();
-                    if (Category != null)
+                if (Category != null)
                     hashCode = hashCode * 59 + Category.GetHashCode();
-                    if (Extension != null)
+                if (Extension != null)
                     hashCode = hashCode * 59 + Extension.GetHashCode();
-                    if (Link != null)
+                if (Link != null)
                     hashCode = hashCode * 59 + Link.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-        #pragma warning disable 1591
+#pragma warning disable 1591
 
         public static bool operator ==(DatasetDimensionValue left, DatasetDimensionValue right)
         {
@@ -172,7 +168,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
             return !Equals(left, right);
         }
 
-        #pragma warning restore 1591
+#pragma warning restore 1591
         #endregion Operators
     }
 }

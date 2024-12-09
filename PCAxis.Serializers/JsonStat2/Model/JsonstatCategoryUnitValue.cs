@@ -9,17 +9,11 @@
  */
 
 using System;
-using System.Linq;
-using System.Text;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using PCAxis.Serializers.JsonStat2.Model.Converters;
+using System.Text;
 
 namespace PCAxis.Serializers.JsonStat2.Model
-{ 
+{
     /// <summary>
     /// 
     /// </summary>
@@ -30,14 +24,14 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// It is the base unit (person, gram, euro, etc.).
         /// </summary>
         /// <value>It is the base unit (person, gram, euro, etc.).</value>
-        [DataMember(Name="base", EmitDefaultValue=false)]
+        [DataMember(Name = "base", EmitDefaultValue = false)]
         public string Base { get; set; }
 
         /// <summary>
         /// Number of decimals
         /// </summary>
         /// <value>Number of decimals</value>
-        [DataMember(Name="decimals", EmitDefaultValue=true)]
+        [DataMember(Name = "decimals", EmitDefaultValue = true)]
         public int Decimals { get; set; }
 
         /// <summary>
@@ -85,15 +79,15 @@ namespace PCAxis.Serializers.JsonStat2.Model
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return 
+            return
                 (
                     Base == other.Base ||
                     Base != null &&
                     Base.Equals(other.Base)
-                ) && 
+                ) &&
                 (
                     Decimals == other.Decimals ||
-                    
+
                     Decimals.Equals(other.Decimals)
                 );
         }
@@ -108,16 +102,16 @@ namespace PCAxis.Serializers.JsonStat2.Model
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                    if (Base != null)
+                if (Base != null)
                     hashCode = hashCode * 59 + Base.GetHashCode();
-                    
-                    hashCode = hashCode * 59 + Decimals.GetHashCode();
+
+                hashCode = hashCode * 59 + Decimals.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-        #pragma warning disable 1591
+#pragma warning disable 1591
 
         public static bool operator ==(JsonstatCategoryUnitValue left, JsonstatCategoryUnitValue right)
         {
@@ -129,7 +123,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
             return !Equals(left, right);
         }
 
-        #pragma warning restore 1591
+#pragma warning restore 1591
         #endregion Operators
     }
 }
