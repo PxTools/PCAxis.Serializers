@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+
 using PCAxis.Paxiom;
 using PCAxis.Paxiom.Extensions;
 using PCAxis.Paxiom.Operations;
@@ -21,11 +22,11 @@ namespace PCAxis.Serializers
             //using (var writer = new StreamWriter(stream, Encoding.UTF8))
             //{
             var writer = new StreamWriter(stream, new UTF8Encoding(false));
-                var tableResponse = new TableResponse();
-                PXModel pivotedModel = RearrangeValues(model);
-                var formatter = new DataFormatter(pivotedModel);
-                formatter.DecimalSeparator = ".";
-                formatter.ThousandSeparator = "";
+            var tableResponse = new TableResponse();
+            PXModel pivotedModel = RearrangeValues(model);
+            var formatter = new DataFormatter(pivotedModel);
+            formatter.DecimalSeparator = ".";
+            formatter.ThousandSeparator = "";
 
             string pxDateString;
 
@@ -45,68 +46,68 @@ namespace PCAxis.Serializers
 
             // Add Metadata
             tableResponse.Metadata.Add(new TableResponseMetadata
-			{
-				Infofile = pivotedModel.Meta.InfoFile,
-				Source = pivotedModel.Meta.Source,
-				Label = pivotedModel.Meta.Title,
+            {
+                Infofile = pivotedModel.Meta.InfoFile,
+                Source = pivotedModel.Meta.Source,
+                Label = pivotedModel.Meta.Title,
                 Updated = pxDateString.PxDateStringToDateTime().ToString()
             });
 
             // Add stub
             tableResponse.Columns.AddRange(pivotedModel.Meta.Stub.Select(s => new TableResponseColumn
+            {
+                Code = s.Code,
+                Text = s.Name,
+                Type = s.IsTime ? "t" : "d",
+                Comment = s.HasNotes() ? s.Notes.GetAllNotes() : null
+            }));
+
+            if (pivotedModel.Meta.ContentVariable != null)
+            {
+                // Add heading
+                tableResponse.Columns.AddRange(pivotedModel.Meta.ContentVariable.Values.Select(val => new TableResponseColumn
                 {
-                    Code = s.Code,
-                    Text = s.Name,
-                    Type = s.IsTime ? "t" : "d",
-                    Comment = s.HasNotes() ? s.Notes.GetAllNotes() : null
+                    Code = val.Code,
+                    Text = val.Text,
+                    Type = "c",
+                    Comment = val.HasNotes() ? val.Notes.GetAllNotes() : null
                 }));
+            }
+            else
+            {
+                tableResponse.Columns.Add(new TableResponseColumn
+                {
+                    Code = pivotedModel.Meta.Contents,
+                    Text = pivotedModel.Meta.Contents,
+                    Type = "c"
+                });
+            }
 
-                if (pivotedModel.Meta.ContentVariable != null)
+            // Add comments
+            foreach (var variable in pivotedModel.Meta.Stub)
+            {
+                foreach (var value in variable.Values)
                 {
-                    // Add heading
-                    tableResponse.Columns.AddRange(pivotedModel.Meta.ContentVariable.Values.Select(val => new TableResponseColumn
+                    if (value.HasNotes())
                     {
-                        Code = val.Code,
-                        Text = val.Text,
-                        Type = "c",
-                        Comment = val.HasNotes() ? val.Notes.GetAllNotes() : null
-                    }));
-                }
-                else
-                {
-                    tableResponse.Columns.Add(new TableResponseColumn
-                    {
-                        Code = pivotedModel.Meta.Contents,
-                        Text = pivotedModel.Meta.Contents,
-                        Type = "c"
-                    });
-                }
-
-                // Add comments
-                foreach (var variable in pivotedModel.Meta.Stub)
-                {
-                    foreach (var value in variable.Values)
-                    {
-                        if (value.HasNotes())
+                        tableResponse.Comments.Add(new TableResponseComment
                         {
-                            tableResponse.Comments.Add(new TableResponseComment
-                            {
-                                Comment = value.Notes.GetAllNotes(),
-                                Value = value.Code,
-                                Variable = variable.Code
-                            });
-                        }
+                            Comment = value.Notes.GetAllNotes(),
+                            Value = value.Code,
+                            Variable = variable.Code
+                        });
                     }
                 }
+            }
 
-                int row = 0;
+            int row = 0;
             Build(pivotedModel, formatter, 0, ref row, tableResponse, new List<string>());
 
 
             // Write to output stream
             writer.Write(tableResponse.ToJSON(false));
-                writer.Flush();
-           // } End using
+            writer.Flush();
+            // } End using
         }
 
         /// <summary>
@@ -138,7 +139,7 @@ namespace PCAxis.Serializers
                     for (int col = 0; col < model.Data.MatrixColumnCount; col++)
                     {
                         data.Values.Add(formatter.ReadElement(row, col));
-                        
+
                     }
                     response.Data.Add(data);
                     row++;

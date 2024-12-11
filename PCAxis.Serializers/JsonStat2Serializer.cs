@@ -1,12 +1,14 @@
 ﻿using System;
-using Newtonsoft.Json;
-using PCAxis.Paxiom;
-using PCAxis.Metadata;
-using PCAxis.Paxiom.Extensions;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Linq;
+using System.Text;
+
+using Newtonsoft.Json;
+
+using PCAxis.Metadata;
+using PCAxis.Paxiom;
+using PCAxis.Paxiom.Extensions;
 using PCAxis.Serializers.JsonStat2.Model;
 
 namespace PCAxis.Serializers
