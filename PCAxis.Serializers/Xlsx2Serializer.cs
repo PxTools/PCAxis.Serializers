@@ -40,8 +40,6 @@ namespace PCAxis.Serializers
 
         public LablePreference ValueLablesDisplay { get; set; } = LablePreference.None;
 
-        public InformationLevelType InformationLevel { get; set; } = InformationLevelType.AllInformation;
-
         public bool IncludeTitle { get; set; } = false;
 
 
@@ -110,110 +108,119 @@ namespace PCAxis.Serializers
             {
                 Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
-                //Create the workbook
+                // Create the workbook
                 var book = new XLWorkbook();
                 var sheet = book.Worksheets.Add(model.Meta.Matrix);
 
-                //Writes the title
+                // Writes the title
                 WriteTableTitle(model, sheet);
 
-                //Creates and initializes the dataformatter
+                // Creates and initializes the dataformatter
                 DataFormatter fmt = CreateDataFormater(model);
 
-                //Initialize data notes variables
+                // Initialize data notes variables
                 InitializeDataNotes(model, fmt);
 
+                // Writes the heading for the table
                 WriteHeading(model, sheet);
 
+                // Writes values for the stub and data cells
+                WriteAllRows(model, sheet, fmt);
 
-                string n = string.Empty;
-                string dataNote = string.Empty;
-                int row, column;
-                string value;
-                int dataNoteFactor = 1;
-                int dataNoteValueOffset = 0;
-                int dataNoteNoteOffset = 1;
-                if (_showDataNoteCells)
-                {
-                    dataNoteFactor = 2;
-                    if (_modelDataNotePlacement == DataNotePlacementType.Before)
-                    {
-                        dataNoteValueOffset = 1;
-                        dataNoteNoteOffset = 0;
-                    }
-                    else
-                    {
-                        dataNoteValueOffset = 0;
-                        dataNoteNoteOffset = 1;
-                    }
-                }
-                int sIndent = CalculateLeftIndentation(model);
-                for (int i = 0; i < model.Data.MatrixRowCount; i++)
-                {
-
-                    for (int k = 0; k < model.Meta.Stub.Count; k++)
-                    {
-                        GetStubCell(model, sheet, k, i, IsDoubleColumn(model.Meta.Stub[k]));
-                    }
-                    for (int j = 0; j < model.Data.MatrixColumnCount; j++)
-                    {
-                        row = 3 + model.Meta.Heading.Count + i;
-                        column = j * dataNoteFactor + sIndent + 1;
-                        value = fmt.ReadElement(i, j, ref n, ref dataNote);
-
-                        //TODO: Improve performance of setting value format, takes a lot of CPU at the moment
-                        SetCell(
-                            sheet.Cell(row, column + dataNoteValueOffset),
-                            CellContentType.Data,
-                            value,
-                            !value.IsNumeric() ?
-                                (FormatCellDescription)(c => { c.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right; })
-                                :
-                                (FormatCellDescription)(c => { c.DataType = XLDataType.Number; c.Style.NumberFormat.Format = FormatNumericCell(GetDecimalPrecision(value, fmt.DecimalSeparator)); })
-                        );
-                        if (!string.IsNullOrEmpty(n))
-                        {
-                            //sheet.Cell(row, column + dataNoteValueOffset).Comment.AddText(n);
-                            SetCell(
-                                sheet.Cell(row, column + dataNoteValueOffset),
-                                CellContentType.Comment,
-                                n,
-                                null
-                            );
-                        }
-
-                        if (_showDataNoteCells && !String.IsNullOrEmpty(dataNote))
-                        {
-                            //sheet.Cell(row, column + dataNoteNoteOffset).Value = dataNote;    
-                            SetCell(
-                                sheet.Cell(row, column + dataNoteNoteOffset),
-                                CellContentType.DataNote,
-                                dataNote,
-                                null
-                            );
-                        }
-
-                    }
-
-                }
-
-                int r = model.Data.MatrixRowCount + model.Meta.Heading.Count + 4;
-                //Writes the information
-                if (InformationLevel > InformationLevelType.None)
-                {
-                    r = WriteFootnotes(r, model, sheet);
-                    if (InformationLevel == InformationLevelType.AllInformation)
-                    {
-                        r = WriteTableInformation(r, model, sheet);
-                    }
-                }
-
+                // Writes the information             
+                WriteAllTableExtraMetadata(model, sheet, fmt);
 
                 return book;
             }
             finally
             {
                 Thread.CurrentThread.CurrentCulture = currentCulture;
+            }
+        }
+
+        private void WriteAllTableExtraMetadata(PXModel model, IXLWorksheet sheet, DataFormatter fmt)
+        {
+           
+            int r = model.Data.MatrixRowCount + model.Meta.Heading.Count + 4;
+
+            // Writes footnotes
+            r = WriteFootnotes(r, model, sheet);
+
+            // Writes rest of the information
+            r = WriteTableInformation(r, model, sheet);
+        }
+
+        private void WriteAllRows(PXModel model, IXLWorksheet sheet, DataFormatter fmt)
+        {
+            string n = string.Empty;
+            string dataNote = string.Empty;
+            int row, column;
+            string value;
+            int dataNoteFactor = 1;
+            int dataNoteValueOffset = 0;
+            int dataNoteNoteOffset = 1;
+            if (_showDataNoteCells)
+            {
+                dataNoteFactor = 2;
+                if (_modelDataNotePlacement == DataNotePlacementType.Before)
+                {
+                    dataNoteValueOffset = 1;
+                    dataNoteNoteOffset = 0;
+                }
+                else
+                {
+                    dataNoteValueOffset = 0;
+                    dataNoteNoteOffset = 1;
+                }
+            }
+            int sIndent = CalculateLeftIndentation(model);
+            for (int i = 0; i < model.Data.MatrixRowCount; i++)
+            {
+
+                for (int k = 0; k < model.Meta.Stub.Count; k++)
+                {
+                    GetStubCell(model, sheet, k, i, IsDoubleColumn(model.Meta.Stub[k]));
+                }
+                for (int j = 0; j < model.Data.MatrixColumnCount; j++)
+                {
+                    row = 3 + model.Meta.Heading.Count + i;
+                    column = j * dataNoteFactor + sIndent + 1;
+                    value = fmt.ReadElement(i, j, ref n, ref dataNote);
+
+                    //TODO: Improve performance of setting value format, takes a lot of CPU at the moment
+                    SetCell(
+                        sheet.Cell(row, column + dataNoteValueOffset),
+                        CellContentType.Data,
+                        value,
+                        !value.IsNumeric() ?
+                            (FormatCellDescription)(c => { c.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right; })
+                            :
+                            (FormatCellDescription)(c => { c.DataType = XLDataType.Number; c.Style.NumberFormat.Format = FormatNumericCell(GetDecimalPrecision(value, fmt.DecimalSeparator)); })
+                    );
+                    if (!string.IsNullOrEmpty(n))
+                    {
+                        //sheet.Cell(row, column + dataNoteValueOffset).Comment.AddText(n);
+                        SetCell(
+                            sheet.Cell(row, column + dataNoteValueOffset),
+                            CellContentType.Comment,
+                            n,
+                            null
+                        );
+                    }
+
+                    if (_showDataNoteCells && !String.IsNullOrEmpty(dataNote))
+                    {
+                        //sheet.Cell(row, column + dataNoteNoteOffset).Value = dataNote;    
+                        SetCell(
+                            sheet.Cell(row, column + dataNoteNoteOffset),
+                            CellContentType.DataNote,
+                            dataNote,
+                            null
+                        );
+                    }
+
+                }
+
             }
         }
 
@@ -242,7 +249,7 @@ namespace PCAxis.Serializers
                 fmt.DecimalSeparator = ",";
             }
 
-            fmt.InformationLevel = InformationLevel;
+            fmt.InformationLevel = InformationLevelType.AllInformation;
             return fmt;
         }
 
@@ -261,65 +268,66 @@ namespace PCAxis.Serializers
 
         private int WriteFootnotes(int row, PXModel model, IXLWorksheet sheet)
         {
-            if (InformationLevel <= InformationLevelType.None) return row;
-
             int columnCount = sheet.Columns().Count();
-
-            Note n;
-            //Writes mandantory table notes
-            for (int i = 0; i < model.Meta.Notes.Count; i++)
-            {
-                n = model.Meta.Notes[i];
-                if ((n.Mandantory && InformationLevel == InformationLevelType.MandantoryFootnotesOnly) ||
-                     InformationLevel > InformationLevelType.MandantoryFootnotesOnly)
-                {
-                    SetCell(
-                        sheet.Cell(row, 1),
-                        CellContentType.Footnote,
-                        n.Text,
-                        c => c.Style.Alignment.WrapText = false
-                    );
-                    row++;
-
-                }
-            }
+            row = WriteMandatoryTableNotes(row, model, sheet);
 
             //Writes mandantory variable notes
-            Variable var;
-            for (int i = 0; i < model.Meta.Variables.Count; i++)
-            {
-                var = model.Meta.Variables[i];
-                if (var.HasNotes())
-                {
-                    for (int j = 0; j < var.Notes.Count; j++)
-                    {
-                        n = var.Notes[j];
-                        if ((n.Mandantory && InformationLevel == InformationLevelType.MandantoryFootnotesOnly) ||
-                                InformationLevel > InformationLevelType.MandantoryFootnotesOnly)
-                        {
-                            SetCell(
-                                sheet.Cell(row, 1),
-                                CellContentType.VariableNote,
-                                var.Name + ":",
-                                null
-                            );
-                            row++;
-
-                            SetCell(
-                                sheet.Cell(row, 1),
-                                CellContentType.VariableNote,
-                                n.Text,
-                                null
-                            );
-
-                            row += 2;
-                        }
-                    }
-                }
-            }
+            row = WriteMandatoryVariableNotes(row, model, sheet);
 
             //Writes mandantory value notes
+            row = WriteMandatoryValueNotes(row, model, sheet);
+
+            //Writes mandantory cellnotes 
+            row = WriteMandatoryCellNotes(row, model, sheet);
+            return row++;
+        }
+
+        private int WriteMandatoryCellNotes(int row, PXModel model, IXLWorksheet sheet)
+        {
+            Variable var;
             Value val;
+            CellNote cn;
+            VariableValuePair vvp;
+            for (int i = 0; i < model.Meta.CellNotes.Count; i++)
+            {
+                cn = model.Meta.CellNotes[i];
+                for (int j = 0; j < cn.Conditions.Count; j++)
+                {
+                    vvp = cn.Conditions[j];
+                    var = model.Meta.Variables.GetByCode(vvp.VariableCode);
+                    val = var.Values.GetByCode(vvp.ValueCode);
+                    SetCell(
+                        sheet.Cell(row, 1),
+                        CellContentType.CellNote,
+                        var.Name + ":",
+                        null
+                    );
+                    row++;
+                    SetCell(
+                        sheet.Cell(row, 1),
+                        CellContentType.CellNote,
+                        val.Value + ":",
+                        null
+                    );
+                    row++;
+                }
+                SetCell(
+                    sheet.Cell(row, 1),
+                    CellContentType.CellNote,
+                    cn.Text,
+                    null
+                );
+                row += 2;
+            }
+
+            return row;
+        }
+
+        private int WriteMandatoryValueNotes(int row, PXModel model, IXLWorksheet sheet)
+        {
+            Variable var;
+            Value val;
+            Note n;
             for (int i = 0; i < model.Meta.Variables.Count; i++)
             {
                 var = model.Meta.Variables[i];
@@ -331,75 +339,88 @@ namespace PCAxis.Serializers
                         for (int k = 0; k < val.Notes.Count; k++)
                         {
                             n = val.Notes[k];
-                            if ((n.Mandantory && InformationLevel == InformationLevelType.MandantoryFootnotesOnly) ||
-                                    InformationLevel > InformationLevelType.MandantoryFootnotesOnly)
-                            {
-                                SetCell(
-                                    sheet.Cell(row, 1),
-                                    CellContentType.ValueNote,
-                                    var.Name + ":",
-                                    null
-                                );
-                                row++;
-                                SetCell(
-                                    sheet.Cell(row, 1),
-                                    CellContentType.ValueNote,
-                                    val.Value + ":",
-                                    null
-                                );
-                                row++;
-                                SetCell(
-                                    sheet.Cell(row, 1),
-                                    CellContentType.ValueNote,
-                                    n.Text,
-                                    null
-                                );
-                                row += 2;
-                            }
+                            SetCell(
+                                sheet.Cell(row, 1),
+                                CellContentType.ValueNote,
+                                var.Name + ":",
+                                null
+                            );
+                            row++;
+                            SetCell(
+                                sheet.Cell(row, 1),
+                                CellContentType.ValueNote,
+                                val.Value + ":",
+                                null
+                            );
+                            row++;
+                            SetCell(
+                                sheet.Cell(row, 1),
+                                CellContentType.ValueNote,
+                                n.Text,
+                                null
+                            );
+                            row += 2;
+                            
                         }
                     }
                 }
             }
+            return row;
+        }
 
-            //Writes mandantory cellnotes 
-            CellNote cn;
-            VariableValuePair vvp;
-            for (int i = 0; i < model.Meta.CellNotes.Count; i++)
+        private int WriteMandatoryVariableNotes(int row, PXModel model, IXLWorksheet sheet)
+        {
+            Variable var;
+            Note n;
+            for (int i = 0; i < model.Meta.Variables.Count; i++)
             {
-                cn = model.Meta.CellNotes[i];
-                if ((cn.Mandatory && InformationLevel == InformationLevelType.MandantoryFootnotesOnly) ||
-                        InformationLevel > InformationLevelType.MandantoryFootnotesOnly)
+                var = model.Meta.Variables[i];
+                if (var.HasNotes())
                 {
-                    for (int j = 0; j < cn.Conditions.Count; j++)
+                    for (int j = 0; j < var.Notes.Count; j++)
                     {
-                        vvp = cn.Conditions[j];
-                        var = model.Meta.Variables.GetByCode(vvp.VariableCode);
-                        val = var.Values.GetByCode(vvp.ValueCode);
+                        n = var.Notes[j];
+                        
                         SetCell(
                             sheet.Cell(row, 1),
-                            CellContentType.CellNote,
+                            CellContentType.VariableNote,
                             var.Name + ":",
                             null
                         );
                         row++;
+
                         SetCell(
                             sheet.Cell(row, 1),
-                            CellContentType.CellNote,
-                            val.Value + ":",
+                            CellContentType.VariableNote,
+                            n.Text,
                             null
                         );
-                        row++;
+
+                        row += 2;
+                        
                     }
-                    SetCell(
-                        sheet.Cell(row, 1),
-                        CellContentType.CellNote,
-                        cn.Text,
-                        null
-                    );
-                    row += 2;
                 }
             }
-            return row++;
+            return row;
+        }
+
+        private int WriteMandatoryTableNotes(int row, PXModel model, IXLWorksheet sheet)
+        {
+            Note n;
+            //Writes mandantory table notes
+            for (int i = 0; i < model.Meta.Notes.Count; i++)
+            {
+                n = model.Meta.Notes[i];
+                
+                    SetCell(
+                        sheet.Cell(row, 1),
+                        CellContentType.Footnote,
+                        n.Text,
+                        c => c.Style.Alignment.WrapText = false
+                    );
+                    row++;
+            }
+            return row;
         }
 
         private int WriteTableInformation(int row, PXModel model, IXLWorksheet sheet)
