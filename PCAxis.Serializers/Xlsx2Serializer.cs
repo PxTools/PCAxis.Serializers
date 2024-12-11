@@ -144,7 +144,7 @@ namespace PCAxis.Serializers
             int r = model.Data.MatrixRowCount + model.Meta.Heading.Count + 4;
 
             // Writes footnotes
-            r = WriteFootnotes(r, model, sheet);
+            r = WriteAllNotes(r, model, sheet);
 
             // Writes rest of the information
             r = WriteTableInformation(r, model, sheet);
@@ -266,23 +266,23 @@ namespace PCAxis.Serializers
             }
         }
 
-        private int WriteFootnotes(int row, PXModel model, IXLWorksheet sheet)
+        private int WriteAllNotes(int row, PXModel model, IXLWorksheet sheet)
         {
             int columnCount = sheet.Columns().Count();
-            row = WriteMandatoryTableNotes(row, model, sheet);
+            row = WriteTableNotes(row, model, sheet);
 
             //Writes mandantory variable notes
-            row = WriteMandatoryVariableNotes(row, model, sheet);
+            row = WriteVariableNotes(row, model, sheet);
 
             //Writes mandantory value notes
-            row = WriteMandatoryValueNotes(row, model, sheet);
+            row = WriteValueNotes(row, model, sheet);
 
             //Writes mandantory cellnotes 
-            row = WriteMandatoryCellNotes(row, model, sheet);
+            row = WriteCellNotes(row, model, sheet);
             return row++;
         }
 
-        private int WriteMandatoryCellNotes(int row, PXModel model, IXLWorksheet sheet)
+        private int WriteCellNotes(int row, PXModel model, IXLWorksheet sheet)
         {
             Variable var;
             Value val;
@@ -323,7 +323,7 @@ namespace PCAxis.Serializers
             return row;
         }
 
-        private int WriteMandatoryValueNotes(int row, PXModel model, IXLWorksheet sheet)
+        private int WriteValueNotes(int row, PXModel model, IXLWorksheet sheet)
         {
             Variable var;
             Value val;
@@ -368,7 +368,7 @@ namespace PCAxis.Serializers
             return row;
         }
 
-        private int WriteMandatoryVariableNotes(int row, PXModel model, IXLWorksheet sheet)
+        private int WriteVariableNotes(int row, PXModel model, IXLWorksheet sheet)
         {
             Variable var;
             Note n;
@@ -404,7 +404,7 @@ namespace PCAxis.Serializers
             return row;
         }
 
-        private int WriteMandatoryTableNotes(int row, PXModel model, IXLWorksheet sheet)
+        private int WriteTableNotes(int row, PXModel model, IXLWorksheet sheet)
         {
             Note n;
             //Writes mandantory table notes
