@@ -1,14 +1,16 @@
 ﻿
 namespace PCAxis.Serializers
 {
-    using Newtonsoft.Json;
-    using PCAxis.Metadata;
-    using PCAxis.Paxiom;
-    using PCAxis.Paxiom.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+
+    using Newtonsoft.Json;
+
+    using PCAxis.Metadata;
+    using PCAxis.Paxiom;
+    using PCAxis.Paxiom.Extensions;
 
     public class JsonStatSerializer : PCAxis.Paxiom.IPXModelStreamSerializer
     {
@@ -37,10 +39,10 @@ namespace PCAxis.Serializers
         private const string DESCRIBEDBY = "describedby";
         private const string EXTENSION = "extension";
 
-		//Field in JSON-Stat, used for PX extention 
-		private const string PX = "px";
+        //Field in JSON-Stat, used for PX extention 
+        private const string PX = "px";
 
-		private string datasetTitle;
+        private string datasetTitle;
 
         /// <summary>
         /// Set an alternative title to the dataset instead of the generated one
@@ -127,28 +129,28 @@ namespace PCAxis.Serializers
             {
                 pxDateString = model.Meta.CreationDate;
             }
-           
+
             dataset.updated = pxDateString.PxDateStringToDateTime().ToString();
 
 
             dataset.dimension = new Dictionary<string, object>();
 
-			//Extension, PX 
-			if (meta.InfoFile != null || meta.TableID != null || meta.Decimals != -1)
-			{
-				dataset.extension = new Dictionary<string, object>();
-				var px = new JsonStat.Model.JsonStatPx();
+            //Extension, PX 
+            if (meta.InfoFile != null || meta.TableID != null || meta.Decimals != -1)
+            {
+                dataset.extension = new Dictionary<string, object>();
+                var px = new JsonStat.Model.JsonStatPx();
 
-				px.infofile = meta.InfoFile;
-				px.tableid = meta.TableID;
-				//If not Showdecimal has value use Decimal
-				var decimals = meta.ShowDecimals < 0 ? meta.Decimals : meta.ShowDecimals;
-				px.decimals = decimals;
+                px.infofile = meta.InfoFile;
+                px.tableid = meta.TableID;
+                //If not Showdecimal has value use Decimal
+                var decimals = meta.ShowDecimals < 0 ? meta.Decimals : meta.ShowDecimals;
+                px.decimals = decimals;
 
-				dataset.extension.Add(PX, px);
-			}
+                dataset.extension.Add(PX, px);
+            }
 
-			if (DatasetTitle != null)
+            if (DatasetTitle != null)
             {
                 dataset.label = DatasetTitle;
             }
@@ -231,7 +233,7 @@ namespace PCAxis.Serializers
                     link.Add(DESCRIBEDBY, new List<object> { extensions });
                     variableEntry.Add(LINK, link);
                 }
-                
+
                 PresentationFormType presentationForm;
                 Enum.TryParse<PresentationFormType>(variable.PresentationText.ToString(), out presentationForm);
 
@@ -311,13 +313,13 @@ namespace PCAxis.Serializers
 
             #endregion
 
-  		    // override converter to stop adding ".0" after interger values.
-			string result = JsonConvert.SerializeObject(jsonResult, new DecimalJsonConverter());
+            // override converter to stop adding ".0" after interger values.
+            string result = JsonConvert.SerializeObject(jsonResult, new DecimalJsonConverter());
 
 
-			return result;
+            return result;
         }
-        
+
         private Dictionary<string, object> GetAllSerializedMetaIdsForVariable(Variable variable)
         {
             var metaIds = new Dictionary<string, object>();

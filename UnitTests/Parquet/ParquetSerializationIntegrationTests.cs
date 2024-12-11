@@ -1,11 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using Parquet.Rows;
+
 using PCAxis.Paxiom;
 using PCAxis.Serializers;
-using System.Collections.Generic;
-using Parquet.Rows;
-using System.Threading.Tasks;
 
 namespace UnitTests.Parquet
 {
@@ -65,11 +68,11 @@ namespace UnitTests.Parquet
                     // Each content-variable value is a column, plus an additional symbol column
                     numberOfCols += variable.Values.Count * 2;
                 }
-                else if (variable.IsTime) 
-                {                                  
+                else if (variable.IsTime)
+                {
                     // Each time-variable have a Parsed-column in DateTime.
                     numberOfCols += 2;
-                } 
+                }
                 else
                 {
                     numberOfCols++;
