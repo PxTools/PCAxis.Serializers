@@ -8,6 +8,11 @@ using PCAxis.Serializers.Excel;
 using PCAxis.Paxiom;
 using PCAxis.Paxiom.Extensions;
 using Value = PCAxis.Paxiom.Value;
+using System.Reflection.Emit;
+using DocumentFormat.OpenXml.EMMA;
+using PCAxis.Serializers.JsonStat2.Model;
+using DocumentFormat.OpenXml.Spreadsheet;
+using System.Runtime.CompilerServices;
 
 namespace PCAxis.Serializers
 {
@@ -422,6 +427,199 @@ namespace PCAxis.Serializers
             }
             return row;
         }
+
+
+        private int WriteTableInformation2(int row, PXModel model, IXLWorksheet sheet)
+        {
+
+            var meta = model.Meta;
+
+            //Check if the information is attached on the table or on the values on the content variable
+            if (meta.ContentVariable != null && meta.ContentVariable.Values.Count > 0 && meta.ContentInfo != null)
+            {
+
+            }
+            else
+            {
+                row = WriteTableInformationFromTable(row, model, sheet);
+            }
+
+            return row;
+        }
+
+        private int WriteTableInformationFromTable(int row, PXModel model, IXLWorksheet sheet)
+        {
+
+            var meta = model.Meta;
+
+            row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordDatabase") + ":", meta.Database, sheet);
+            row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordMatrix") + ":", meta.Matrix, sheet);
+            row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordSource") + ":", meta.Source, sheet);
+
+            if (model.Meta.OfficialStatistics)
+            {
+                SetCell(
+                    sheet.Cell(row++, 1),
+                    CellContentType.Info,
+                    model.Meta.GetLocalizedString("PxcKeywordOfficialStatistics"),
+                    null
+                );
+            }
+
+            if (model.Meta.Copyright)
+            {
+                SetCell(
+                    sheet.Cell(row++, 1),
+                    CellContentType.Info,
+                    model.Meta.GetLocalizedString("PxcKeywordCopyright"),
+                    null
+                );
+            }
+
+            row = WriteTableInformationContacts(row, meta, sheet);
+            row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordLastUpdated") + ":", meta.ContentInfo.LastUpdated, sheet);
+            row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordUnits") + ":", meta.ContentInfo.Units, sheet);
+            row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordStockfa") + ":", ConvertStockFlowAverageToLocalText(meta.ContentInfo.StockFa, meta), sheet);
+            row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordBasePeriod") + ":", meta.ContentInfo.Baseperiod, sheet);
+            row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordBasePeriod") + ":", meta.ContentInfo.Baseperiod, sheet);
+            row = WriteTableInformationValue(row, "", ConvertCurrentOrFiexedPricesToLocalText(meta.ContentInfo.CFPrices, meta), sheet);
+
+            if (!String.IsNullOrEmpty(model.Meta.ContentInfo.DayAdj) && model.Meta.ContentInfo.DayAdj.ToUpper().Equals("YES"))
+            {
+                SetCell(
+                    sheet.Cell(row++, 1),
+                    CellContentType.Info,
+                    model.Meta.GetLocalizedString("PxcKeywordDayAdj"),
+                    null
+                );
+            }
+
+            if (!String.IsNullOrEmpty(model.Meta.ContentInfo.SeasAdj) && model.Meta.ContentInfo.SeasAdj.ToUpper().Equals("YES"))
+            {
+                SetCell(
+                    sheet.Cell(row++, 1),
+                    CellContentType.Info,
+                    model.Meta.GetLocalizedString("PxcKeywordSeasAdj"),
+                    null
+                );
+            }
+
+            return row;
+        }
+
+        private static string ConvertStockFlowAverageToLocalText(string stockFa, PXMeta meta)
+        {
+            switch (stockFa.ToUpper())
+            {
+                case "S":
+                    return meta.GetLocalizedString("PxcKeywordStockfaValueStock");
+                case "F":
+                    return meta.GetLocalizedString("PxcKeywordStockfaValueFlow");
+                case "A":
+                    return meta.GetLocalizedString("PxcKeywordStockfaValueAverage");
+                default:
+                    return stockFa;
+            }
+        }
+
+        private static string ConvertCurrentOrFiexedPricesToLocalText(string stockFa, PXMeta meta)
+        {
+            switch (stockFa.ToUpper())
+            {
+                case "C":
+                    return meta.GetLocalizedString("PxcKeywordCFPricesValueCurrent");
+                case "F":
+                    return meta.GetLocalizedString("PxcKeywordCFPricesValueFixed");
+                default:
+                    return stockFa;
+            }
+        }
+
+
+        private int WriteTableInformationContacts(int row, PXMeta meta, IXLWorksheet sheet)
+        {
+            SetCell(
+                sheet.Cell(row, 1),
+                CellContentType.Info,
+                meta.GetLocalizedString("PxcKeywordContact") + ":",
+                null
+            );
+            var memo = new HashSet<string>();
+            if (meta.ContentInfo != null)
+            {
+                row = WriteContact(row, meta.ContentInfo.Contact, sheet, memo);
+            }
+            else
+            {
+                foreach(var value in meta.ContentVariable.Values)
+                {
+                    if (value.ContentInfo != null)
+                    {
+                        row = WriteContact(row, value.ContentInfo.Contact, sheet, memo);
+                    }
+                }
+            }
+            return row;
+        }
+
+        private int WriteContact(int row, string contacts, IXLWorksheet sheet, HashSet<string> memo)
+        {
+            // Skip if contacts is empty
+            if (string.IsNullOrEmpty(contacts))
+            {
+                return row;
+            }
+
+            // Split contacts and write them it they have not been written before
+            foreach (var contact in contacts.Split('#'))
+            {
+                // Skip if contact already written
+                if (memo.Contains(contact))
+                {
+                    continue;
+                }
+
+                // Remembers that this contact has been written
+                memo.Add(contact);
+
+                SetCell(
+                    sheet.Cell(row, 1),
+                    CellContentType.Info,
+                    contact,
+                    null
+                );
+                row++;
+            }
+
+            return row;
+        }
+
+        private int WriteTableInformationValue(int row, string label, string value, IXLWorksheet sheet)
+        {
+            //Only write the information if the value is not empty
+            if (!string.IsNullOrEmpty(value))
+            {
+                //Write label
+                SetCell(
+                    sheet.Cell(row, 1),
+                    CellContentType.Info,
+                    label,
+                    null);
+
+                //Write value
+                SetCell(
+                    sheet.Cell(row, 2),
+                    CellContentType.Info,
+                    value,
+                    null
+                );
+                //Increase row
+                row++;
+            }
+            return row;
+        }
+
+
 
         private int WriteTableInformation(int row, PXModel model, IXLWorksheet sheet)
         {
