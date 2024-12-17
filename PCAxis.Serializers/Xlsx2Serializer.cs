@@ -903,7 +903,7 @@ namespace PCAxis.Serializers
             }
         }
 
-        private int CalcStubInterval(int stubChildNr, PXModel model)
+        private static int CalcStubInterval(int stubChildNr, PXModel model)
         {
             int interv = 1;
             //Intervall
