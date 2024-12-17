@@ -126,9 +126,10 @@ namespace PCAxis.Serializers
                 // Create the workbook
                 var book = new XLWorkbook();
                 var sheet = book.Worksheets.Add(model.Meta.Matrix);
+                int row;
 
                 // Writes the title
-                WriteTableTitle(model, sheet);
+                row = WriteTableTitle(model, sheet);
 
                 // Creates and initializes the dataformatter
                 DataFormatter fmt = CreateDataFormater(model);
@@ -137,13 +138,13 @@ namespace PCAxis.Serializers
                 InitializeDataNotes(model, fmt);
 
                 // Writes the heading for the table
-                WriteHeading(model, sheet);
+                row = WriteHeading(row, model, sheet);
 
                 // Writes values for the stub and data cells
-                WriteAllRows(model, sheet, fmt);
+                row = WriteAllRows(row, model, sheet, fmt);
 
                 // Writes the information             
-                WriteAllTableExtraMetadata(model, sheet);
+                WriteAllTableExtraMetadata(row, model, sheet);
 
                 return book;
             }
@@ -158,7 +159,7 @@ namespace PCAxis.Serializers
         /// </summary>
         /// <param name="model">The model containing the title</param>
         /// <param name="sheet">The sheet to write to</param>
-        private void WriteTableTitle(PXModel model, IXLWorksheet sheet)
+        private int WriteTableTitle(PXModel model, IXLWorksheet sheet)
         {
             if (IncludeTitle)
             {
@@ -168,7 +169,9 @@ namespace PCAxis.Serializers
                     model.Meta.DescriptionDefault ? model.Meta.Description : model.Meta.Title,
                     c => { c.Style.Font.FontSize = 14; c.Style.Font.Bold = true; }
                 );
+                return 2;
             }
+            return 1;
         }
 
         /// <summary>
@@ -193,7 +196,7 @@ namespace PCAxis.Serializers
         /// </summary>
         /// <param name="model">The model containg the data</param>
         /// <param name="sheet">The sheet where the data should be written</param>
-        private void WriteHeading(PXModel model, IXLWorksheet sheet)
+        private int WriteHeading(int row, PXModel model, IXLWorksheet sheet)
         {
             //Calc left indention caused by the stub
             int indentation = CalculateLeftIndentation(model);
@@ -207,8 +210,10 @@ namespace PCAxis.Serializers
                 //Calculates how many times the heading should be repeated
                 int numberOfRepeats = CalcHeadingRepeats(headingRow, model);
 
-                WriteHeaderVariable(model.Meta.Heading[headingRow], repeatInterval, numberOfRepeats, indentation, 3 + model.Meta.Heading.Count, sheet);
+                WriteHeaderVariable(model.Meta.Heading[headingRow], repeatInterval, numberOfRepeats, indentation, row + 1 + model.Meta.Heading.Count, sheet);
             }
+
+            return row + 1 + model.Meta.Heading.Count;
         }
 
         /// <summary>
@@ -217,11 +222,11 @@ namespace PCAxis.Serializers
         /// <param name="model">The model containing the data</param>
         /// <param name="sheet">The Excel sheet where the data sould be written</param>
         /// <param name="fmt">The data formater used when writing the data</param>
-        private void WriteAllRows(PXModel model, IXLWorksheet sheet, DataFormatter fmt)
+        private int WriteAllRows(int row, PXModel model, IXLWorksheet sheet, DataFormatter fmt)
         {
             string n = string.Empty;
             string dataNote = string.Empty;
-            int row, column;
+            int column;
             string value;
             int dataNoteFactor = 1;
             int dataNoteValueOffset = 0;
@@ -250,7 +255,6 @@ namespace PCAxis.Serializers
                 }
                 for (int j = 0; j < model.Data.MatrixColumnCount; j++)
                 {
-                    row = 3 + model.Meta.Heading.Count + i;
                     column = j * dataNoteFactor + sIndent + 1;
                     value = fmt.ReadElement(i, j, ref n, ref dataNote);
 
@@ -282,10 +286,10 @@ namespace PCAxis.Serializers
                             null
                         );
                     }
-
+                    row++;
                 }
-
             }
+            return row;
         }
 
         /// <summary>
@@ -294,18 +298,14 @@ namespace PCAxis.Serializers
         /// <param name="model">The model containing the infromation</param>
         /// <param name="sheet">The Excel sheet where the data sould be written</param>
         /// <returns>The row where the last information was written</returns>
-        private int WriteAllTableExtraMetadata(PXModel model, IXLWorksheet sheet)
+        private void WriteAllTableExtraMetadata(int row, PXModel model, IXLWorksheet sheet)
         {
-
-            int r = model.Data.MatrixRowCount + model.Meta.Heading.Count + 4;
-
             // Writes footnotes
-            r = WriteAllNotes(r, model, sheet);
+            row = WriteAllNotes(row, model, sheet);
 
             // Writes rest of the information
-            r = WriteTableInformation(r, model, sheet);
+            WriteTableInformation(row, model, sheet);
 
-            return r;
         }
 
 
@@ -473,7 +473,7 @@ namespace PCAxis.Serializers
         }
 
 
-        private int WriteTableInformation(int row, PXModel model, IXLWorksheet sheet)
+        private void WriteTableInformation(int row, PXModel model, IXLWorksheet sheet)
         {
 
             var meta = model.Meta;
@@ -508,17 +508,16 @@ namespace PCAxis.Serializers
             //Check if the information is attached on the table or on the values on the content variable
             if (meta.ContentVariable != null && meta.ContentVariable.Values.Count > 0 && meta.ContentInfo is null)
             {
-                row = WriteTableInformationFromContentVariable(row, model, sheet);
+                WriteTableInformationFromContentVariable(row, model, sheet);
             }
             else
             {
-                row = WriteTableInformationFromTable(row, model, sheet);
+                WriteTableInformationFromTable(row, model, sheet);
             }
 
-            return row;
         }
 
-        private int WriteTableInformationFromContentVariable(int row, PXModel model, IXLWorksheet sheet)
+        private void WriteTableInformationFromContentVariable(int row, PXModel model, IXLWorksheet sheet)
         {
 
             var meta = model.Meta;
@@ -540,11 +539,9 @@ namespace PCAxis.Serializers
                     null
                 );
             }
-
-            return row;
         }
 
-        private int WriteTableInformationFromTable(int row, PXModel model, IXLWorksheet sheet)
+        private void WriteTableInformationFromTable(int row, PXModel model, IXLWorksheet sheet)
         {
 
             var meta = model.Meta;
@@ -574,8 +571,6 @@ namespace PCAxis.Serializers
                     null
                 );
             }
-
-            return row;
         }
 
         #region "Converter functions"
