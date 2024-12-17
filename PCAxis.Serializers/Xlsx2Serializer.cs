@@ -38,7 +38,6 @@ namespace PCAxis.Serializers
             Data,
             Footnote,
             Info,
-            DataNote,
             VariableNote,
             ValueNote,
             CellNote,
@@ -51,10 +50,6 @@ namespace PCAxis.Serializers
         public bool IncludeTitle { get; set; } = false;
 
         #endregion
-
-        private bool _showDataNoteCells = false;
-        private DataNotePlacementType _modelDataNotePlacement;
-
 
         public void Serialize(PCAxis.Paxiom.PXModel model, System.IO.Stream stream)
         {
@@ -134,9 +129,6 @@ namespace PCAxis.Serializers
                 // Creates and initializes the dataformatter
                 DataFormatter fmt = CreateDataFormater(model);
 
-                // Initialize data notes variables
-                InitializeDataNotes(model, fmt);
-
                 // Writes the heading for the table
                 row = WriteHeading(row, model, sheet);
 
@@ -172,23 +164,6 @@ namespace PCAxis.Serializers
                 return 2;
             }
             return 1;
-        }
-
-        /// <summary>
-        /// Initializes how data notes should be shown in the Excel sheet.
-        /// </summary>
-        /// <param name="model">The model conatining the data</param>
-        /// <param name="fmt">The data formatter used to format data</param>
-        private void InitializeDataNotes(PXModel model, DataFormatter fmt)
-        {
-            _showDataNoteCells = (model.Meta.DataNoteCells.Count > 0);
-            _modelDataNotePlacement = fmt.DataNotePlacment;
-
-            if (_modelDataNotePlacement == DataNotePlacementType.None)
-            {
-                //Make sure we do not show any datanotecells
-                _showDataNoteCells = false;
-            }
         }
 
         /// <summary>
@@ -228,23 +203,7 @@ namespace PCAxis.Serializers
             string dataNote = string.Empty;
             int column;
             string value;
-            int dataNoteFactor = 1;
-            int dataNoteValueOffset = 0;
-            int dataNoteNoteOffset = 1;
-            if (_showDataNoteCells)
-            {
-                dataNoteFactor = 2;
-                if (_modelDataNotePlacement == DataNotePlacementType.Before)
-                {
-                    dataNoteValueOffset = 1;
-                    dataNoteNoteOffset = 0;
-                }
-                else
-                {
-                    dataNoteValueOffset = 0;
-                    dataNoteNoteOffset = 1;
-                }
-            }
+
             int sIndent = CalculateLeftIndentation(model);
             for (int i = 0; i < model.Data.MatrixRowCount; i++)
             {
@@ -255,11 +214,11 @@ namespace PCAxis.Serializers
                 }
                 for (int j = 0; j < model.Data.MatrixColumnCount; j++)
                 {
-                    column = j * dataNoteFactor + sIndent + 1;
+                    column = sIndent + 1;
                     value = fmt.ReadElement(i, j, ref n, ref dataNote);
 
                     SetCell(
-                        sheet.Cell(row, column + dataNoteValueOffset),
+                        sheet.Cell(row, column),
                         CellContentType.Data,
                         value,
                         !value.IsNumeric() ?
@@ -270,22 +229,13 @@ namespace PCAxis.Serializers
                     if (!string.IsNullOrEmpty(n))
                     {
                         SetCell(
-                            sheet.Cell(row, column + dataNoteValueOffset),
+                            sheet.Cell(row, column),
                             CellContentType.Comment,
                             n,
                             null
                         );
                     }
 
-                    if (_showDataNoteCells && !String.IsNullOrEmpty(dataNote))
-                    {
-                        SetCell(
-                            sheet.Cell(row, column + dataNoteNoteOffset),
-                            CellContentType.DataNote,
-                            dataNote,
-                            null
-                        );
-                    }
                     row++;
                 }
             }
