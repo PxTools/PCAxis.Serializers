@@ -121,14 +121,13 @@ namespace PCAxis.Serializers
                 // Create the workbook
                 var book = new XLWorkbook();
                 var sheet = book.Worksheets.Add(model.Meta.Matrix);
+                // Creates and initializes the dataformatter
+                DataFormatter fmt = CreateDataFormater(model);
                 int row;
 
                 // Writes the title
                 row = WriteTableTitle(model, sheet);
-
-                // Creates and initializes the dataformatter
-                DataFormatter fmt = CreateDataFormater(model);
-
+                               
                 // Writes the heading for the table
                 row = WriteHeading(row, model, sheet);
 
@@ -136,7 +135,7 @@ namespace PCAxis.Serializers
                 row = WriteAllRows(row, model, sheet, fmt);
 
                 // Writes the information             
-                WriteAllTableExtraMetadata(row, model, sheet);
+                WriteAllTableExtraMetadata(row + 1, model, sheet);
 
                 return book;
             }
@@ -161,7 +160,7 @@ namespace PCAxis.Serializers
                     model.Meta.DescriptionDefault ? model.Meta.Description : model.Meta.Title,
                     c => { c.Style.Font.FontSize = 14; c.Style.Font.Bold = true; }
                 );
-                return 2;
+                return 3;
             }
             return 1;
         }
@@ -185,10 +184,10 @@ namespace PCAxis.Serializers
                 //Calculates how many times the heading should be repeated
                 int numberOfRepeats = CalcHeadingRepeats(headingRow, model);
 
-                WriteHeaderVariable(model.Meta.Heading[headingRow], repeatInterval, numberOfRepeats, indentation, row + 1 + model.Meta.Heading.Count, sheet);
+                WriteHeaderVariable(model.Meta.Heading[headingRow], repeatInterval, numberOfRepeats, row + headingRow, indentation, sheet);
             }
 
-            return row + 1 + model.Meta.Heading.Count;
+            return row + model.Meta.Heading.Count;
         }
 
         /// <summary>
@@ -204,7 +203,7 @@ namespace PCAxis.Serializers
             int column;
             string value;
 
-            int sIndent = CalculateLeftIndentation(model);
+            int indentation = CalculateLeftIndentation(model);
             for (int i = 0; i < model.Data.MatrixRowCount; i++)
             {
 
@@ -214,7 +213,7 @@ namespace PCAxis.Serializers
                 }
                 for (int j = 0; j < model.Data.MatrixColumnCount; j++)
                 {
-                    column = sIndent + 1;
+                    column = indentation + j;
                     value = fmt.ReadElement(i, j, ref n, ref dataNote);
 
                     SetCell(
@@ -235,9 +234,8 @@ namespace PCAxis.Serializers
                             null
                         );
                     }
-
-                    row++;
                 }
+                row++;
             }
             return row;
         }
@@ -527,6 +525,10 @@ namespace PCAxis.Serializers
 
         private static string ConvertStockFlowAverageToLocalText(string stockFa, PXMeta meta)
         {
+            if (stockFa == null)
+            {
+                return null;
+            }
             switch (stockFa.ToUpper())
             {
                 case "S":
@@ -540,16 +542,20 @@ namespace PCAxis.Serializers
             }
         }
 
-        private static string ConvertCurrentOrFiexedPricesToLocalText(string stockFa, PXMeta meta)
+        private static string ConvertCurrentOrFiexedPricesToLocalText(string prices, PXMeta meta)
         {
-            switch (stockFa.ToUpper())
+            if (prices == null)
+            {
+                return null;
+            }   
+            switch (prices.ToUpper())
             {
                 case "C":
                     return meta.GetLocalizedString("PxcKeywordCFPricesValueCurrent");
                 case "F":
                     return meta.GetLocalizedString("PxcKeywordCFPricesValueFixed");
                 default:
-                    return stockFa;
+                    return prices;
             }
         }
 
@@ -793,35 +799,21 @@ namespace PCAxis.Serializers
 
         private static int CalculateLeftIndentation(PXModel model)
         {
-            int lIndent = 0;
-            for (int k = 0; k < model.Meta.Stub.Count; k++)
-            {
-                lIndent++;
-            }
-            return lIndent;
+            return model.Meta.Stub.Count + 1;
         }
 
         private void GetStubCell(PXModel model, IXLWorksheet sheet, int stubNr, int rowNr)
         {
-            int Interval;
             int count = model.Meta.Stub[stubNr].Values.Count;
-
-            if (stubNr < model.Meta.Stub.Count - 1)
-            {
-                Interval = CalcStubInterval(stubNr + 1, model);
-            }
-            else
-            {
-                Interval = 1;
-            }
+            int interval = stubNr < model.Meta.Stub.Count - 1 ? CalcStubInterval(stubNr + 1, model) : 1;
 
             Value val;
             int row, column;
-            if (rowNr % Interval == 0)
+            if (rowNr % interval == 0)
             {
                 //Dim Cell As New Cell
                 int offset = 0;
-                val = model.Meta.Stub[stubNr].Values[(rowNr / Interval) % count];
+                val = model.Meta.Stub[stubNr].Values[(rowNr / interval) % count];
                 row = rowNr + 3 + model.Meta.Heading.Count;
                 column = stubNr + 1 + offset;
 
@@ -831,6 +823,7 @@ namespace PCAxis.Serializers
                     val.Text,
                     c => c.Style.Font.Bold = true
                 );
+
                 if (val.HasNotes())
                 {
                     SetCell(
@@ -839,8 +832,7 @@ namespace PCAxis.Serializers
                         val.Notes.GetAllNotes(),
                         null
                     );
-                }
-                
+                }                
             }
         }
 
