@@ -186,7 +186,7 @@ namespace PCAxis.Serializers
 
                 for (int k = 0; k < model.Meta.Stub.Count; k++)
                 {
-                    GetStubCell(model, sheet, k, i, IsDoubleColumn(model.Meta.Stub[k]));
+                    GetStubCell(model, sheet, k, i);
                 }
                 for (int j = 0; j < model.Data.MatrixColumnCount; j++)
                 {
@@ -538,6 +538,8 @@ namespace PCAxis.Serializers
             return row;
         }
 
+        #region "Converter functions"
+
         private static string ConvertStockFlowAverageToLocalText(string stockFa, PXMeta meta)
         {
             switch (stockFa.ToUpper())
@@ -565,6 +567,9 @@ namespace PCAxis.Serializers
                     return stockFa;
             }
         }
+
+        #endregion
+
 
 
         private int WriteTableInformationContacts(int row, PXMeta meta, IXLWorksheet sheet)
@@ -823,16 +828,12 @@ namespace PCAxis.Serializers
             int lIndent = 0;
             for (int k = 0; k < model.Meta.Stub.Count; k++)
             {
-                if (IsDoubleColumn(model.Meta.Stub[k]))
-                {
-                    lIndent++;
-                }
                 lIndent++;
             }
             return lIndent;
         }
 
-        private void GetStubCell(PXModel model, IXLWorksheet sheet, int stubNr, int rowNr, bool code)
+        private void GetStubCell(PXModel model, IXLWorksheet sheet, int stubNr, int rowNr)
         {
             int Interval;
             int count = model.Meta.Stub[stubNr].Values.Count;
@@ -852,62 +853,27 @@ namespace PCAxis.Serializers
             {
                 //Dim Cell As New Cell
                 int offset = 0;
-                for (int x = stubNr - 1; x > -1; x--)
-                {
-                    if (IsDoubleColumn(model.Meta.Stub[x])) offset++;
-                }
                 val = model.Meta.Stub[stubNr].Values[(rowNr / Interval) % count];
                 row = rowNr + 3 + model.Meta.Heading.Count;
                 column = stubNr + 1 + offset;
-                if (code)
+
+                SetCell(
+                    sheet.Cell(row, column),
+                    CellContentType.Stub,
+                    val.Text,
+                    c => c.Style.Font.Bold = true
+                );
+                if (val.HasNotes())
                 {
-                    //Writes the Code
-                    //sheet.Cell(row, column).Value = val.Code;
+                    //sheet.Cell(row, column).Comment.AddText(val.Notes.GetAllNotes());
                     SetCell(
                         sheet.Cell(row, column),
-                        CellContentType.Code,
-                        val.Code,
-                        c => { c.DataType = XLDataType.Text; c.Style.Font.Bold = true; }
+                        CellContentType.Comment,
+                        val.Notes.GetAllNotes(),
+                        null
                     );
-
-                    SetCell(
-                        sheet.Cell(row, column + 1),
-                        CellContentType.Stub,
-                        val.Value,
-                        c => c.Style.Font.Bold = true
-                    );
-
-                    if (val.HasNotes())
-                    {
-                        SetCell(
-                            sheet.Cell(row, column + 1),
-                            CellContentType.Comment,
-                            val.Notes.GetAllNotes(),
-                            null
-                        );
-                    }
                 }
-                else
-                {
-
-
-                    SetCell(
-                        sheet.Cell(row, column),
-                        CellContentType.Stub,
-                        val.Text,
-                        c => c.Style.Font.Bold = true
-                    );
-                    if (val.HasNotes())
-                    {
-                        //sheet.Cell(row, column).Comment.AddText(val.Notes.GetAllNotes());
-                        SetCell(
-                            sheet.Cell(row, column),
-                            CellContentType.Comment,
-                            val.Notes.GetAllNotes(),
-                            null
-                        );
-                    }
-                }
+                
             }
         }
 
@@ -941,10 +907,6 @@ namespace PCAxis.Serializers
             return _numberFormats[dfm];
         }
 
-        private bool IsDoubleColumn(Variable variable)
-        {
-            return false;
-        }
         private int GetDecimalPrecision(string value, string separtor)
         {
             var index = value.IndexOf(separtor);
