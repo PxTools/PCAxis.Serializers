@@ -292,7 +292,8 @@ namespace PCAxis.Serializers
         /// </summary>
         /// <param name="model">The model containing the infromation</param>
         /// <param name="sheet">The Excel sheet where the data sould be written</param>
-        private void WriteAllTableExtraMetadata(PXModel model, IXLWorksheet sheet)
+        /// <returns>The row where the last information was written</returns>
+        private int WriteAllTableExtraMetadata(PXModel model, IXLWorksheet sheet)
         {
 
             int r = model.Data.MatrixRowCount + model.Meta.Heading.Count + 4;
@@ -302,6 +303,8 @@ namespace PCAxis.Serializers
 
             // Writes rest of the information
             r = WriteTableInformation(r, model, sheet);
+
+            return r;
         }
 
 
@@ -311,10 +314,9 @@ namespace PCAxis.Serializers
         /// <param name="row">Row position where to start writing data</param>
         /// <param name="model"></param>
         /// <param name="sheet"></param>
-        /// <returns></returns>
+        /// <returns>The row where the last information was written</returns>
         private int WriteAllNotes(int row, PXModel model, IXLWorksheet sheet)
         {
-            int columnCount = sheet.Columns().Count();
             row = WriteTableNotes(row, model, sheet);
 
             //Writes mandantory variable notes
@@ -325,7 +327,7 @@ namespace PCAxis.Serializers
 
             //Writes mandantory cellnotes 
             row = WriteCellNotes(row, model, sheet);
-            return row++;
+            return row;
         }
 
         private int WriteCellNotes(int row, PXModel model, IXLWorksheet sheet)
@@ -520,8 +522,6 @@ namespace PCAxis.Serializers
 
             var meta = model.Meta;
 
-            Func<ContInfo, string, (string, string)> test = (ContInfo info, string valueCode) => (valueCode, info.LastUpdated);
-
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordLastUpdated") + ":", meta, (c) => c.LastUpdated, sheet);
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordUnits") + ":", meta, (c) => c.Units, sheet);
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordStockfa") + ":", meta, (c) => c.StockFa, sheet, (s ,m) => ConvertStockFlowAverageToLocalText(s, m));
@@ -712,7 +712,8 @@ namespace PCAxis.Serializers
                 }
 
                 var infoValue = filter(value.ContentInfo);
-                
+                infoValue = converter(infoValue, meta);
+
                 if (string.IsNullOrEmpty(infoValue))
                 {
                     continue;
@@ -823,7 +824,7 @@ namespace PCAxis.Serializers
             }
         }
 
-        private int CalcHeadingRepeatInterval(int headingLevel, PXModel model)
+        private static int CalcHeadingRepeatInterval(int headingLevel, PXModel model)
         {
             int interval = 1;
 
@@ -835,7 +836,7 @@ namespace PCAxis.Serializers
             return interval;
         }
 
-        private int CalcHeadingRepeats(int headingLevel, PXModel model)
+        private static int CalcHeadingRepeats(int headingLevel, PXModel model)
         {
             int repeats = 1;
             for (int i = 0; i < headingLevel; i++)
@@ -846,7 +847,7 @@ namespace PCAxis.Serializers
             return repeats;
         }
 
-        private int CalculateLeftIndentation(PXModel model)
+        private static int CalculateLeftIndentation(PXModel model)
         {
             int lIndent = 0;
             for (int k = 0; k < model.Meta.Stub.Count; k++)
@@ -949,7 +950,7 @@ namespace PCAxis.Serializers
 
         }
 
-        private DataFormatter CreateDataFormater(PXModel model)
+        private static DataFormatter CreateDataFormater(PXModel model)
         {
             DataFormatter fmt = new DataFormatter(model);
             fmt.ThousandSeparator = "";
