@@ -45,10 +45,12 @@ namespace PCAxis.Serializers
             Comment
         }
 
+        #region "Public properties"
         public LablePreference ValueLablesDisplay { get; set; } = LablePreference.None;
 
         public bool IncludeTitle { get; set; } = false;
 
+        #endregion
 
         private bool _showDataNoteCells = false;
         private DataNotePlacementType _modelDataNotePlacement;
@@ -107,6 +109,11 @@ namespace PCAxis.Serializers
             changes?.Invoke(cell);
         }
 
+        /// <summary>
+        /// Creates a workbook and writes all the data from the model to it.
+        /// </summary>
+        /// <param name="model">The model with the data</param>
+        /// <returns>A excel workbook with all data written to it.</returns>
         private XLWorkbook CreateWorkbook(PCAxis.Paxiom.PXModel model)
         {
 
@@ -135,7 +142,7 @@ namespace PCAxis.Serializers
                 WriteAllRows(model, sheet, fmt);
 
                 // Writes the information             
-                WriteAllTableExtraMetadata(model, sheet, fmt);
+                WriteAllTableExtraMetadata(model, sheet);
 
                 return book;
             }
@@ -145,18 +152,70 @@ namespace PCAxis.Serializers
             }
         }
 
-        private void WriteAllTableExtraMetadata(PXModel model, IXLWorksheet sheet, DataFormatter fmt)
+        /// <summary>
+        /// Writes the title of the table to the Excel sheet.
+        /// </summary>
+        /// <param name="model">The model containing the title</param>
+        /// <param name="sheet">The sheet to write to</param>
+        private void WriteTableTitle(PXModel model, IXLWorksheet sheet)
         {
-           
-            int r = model.Data.MatrixRowCount + model.Meta.Heading.Count + 4;
-
-            // Writes footnotes
-            r = WriteAllNotes(r, model, sheet);
-
-            // Writes rest of the information
-            r = WriteTableInformation(r, model, sheet);
+            if (IncludeTitle)
+            {
+                SetCell(
+                    sheet.Cell(1, 1),
+                    CellContentType.Title,
+                    model.Meta.DescriptionDefault ? model.Meta.Description : model.Meta.Title,
+                    c => { c.Style.Font.FontSize = 14; c.Style.Font.Bold = true; }
+                );
+            }
         }
 
+        /// <summary>
+        /// Initializes how data notes should be shown in the Excel sheet.
+        /// </summary>
+        /// <param name="model">The model conatining the data</param>
+        /// <param name="fmt">The data formatter used to format data</param>
+        private void InitializeDataNotes(PXModel model, DataFormatter fmt)
+        {
+            _showDataNoteCells = (model.Meta.DataNoteCells.Count > 0);
+            _modelDataNotePlacement = fmt.DataNotePlacment;
+
+            if (_modelDataNotePlacement == DataNotePlacementType.None)
+            {
+                //Make sure we do not show any datanotecells
+                _showDataNoteCells = false;
+            }
+        }
+
+        /// <summary>
+        /// Write the heading of the table to the Excel sheet.
+        /// </summary>
+        /// <param name="model">The model containg the data</param>
+        /// <param name="sheet">The sheet where the data should be written</param>
+        private void WriteHeading(PXModel model, IXLWorksheet sheet)
+        {
+            //Calc left indention caused by the stub
+            int indentation = CalculateLeftIndentation(model);
+
+            //HEADING
+            for (int headingRow = 0; headingRow < model.Meta.Heading.Count; headingRow++)
+            {
+                //Calculates the repeats of cells the heading should be repeated iself
+                int repeatInterval = CalcHeadingRepeatInterval(headingRow, model);
+
+                //Calculates how many times the heading should be repeated
+                int numberOfRepeats = CalcHeadingRepeats(headingRow, model);
+
+                WriteHeaderVariable(model.Meta.Heading[headingRow], repeatInterval, numberOfRepeats, indentation, 3 + model.Meta.Heading.Count, sheet);
+            }
+        }
+
+        /// <summary>
+        /// Writes the stub labels and the data to the Excel sheet.
+        /// </summary>
+        /// <param name="model">The model containing the data</param>
+        /// <param name="sheet">The Excel sheet where the data sould be written</param>
+        /// <param name="fmt">The data formater used when writing the data</param>
         private void WriteAllRows(PXModel model, IXLWorksheet sheet, DataFormatter fmt)
         {
             string n = string.Empty;
@@ -231,48 +290,31 @@ namespace PCAxis.Serializers
             }
         }
 
-        private void InitializeDataNotes(PXModel model, DataFormatter fmt)
+        /// <summary>
+        /// Writes all the extra metadata like footnotes and other information underneith the table.
+        /// </summary>
+        /// <param name="model">The model containing the infromation</param>
+        /// <param name="sheet">The Excel sheet where the data sould be written</param>
+        private void WriteAllTableExtraMetadata(PXModel model, IXLWorksheet sheet)
         {
-            _showDataNoteCells = (model.Meta.DataNoteCells.Count > 0);
-            _modelDataNotePlacement = fmt.DataNotePlacment;
 
-            if (_modelDataNotePlacement == DataNotePlacementType.None)
-            {
-                //Make sure we do not show any datanotecells
-                _showDataNoteCells = false;
-            }
+            int r = model.Data.MatrixRowCount + model.Meta.Heading.Count + 4;
+
+            // Writes footnotes
+            r = WriteAllNotes(r, model, sheet);
+
+            // Writes rest of the information
+            r = WriteTableInformation(r, model, sheet);
         }
 
-        private DataFormatter CreateDataFormater(PXModel model)
-        {
-            DataFormatter fmt = new DataFormatter(model);
-            fmt.ThousandSeparator = "";
-            try
-            {
-                fmt.DecimalSeparator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
-            }
-            catch (Exception)
-            {
-                fmt.DecimalSeparator = ",";
-            }
 
-            fmt.InformationLevel = InformationLevelType.AllInformation;
-            return fmt;
-        }
-
-        private void WriteTableTitle(PXModel model, IXLWorksheet sheet)
-        {
-            if (IncludeTitle)
-            {
-                SetCell(
-                    sheet.Cell(1, 1),
-                    CellContentType.Title,
-                    model.Meta.DescriptionDefault ? model.Meta.Description : model.Meta.Title,
-                    c => { c.Style.Font.FontSize = 14; c.Style.Font.Bold = true; }
-                );
-            }
-        }
-
+        /// <summary>
+        /// Writes all footnotes to the Excel sheet.
+        /// </summary>
+        /// <param name="row">Row position where to start writing data</param>
+        /// <param name="model"></param>
+        /// <param name="sheet"></param>
+        /// <returns></returns>
         private int WriteAllNotes(int row, PXModel model, IXLWorksheet sheet)
         {
             int columnCount = sheet.Columns().Count();
@@ -736,23 +778,7 @@ namespace PCAxis.Serializers
             return row;
         }
 
-        private void WriteHeading(PXModel model, IXLWorksheet sheet)
-        {
-            //Calc left indention caused by the stub
-            int indentation = CalculateLeftIndentation(model);
 
-            //HEADING
-            for (int headingRow = 0; headingRow < model.Meta.Heading.Count; headingRow++)
-            {
-                //Calculates the repeats of cells the heading should be repeated iself
-                int repeatInterval = CalcHeadingRepeatInterval(headingRow, model);
-
-                //Calculates how many times the heading should be repeated
-                int numberOfRepeats = CalcHeadingRepeats(headingRow, model);
-
-                WriteHeaderVariable(model.Meta.Heading[headingRow], repeatInterval, numberOfRepeats, indentation, 3 + model.Meta.Heading.Count, sheet);
-            }
-        }
 
         private void WriteHeaderVariable(Variable variable, int repeatInterval, int numberOfRepeats, int row, int indentation, IXLWorksheet sheet)
         {
@@ -925,6 +951,23 @@ namespace PCAxis.Serializers
                 return 0;
             }
 
+        }
+
+        private DataFormatter CreateDataFormater(PXModel model)
+        {
+            DataFormatter fmt = new DataFormatter(model);
+            fmt.ThousandSeparator = "";
+            try
+            {
+                fmt.DecimalSeparator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+            }
+            catch (Exception)
+            {
+                fmt.DecimalSeparator = ",";
+            }
+
+            fmt.InformationLevel = InformationLevelType.AllInformation;
+            return fmt;
         }
     }
 }
