@@ -253,7 +253,6 @@ namespace PCAxis.Serializers
                     column = j * dataNoteFactor + sIndent + 1;
                     value = fmt.ReadElement(i, j, ref n, ref dataNote);
 
-                    //TODO: Improve performance of setting value format, takes a lot of CPU at the moment
                     SetCell(
                         sheet.Cell(row, column + dataNoteValueOffset),
                         CellContentType.Data,
@@ -265,7 +264,6 @@ namespace PCAxis.Serializers
                     );
                     if (!string.IsNullOrEmpty(n))
                     {
-                        //sheet.Cell(row, column + dataNoteValueOffset).Comment.AddText(n);
                         SetCell(
                             sheet.Cell(row, column + dataNoteValueOffset),
                             CellContentType.Comment,
@@ -276,7 +274,6 @@ namespace PCAxis.Serializers
 
                     if (_showDataNoteCells && !String.IsNullOrEmpty(dataNote))
                     {
-                        //sheet.Cell(row, column + dataNoteNoteOffset).Value = dataNote;    
                         SetCell(
                             sheet.Cell(row, column + dataNoteNoteOffset),
                             CellContentType.DataNote,
@@ -891,7 +888,6 @@ namespace PCAxis.Serializers
                 );
                 if (val.HasNotes())
                 {
-                    //sheet.Cell(row, column).Comment.AddText(val.Notes.GetAllNotes());
                     SetCell(
                         sheet.Cell(row, column),
                         CellContentType.Comment,
