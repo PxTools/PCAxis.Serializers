@@ -434,24 +434,7 @@ namespace PCAxis.Serializers
 
             var meta = model.Meta;
 
-            //Check if the information is attached on the table or on the values on the content variable
-            if (meta.ContentVariable != null && meta.ContentVariable.Values.Count > 0 && meta.ContentInfo != null)
-            {
-
-            }
-            else
-            {
-                row = WriteTableInformationFromTable(row, model, sheet);
-            }
-
-            return row;
-        }
-
-        private int WriteTableInformationFromTable(int row, PXModel model, IXLWorksheet sheet)
-        {
-
-            var meta = model.Meta;
-
+            // Writes the table specific information
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordDatabase") + ":", meta.Database, sheet);
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordMatrix") + ":", meta.Matrix, sheet);
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordSource") + ":", meta.Source, sheet);
@@ -475,6 +458,25 @@ namespace PCAxis.Serializers
                     null
                 );
             }
+
+
+            //Check if the information is attached on the table or on the values on the content variable
+            if (meta.ContentVariable != null && meta.ContentVariable.Values.Count > 0 && meta.ContentInfo is null)
+            {
+
+            }
+            else
+            {
+                row = WriteTableInformationFromTable(row, model, sheet);
+            }
+
+            return row;
+        }
+
+        private int WriteTableInformationFromTable(int row, PXModel model, IXLWorksheet sheet)
+        {
+
+            var meta = model.Meta;
 
             row = WriteTableInformationContacts(row, meta, sheet);
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordLastUpdated") + ":", meta.ContentInfo.LastUpdated, sheet);
