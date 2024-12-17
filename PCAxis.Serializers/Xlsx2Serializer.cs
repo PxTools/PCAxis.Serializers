@@ -933,7 +933,7 @@ namespace PCAxis.Serializers
             return _numberFormats[dfm];
         }
 
-        private int GetDecimalPrecision(string value, string separtor)
+        private static int GetDecimalPrecision(string value, string separtor)
         {
             var index = value.IndexOf(separtor);
 
