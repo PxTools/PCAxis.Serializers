@@ -13,6 +13,8 @@ using DocumentFormat.OpenXml.EMMA;
 using PCAxis.Serializers.JsonStat2.Model;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Runtime.CompilerServices;
+using DocumentFormat.OpenXml.Office2016.Excel;
+using Parquet.Rows;
 
 namespace PCAxis.Serializers
 {
@@ -429,7 +431,7 @@ namespace PCAxis.Serializers
         }
 
 
-        private int WriteTableInformation2(int row, PXModel model, IXLWorksheet sheet)
+        private int WriteTableInformation(int row, PXModel model, IXLWorksheet sheet)
         {
 
             var meta = model.Meta;
@@ -459,15 +461,44 @@ namespace PCAxis.Serializers
                 );
             }
 
+            row = WriteTableInformationContacts(row, meta, sheet);
 
             //Check if the information is attached on the table or on the values on the content variable
             if (meta.ContentVariable != null && meta.ContentVariable.Values.Count > 0 && meta.ContentInfo is null)
             {
-
+                row = WriteTableInformationFromContentVariable(row, model, sheet);
             }
             else
             {
                 row = WriteTableInformationFromTable(row, model, sheet);
+            }
+
+            return row;
+        }
+
+        private int WriteTableInformationFromContentVariable(int row, PXModel model, IXLWorksheet sheet)
+        {
+
+            var meta = model.Meta;
+
+            Func<ContInfo, string, (string, string)> test = (ContInfo info, string valueCode) => (valueCode, info.LastUpdated);
+
+            row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordLastUpdated") + ":", meta, (c) => c.LastUpdated, sheet);
+            row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordUnits") + ":", meta, (c) => c.Units, sheet);
+            row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordStockfa") + ":", meta, (c) => c.StockFa, sheet, (s ,m) => ConvertStockFlowAverageToLocalText(s, m));
+            row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordBasePeriod") + ":", meta, (c) => c.Baseperiod, sheet);
+            row = WriteTableInformationValue(row, "", meta, (c) => c.CFPrices, sheet, (s,m) => ConvertCurrentOrFiexedPricesToLocalText(s,m));
+            row = WriteTableInformationBooleanValue(row, meta.GetLocalizedString("PxcKeywordDayAdj") + ":", meta, (c) => c.DayAdj, sheet);
+            row = WriteTableInformationBooleanValue(row, meta.GetLocalizedString("PxcKeywordSeasAdj") + ":", meta, (c) => c.SeasAdj, sheet);
+
+            if (!String.IsNullOrEmpty(model.Meta.ContentInfo.SeasAdj) && model.Meta.ContentInfo.SeasAdj.ToUpper().Equals("YES"))
+            {
+                SetCell(
+                    sheet.Cell(row++, 1),
+                    CellContentType.Info,
+                    model.Meta.GetLocalizedString("PxcKeywordSeasAdj"),
+                    null
+                );
             }
 
             return row;
@@ -478,11 +509,9 @@ namespace PCAxis.Serializers
 
             var meta = model.Meta;
 
-            row = WriteTableInformationContacts(row, meta, sheet);
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordLastUpdated") + ":", meta.ContentInfo.LastUpdated, sheet);
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordUnits") + ":", meta.ContentInfo.Units, sheet);
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordStockfa") + ":", ConvertStockFlowAverageToLocalText(meta.ContentInfo.StockFa, meta), sheet);
-            row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordBasePeriod") + ":", meta.ContentInfo.Baseperiod, sheet);
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordBasePeriod") + ":", meta.ContentInfo.Baseperiod, sheet);
             row = WriteTableInformationValue(row, "", ConvertCurrentOrFiexedPricesToLocalText(meta.ContentInfo.CFPrices, meta), sheet);
 
@@ -622,770 +651,83 @@ namespace PCAxis.Serializers
         }
 
 
-
-        private int WriteTableInformation(int row, PXModel model, IXLWorksheet sheet)
+        private int WriteTableInformationValue(int row, string label, PXMeta meta, Func<ContInfo, string> filter, IXLWorksheet sheet, Func<string, PXMeta, string> converter = null)
         {
-            bool contvar = false;
-            Variable var;
-            PCAxis.Paxiom.ContInfo info;
-            string value;
-            Dictionary<string, string> lastUpdated = new Dictionary<string, string>();
-            Dictionary<string, string> contact = new Dictionary<string, string>();
-            Dictionary<string, string> units = new Dictionary<string, string>();
-            Dictionary<string, string> stockfa = new Dictionary<string, string>();
-            Dictionary<string, string> refperiod = new Dictionary<string, string>();
-            Dictionary<string, string> baseperiod = new Dictionary<string, string>();
-            Dictionary<string, string> cfprices = new Dictionary<string, string>();
-            Dictionary<string, string> dayadj = new Dictionary<string, string>();
-            Dictionary<string, string> seasadj = new Dictionary<string, string>();
 
-            //    With model.Meta
-            if (model.Meta.ContentVariable != null && model.Meta.ContentVariable.Values.Count > 0)
+            if (converter is null)
             {
-                contvar = true;
-                var = model.Meta.ContentVariable;
-
-                //1. Collect information for all the values
-                //-----------------------------------------
-                for (int i = 0; i < var.Values.Count; i++)
-                {
-                    info = var.Values[i].ContentInfo;
-                    value = var.Values[i].Text;
-
-                    if (info != null)
-                    {
-                        //LAST-UPDATED
-                        if (!String.IsNullOrEmpty(info.LastUpdated))
-                        {
-                            lastUpdated.Add(value, info.LastUpdated);
-                        }
-
-                        //CONTACT
-                        if (!String.IsNullOrEmpty(info.Contact))
-                        {
-                            contact.Add(value, info.Contact);
-                        }
-
-                        //UNITS
-                        if (!String.IsNullOrEmpty(info.Units))
-                        {
-                            units.Add(value, info.Units);
-                        }
-
-                        //STOCKFA
-                        if (!String.IsNullOrEmpty(info.StockFa))
-                        {
-                            stockfa.Add(value, info.StockFa);
-                        }
-
-                        //REFPERIOD
-                        if (!String.IsNullOrEmpty(info.RefPeriod))
-                        {
-                            refperiod.Add(value, info.RefPeriod);
-                        }
-
-                        //BASEPERIOD
-                        if (!String.IsNullOrEmpty(info.Baseperiod))
-                        {
-                            baseperiod.Add(value, info.Baseperiod);
-                        }
-
-                        //CFPRICES
-                        if (!String.IsNullOrEmpty(info.CFPrices))
-                        {
-                            cfprices.Add(value, info.CFPrices);
-                        }
-
-                        //DAYADJ
-                        if (!String.IsNullOrEmpty(info.DayAdj))
-                        {
-                            if (info.DayAdj.ToUpper().Equals("YES"))
-                            {
-                                dayadj.Add(value, info.DayAdj);
-                            }
-                        }
-
-                        //SEASADJ
-                        if (!String.IsNullOrEmpty(info.SeasAdj))
-                        {
-                            if (info.SeasAdj.ToUpper().Equals("YES"))
-                            {
-                                seasadj.Add(value, info.SeasAdj);
-                            }
-                        }
-                    }
-                }
+                converter = (s, m) => s;
             }
 
-            //2. Write the collected information
-            //----------------------------------
+            var map = new Dictionary<string, string>(); 
+            foreach (var value in meta.ContentVariable.Values)
+            {
+                if (value.ContentInfo is null)
+                {
+                    continue;
+                }
 
-            //LAST-UPDATED
-            row++;
-            if (contvar)
-            {
-                //sheet.Cell(row++, 1).Value = model.Meta.GetLocalizedString("PxcKeywordLastUpdated") + ":";
-                SetCell(
-                    sheet.Cell(row++, 1),
-                    CellContentType.Info,
-                    model.Meta.GetLocalizedString("PxcKeywordLastUpdated") + ":",
-                    null
-                );
-                foreach (KeyValuePair<string, string> kvp in lastUpdated)
+                var infoValue = filter(value.ContentInfo);
+                
+                if (string.IsNullOrEmpty(infoValue))
                 {
-                    //sheet.Cell(row, 1).Value = kvp.Key + ":";
-                    SetCell(
-                        sheet.Cell(row, 1),
-                        CellContentType.Info,
-                        kvp.Key + ":",
-                        null
-                    );
-                    row++;
-                    //sheet.Cell(row++, 2).Value = kvp.Value;
-                    SetCell(
-                        sheet.Cell(row++, 1),
-                        CellContentType.Info,
-                        kvp.Value,
-                        null
-                    );
+                    continue;
                 }
-            }
-            else
-            {
-                if (model.Meta.ContentInfo != null)
-                {
-                    if (!String.IsNullOrEmpty(model.Meta.ContentInfo.LastUpdated))
-                    {
-                        //sheet.Cell(row, 1).Value = model.Meta.GetLocalizedString("PxcKeywordLastUpdated") + ":";
-                        SetCell(
-                            sheet.Cell(row, 1),
-                            CellContentType.Info,
-                            model.Meta.GetLocalizedString("PxcKeywordLastUpdated") + ":",
-                            null
-                        );
-                        //TODO DATEFORMAT
-                        //sheet.Cell(row++, 2).Value = model.Meta.ContentInfo.LastUpdated;
-                        row++;
-                        SetCell(
-                            sheet.Cell(row++, 1),
-                            CellContentType.Info,
-                            model.Meta.ContentInfo.LastUpdated,
-                            null
-                        );
-                    }
-                }
+
+                map[infoValue] = map[infoValue] is null ? value.Text : map[infoValue] + ", " + value.Text;
             }
 
-            //SOURCE
-            row++;
-            if (!String.IsNullOrEmpty(model.Meta.Source))
+            if (map.Count == 1)
             {
-                //sheet.Cell(row, 1).Value = model.Meta.GetLocalizedString("PxcKeywordSource") + ":";
+                //All are same
+                row = WriteTableInformationValue(row, label, map.First().Value, sheet);
+            } else
+            {
+                //Write label
                 SetCell(
                     sheet.Cell(row, 1),
                     CellContentType.Info,
-                    model.Meta.GetLocalizedString("PxcKeywordSource") + ":",
-                    null
-                );
-                //sheet.Cell(row++, 2).Value = model.Meta.Source;
+                    label,
+                    null);
                 row++;
-                SetCell(
-                    sheet.Cell(row++, 1),
-                    CellContentType.Info,
-                    model.Meta.Source,
-                    null
-                );
-            }
-
-            //CONTACT
-            row++;
-            if (contvar)
-            {
-                if (contact.Count > 0)
+                foreach (var pair in map)
                 {
-                    //sheet.Cell(row++, 1).Value = model.Meta.GetLocalizedString("PxcKeywordContact") + ":";
-                    SetCell(
-                        sheet.Cell(row++, 1),
-                        CellContentType.Info,
-                        model.Meta.GetLocalizedString("PxcKeywordContact") + ":",
-                        null
-                    );
-
-                    string[] str;
-                    var firstElement = contact.FirstOrDefault(); //Show only first contact person
-
-                    SetCell(
-                        sheet.Cell(row, 1),
-                        CellContentType.Info,
-                        firstElement.Key + ":",
-                        null
-                    );
-                    str = firstElement.Value.Split('#');
-
-                    row++;
-                    for (int i = 0; i < str.Length; i++)
-                    {
-                        SetCell(
-                            sheet.Cell(row++, 1),
-                            CellContentType.Info,
-                            str[i],
-                            null
-                        );
-                    }
-
-                }
-            }
-            else
-            {
-                if (model.Meta.ContentInfo != null)
-                {
-                    if (!String.IsNullOrEmpty(model.Meta.ContentInfo.Contact))
-                    {
-                        string[] str;
-
-                        //sheet.Cell(row, 1).Value = model.Meta.GetLocalizedString("PxcKeywordContact") + ":";
-                        SetCell(
-                            sheet.Cell(row, 1),
-                            CellContentType.Info,
-                            model.Meta.GetLocalizedString("PxcKeywordContact") + ":",
-                            null
-                        );
-
-                        str = model.Meta.ContentInfo.Contact.Split('#');
-                        row++;
-                        for (int i = 0; i < str.Length; i++)
-                        {
-                            //sheet.Cell(row++, 2).Value = str[headingRow];                            
-                            SetCell(
-                                sheet.Cell(row++, 1),
-                                CellContentType.Info,
-                                str[i],
-                                null
-                            );
-                        }
-                    }
+                    row = WriteTableInformationValue(row, pair.Key, pair.Value, sheet);
                 }
             }
 
-            //COPYRIGHT
-            row++;
-            if (model.Meta.Copyright)
-            {
-                //sheet.Cell(row++, 1).Value = model.Meta.GetLocalizedString("PxcKeywordCopyright");
-                SetCell(
-                    sheet.Cell(row++, 1),
-                    CellContentType.Info,
-                    model.Meta.GetLocalizedString("PxcKeywordCopyright"),
-                    null
-                );
-            }
+            return row;
+        }
 
-            //UNITS
-            row++;
-            if (contvar)
+        private int WriteTableInformationBooleanValue(int row, string label, PXMeta meta, Func<ContInfo, string> filter, IXLWorksheet sheet)
+        {
+            string values = null;
+            foreach (var value in meta.ContentVariable.Values)
             {
-                if (units.Count > 0)
+                if (value.ContentInfo is null)
                 {
-                    //sheet.Cell(row, 1).Value = model.Meta.GetLocalizedString("PxcKeywordUnits") + ":";
-                    SetCell(
-                        sheet.Cell(row, 1),
-                        CellContentType.Info,
-                        model.Meta.GetLocalizedString("PxcKeywordUnits") + ":",
-                        null
-                    );
-                    foreach (KeyValuePair<string, String> kvp in units)
-                    {
-                        //sheet.Cell(row, 1).Value = kvp.Key + ":";
-                        row++;
-                        SetCell(
-                            sheet.Cell(row++, 1),
-                            CellContentType.Info,
-                            kvp.Key + ":",
-                            null
-                        );
-                        //sheet.Cell(row++, 2).Value = kvp.Value;
-                        SetCell(
-                            sheet.Cell(row, 1),
-                            CellContentType.Info,
-                            kvp.Value,
-                            null
-                        );
-                    }
+                    continue;
                 }
-            }
-            else
-            {
-                if (model.Meta.ContentInfo != null)
+
+                var infoValue = filter(value.ContentInfo);
+
+                if (string.IsNullOrEmpty(infoValue))
                 {
-                    if (!String.IsNullOrEmpty(model.Meta.ContentInfo.Units))
-                    {
-                        //sheet.Cell(row, 1).Value = model.Meta.GetLocalizedString("PxcKeywordUnits") + ":";
-                        SetCell(
-                            sheet.Cell(row, 1),
-                            CellContentType.Info,
-                            model.Meta.GetLocalizedString("PxcKeywordUnits") + ":",
-                            null
-                        );
-                        //sheet.Cell(row++, 2).Value = model.Meta.ContentInfo.Units;
-                        row++;
-                        SetCell(
-                            sheet.Cell(row++, 1),
-                            CellContentType.Info,
-                            model.Meta.ContentInfo.Units,
-                            null
-                        );
-                    }
+                    continue;
+                }
+
+                if (infoValue.ToUpper().Equals("YES"))
+                {
+                    values = values is null ? value.Text : values + ", " + value.Text;
                 }
             }
 
-            //STOCKFA
-            row++;
-            if (contvar)
+            if (!string.IsNullOrEmpty(values))
             {
-                if (stockfa.Count > 0)
-                {
-                    //sheet.Cell(row++, 1).Value = model.Meta.GetLocalizedString("PxcKeywordStockfa") + ":";
-
-                    SetCell(
-                        sheet.Cell(row++, 1),
-                        CellContentType.Info,
-                        model.Meta.GetLocalizedString("PxcKeywordStockfa") + ":",
-                        null
-                    );
-
-                    foreach (KeyValuePair<String, String> kvp in stockfa)
-                    {
-                        //sheet.Cell(row, 1).Value = kvp.Key + ":";
-                        SetCell(
-                            sheet.Cell(row, 1),
-                            CellContentType.Info,
-                            kvp.Key + ":",
-                            null
-                        );
-                        switch (kvp.Value.ToUpper())
-                        {
-                            case "S":
-                                //sheet.Cell(row++, 2).Value = model.Meta.GetLocalizedString("PxcKeywordStockfaValueStock");
-                                row++;
-                                SetCell(
-                                    sheet.Cell(row++, 1),
-                                    CellContentType.Info,
-                                    model.Meta.GetLocalizedString("PxcKeywordStockfaValueStock"),
-                                    null
-                                );
-                                break;
-                            case "F":
-                                //sheet.Cell(row++, 2).Value = model.Meta.GetLocalizedString("PxcKeywordStockfaValueFlow");
-                                row++;
-                                SetCell(
-                                    sheet.Cell(row++, 1),
-                                    CellContentType.Info,
-                                    model.Meta.GetLocalizedString("PxcKeywordStockfaValueFlow"),
-                                    null
-                                );
-                                break;
-                            case "A":
-                                //sheet.Cell(row++, 2).Value = model.Meta.GetLocalizedString("PxcKeywordStockfaValueAverage");
-                                row++;
-                                SetCell(
-                                    sheet.Cell(row++, 1),
-                                    CellContentType.Info,
-                                    model.Meta.GetLocalizedString("PxcKeywordStockfaValueAverage"),
-                                    null
-                                );
-                                break;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                if (model.Meta.ContentInfo != null)
-                {
-                    if (!String.IsNullOrEmpty(model.Meta.ContentInfo.StockFa))
-                    {
-                        //sheet.Cell(row, 1).Value = model.Meta.GetLocalizedString("PxcKeywordStockfa") + ":";
-                        SetCell(
-                            sheet.Cell(row, 1),
-                            CellContentType.Info,
-                            model.Meta.GetLocalizedString("PxcKeywordStockfa") + ":",
-                            null
-                        );
-                        switch (model.Meta.ContentInfo.StockFa.ToUpper())
-                        {
-                            case "S":
-                                //sheet.Cell(row++, 2).Value = model.Meta.GetLocalizedString("PxcKeywordStockfaValueStock");
-                                row++;
-                                SetCell(
-                                    sheet.Cell(row++, 1),
-                                    CellContentType.Info,
-                                    model.Meta.GetLocalizedString("PxcKeywordStockfaValueStock"),
-                                    null
-                                );
-                                break;
-                            case "F":
-                                //sheet.Cell(row++, 2).Value = model.Meta.GetLocalizedString("PxcKeywordStockfaValueFlow");
-                                row++;
-                                SetCell(
-                                    sheet.Cell(row++, 1),
-                                    CellContentType.Info,
-                                    model.Meta.GetLocalizedString("PxcKeywordStockfaValueFlow"),
-                                    null
-                                );
-                                break;
-                            case "A":
-                                //sheet.Cell(row++, 2).Value = model.Meta.GetLocalizedString("PxcKeywordStockfaValueAverage");
-                                row++;
-                                SetCell(
-                                    sheet.Cell(row++, 1),
-                                    CellContentType.Info,
-                                    model.Meta.GetLocalizedString("PxcKeywordStockfaValueAverage"),
-                                    null
-                                );
-                                break;
-                        }
-                    }
-                }
+                //All are same
+                row = WriteTableInformationValue(row, label, values, sheet);
             }
 
-            //REFPERIOD
-            row++;
-            if (contvar)
-            {
-                if (refperiod.Count > 0)
-                {
-                    //sheet.Cell(row++, 1).Value = model.Meta.GetLocalizedString("PxcKeywordRefPeriod") + ":";
-                    SetCell(
-                        sheet.Cell(row++, 1),
-                        CellContentType.Info,
-                        model.Meta.GetLocalizedString("PxcKeywordRefPeriod") + ":",
-                        null
-                    );
-                    foreach (KeyValuePair<string, string> kvp in refperiod)
-                    {
-                        //sheet.Cell(row, 1).Value = kvp.Key;
-                        SetCell(
-                            sheet.Cell(row, 1),
-                            CellContentType.Info,
-                            kvp.Key,
-                            null
-                        );
-                        //sheet.Cell(row++, 2).Value = kvp.Value;
-                        row++;
-                        SetCell(
-                            sheet.Cell(row++, 1),
-                            CellContentType.Info,
-                            kvp.Value,
-                            null
-                        );
-                    }
-                }
-            }
-            else
-            {
-                if (model.Meta.ContentInfo != null)
-                {
-                    if (!String.IsNullOrEmpty(model.Meta.ContentInfo.RefPeriod))
-                    {
-                        //sheet.Cell(row, 1).Value = model.Meta.GetLocalizedString("PxcKeywordRefPeriod") + ":";
-                        SetCell(
-                            sheet.Cell(row, 1),
-                            CellContentType.Info,
-                            model.Meta.GetLocalizedString("PxcKeywordRefPeriod") + ":",
-                            null
-                        );
-                        //sheet.Cell(row++, 2).Value = model.Meta.ContentInfo.RefPeriod;
-                        row++;
-                        SetCell(
-                            sheet.Cell(row++, 1),
-                            CellContentType.Info,
-                            model.Meta.ContentInfo.RefPeriod,
-                            null
-                        );
-                    }
-                }
-            }
-
-            //BASEPERIOD
-            row++;
-            if (contvar)
-            {
-                if (baseperiod.Count > 0)
-                {
-                    //writer.WriteEmptyRow()
-                    //sheet.Cell(row, 1).Value = model.Meta.GetLocalizedString("PxcKeywordBasePeriod") + ":";
-                    SetCell(
-                        sheet.Cell(row, 1),
-                        CellContentType.Info,
-                        model.Meta.GetLocalizedString("PxcKeywordBasePeriod") + ":",
-                        null
-                    );
-                    foreach (KeyValuePair<string, string> kvp in baseperiod)
-                    {
-                        //sheet.Cell(row, 1).Value = kvp.Key + ":";
-                        SetCell(
-                            sheet.Cell(row, 1),
-                            CellContentType.Info,
-                            kvp.Key + ":",
-                            null
-                        );
-                        //sheet.Cell(row++, 2).Value = kvp.Value;
-                        row++;
-                        SetCell(
-                            sheet.Cell(row++, 1),
-                            CellContentType.Info,
-                            kvp.Value,
-                            null
-                        );
-                    }
-                }
-            }
-            else
-            {
-                if (model.Meta.ContentInfo != null)
-                {
-                    if (!String.IsNullOrEmpty(model.Meta.ContentInfo.Baseperiod))
-                    {
-                        //sheet.Cell(row, 1).Value = model.Meta.GetLocalizedString("PxcKeywordBasePeriod") + ":";
-                        SetCell(
-                            sheet.Cell(row, 1),
-                            CellContentType.Info,
-                            model.Meta.GetLocalizedString("PxcKeywordBasePeriod") + ":",
-                            null
-                        );
-                        //sheet.Cell(row++, 2).Value = model.Meta.ContentInfo.Baseperiod;
-                        row++;
-                        SetCell(
-                            sheet.Cell(row++, 1),
-                            CellContentType.Info,
-                            model.Meta.ContentInfo.Baseperiod,
-                            null
-                        );
-                    }
-                }
-            }
-
-            //CFPRICES
-            row++;
-            if (contvar)
-            {
-                if (cfprices.Count > 0)
-                {
-                    foreach (KeyValuePair<string, string> kvp in cfprices)
-                    {
-                        //sheet.Cell(row, 1).Value = kvp.Key + ":";
-                        SetCell(
-                            sheet.Cell(row, 1),
-                            CellContentType.Info,
-                            kvp.Key + ":",
-                            null
-                        );
-                        switch (kvp.Value.ToUpper())
-                        {
-                            case "C":
-                                //sheet.Cell(row++, 2).Value = model.Meta.GetLocalizedString("PxcKeywordCFPricesValueCurrent");
-                                row++;
-                                SetCell(
-                                    sheet.Cell(row++, 1),
-                                    CellContentType.Info,
-                                    model.Meta.GetLocalizedString("PxcKeywordCFPricesValueCurrent"),
-                                    null
-                                );
-                                break;
-                            case "F":
-                                //sheet.Cell(row++, 2).Value = model.Meta.GetLocalizedString("PxcKeywordCFPricesValueFixed");
-                                row++;
-                                SetCell(
-                                    sheet.Cell(row++, 1),
-                                    CellContentType.Info,
-                                    model.Meta.GetLocalizedString("PxcKeywordCFPricesValueFixed"),
-                                    null
-                                );
-                                break;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                if (model.Meta.ContentInfo != null)
-                {
-                    if (!String.IsNullOrEmpty(model.Meta.ContentInfo.CFPrices))
-                    {
-                        switch (model.Meta.ContentInfo.CFPrices.ToUpper())
-                        {
-                            case "C":
-                                //sheet.Cell(row, 1).Value = model.Meta.GetLocalizedString("PxcKeywordCFPricesValueCurrent");
-                                SetCell(
-                                    sheet.Cell(row, 1),
-                                    CellContentType.Info,
-                                    model.Meta.GetLocalizedString("PxcKeywordCFPricesValueCurrent"),
-                                    null
-                                );
-                                break;
-                            case "F":
-                                //sheet.Cell(row, 1).Value = model.Meta.GetLocalizedString("PxcKeywordCFPricesValueFixed");
-                                SetCell(
-                                    sheet.Cell(row, 1),
-                                    CellContentType.Info,
-                                    model.Meta.GetLocalizedString("PxcKeywordCFPricesValueFixed"),
-                                    null
-                                );
-                                break;
-                        }
-                    }
-                }
-            }
-
-            //DAYADJ
-            row++;
-            if (contvar)
-            {
-                if (dayadj.Count > 0)
-                {
-                    //writer.WriteEmptyRow()
-                    foreach (KeyValuePair<string, string> kvp in dayadj)
-                    {
-                        //sheet.Cell(row, 1).Value = kvp.Key + ":";
-                        SetCell(
-                            sheet.Cell(row, 1),
-                            CellContentType.Info,
-                            kvp.Key + ":",
-                            null
-                        );
-                        //sheet.Cell(row++, 2).Value = model.Meta.GetLocalizedString("PxcKeywordDayAdj");
-                        row++;
-                        SetCell(
-                            sheet.Cell(row++, 1),
-                            CellContentType.Info,
-                            model.Meta.GetLocalizedString("PxcKeywordDayAdj"),
-                            null
-                        );
-                    }
-                }
-            }
-            else
-            {
-                if (model.Meta.ContentInfo != null)
-                {
-                    if (!String.IsNullOrEmpty(model.Meta.ContentInfo.DayAdj))
-                    {
-                        if (model.Meta.ContentInfo.DayAdj.ToUpper().Equals("YES"))
-                        {
-                            //sheet.Cell(row++, 1).Value = model.Meta.GetLocalizedString("PxcKeywordDayAdj");
-                            SetCell(
-                                sheet.Cell(row++, 1),
-                                CellContentType.Info,
-                                model.Meta.GetLocalizedString("PxcKeywordDayAdj"),
-                                null
-                            );
-                        }
-                    }
-                }
-            }
-
-            //SEASADJ
-            row++;
-            if (contvar)
-            {
-                if (seasadj.Count > 0)
-                {
-                    //writer.WriteEmptyRow()
-                    foreach (KeyValuePair<string, string> kvp in seasadj)
-                    {
-                        //sheet.Cell(row, 1).Value = kvp.Key + ":";
-                        SetCell(
-                            sheet.Cell(row, 1),
-                            CellContentType.Info,
-                            kvp.Key + ":",
-                            null
-                        );
-                        //sheet.Cell(row++, 2).Value = model.Meta.GetLocalizedString("PxcKeywordSeasAdj");
-                        row++;
-                        SetCell(
-                            sheet.Cell(row++, 1),
-                            CellContentType.Info,
-                            model.Meta.GetLocalizedString("PxcKeywordSeasAdj"),
-                            null
-                        );
-                    }
-                }
-            }
-            else
-            {
-                if (model.Meta.ContentInfo != null)
-                {
-                    if (!String.IsNullOrEmpty(model.Meta.ContentInfo.SeasAdj))
-                    {
-                        if (model.Meta.ContentInfo.SeasAdj.ToUpper().Equals("YES"))
-                        {
-                            //sheet.Cell(row++, 1).Value = model.Meta.GetLocalizedString("PxcKeywordSeasAdj");
-                            SetCell(
-                                sheet.Cell(row++, 1),
-                                CellContentType.Info,
-                                model.Meta.GetLocalizedString("PxcKeywordSeasAdj"),
-                                null
-                            );
-                        }
-                    }
-                }
-            }
-
-            //OFFICIAL STATISTICS
-            //If the statistics are official, insert information about that in the file 
-            //Reqtest error report #406
-            row++;
-            if (model.Meta.OfficialStatistics)
-            {
-
-                SetCell(
-                    sheet.Cell(row++, 1),
-                    CellContentType.Info,
-                    model.Meta.GetLocalizedString("PxcKeywordOfficialStatistics"),
-                    null
-                );
-            }
-            //DATABASE
-            row++;
-            if (!String.IsNullOrEmpty(model.Meta.Database))
-            {
-                //sheet.Cell(row, 1).Value = model.Meta.GetLocalizedString("PxcKeywordDatabase") + ":";
-                SetCell(
-                    sheet.Cell(row, 1),
-                    CellContentType.Info,
-                    model.Meta.GetLocalizedString("PxcKeywordDatabase") + ":",
-                    null
-                );
-                //sheet.Cell(row++, 2).Value = model.Meta.Database;
-                row++;
-                SetCell(
-                    sheet.Cell(row++, 1),
-                    CellContentType.Info,
-                    model.Meta.Database,
-                    null
-                );
-            }
-
-            //MATRIX
-            row++;
-            if (!String.IsNullOrEmpty(model.Meta.Matrix))
-            {
-                //sheet.Cell(row, 1).Value = model.Meta.GetLocalizedString("PxcKeywordMatrix") + ":";
-                SetCell(
-                    sheet.Cell(row, 1),
-                    CellContentType.Info,
-                    model.Meta.GetLocalizedString("PxcKeywordMatrix") + ":",
-                    null
-                );
-                //sheet.Cell(row++, 2).Value = model.Meta.Matrix;
-                row++;
-                SetCell(
-                    sheet.Cell(row++, 1),
-                    CellContentType.Info,
-                    model.Meta.Matrix,
-                    null
-                );
-            }
             return row;
         }
 
