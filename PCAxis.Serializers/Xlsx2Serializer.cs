@@ -72,15 +72,16 @@ namespace PCAxis.Serializers
 
             AdditionalSheetFunctionality(book.Worksheet(model.Meta.Matrix), model);
 
-            if (book != null)
-            {
-                //book.Worksheet(model.Meta.Matrix).Columns().AdjustToContents(2, 2, 40);
-                if (output is System.IO.Stream)
-                    book.SaveAs((System.IO.Stream)output);
-                else if (output is string)
-                    book.SaveAs(output.ToString());
-                book.Dispose();
+            // AdjustToContents is slow and resource intensive so we do not call it.
+            if (output is System.IO.Stream stream) 
+            { 
+                book.SaveAs(stream);
             }
+            else if (output is string path)
+            { 
+                book.SaveAs(path);
+            }
+            book.Dispose();
         }
 
         protected virtual void AdditionalSheetFunctionality(IXLWorksheet sheet, PXModel model)
@@ -101,7 +102,7 @@ namespace PCAxis.Serializers
                 if (type == CellContentType.Comment)
                     cell.GetComment().AddText(value.ToString());
                 else
-                    cell.SetValue(value); //Change from cell.Value = value to SetValue(..) For not format e.g 10-11 to date
+                    cell.SetValue(value); //Change from cell.Value = contentInfo to SetValue(..) For not format e.g 10-11 to date
         }
 
         protected virtual void SetCellFormat(IXLCell cell, CellContentType type, object value, FormatCellDescription changes)
@@ -322,7 +323,7 @@ namespace PCAxis.Serializers
             //Writes mandantory variable notes
             row = WriteVariableNotes(row, model, sheet);
 
-            //Writes mandantory value notes
+            //Writes mandantory contentInfo notes
             row = WriteValueNotes(row, model, sheet);
 
             //Writes mandantory cellnotes 
@@ -626,11 +627,11 @@ namespace PCAxis.Serializers
             }
             else
             {
-                foreach(var value in meta.ContentVariable.Values)
+                foreach(var contentInfo in meta.ContentVariable.Values.Select(value => value.ContentInfo))
                 {
-                    if (value.ContentInfo != null)
+                    if (contentInfo != null)
                     {
-                        row = WriteContact(row, value.ContentInfo.Contact, sheet, memo);
+                        row = WriteContact(row, contentInfo.Contact, sheet, memo);
                     }
                 }
             }
@@ -671,7 +672,7 @@ namespace PCAxis.Serializers
 
         private int WriteTableInformationValue(int row, string label, string value, IXLWorksheet sheet)
         {
-            //Only write the information if the value is not empty
+            //Only write the information if the contentInfo is not empty
             if (!string.IsNullOrEmpty(value))
             {
                 //Write label
@@ -681,7 +682,7 @@ namespace PCAxis.Serializers
                     label,
                     null);
 
-                //Write value
+                //Write contentInfo
                 SetCell(
                     sheet.Cell(row, 2),
                     CellContentType.Info,
@@ -800,9 +801,7 @@ namespace PCAxis.Serializers
                     //indentation + the values in a certain interval + repeated for the number of repeats
                     column = indentation + (valueIndex * repeatInterval) + (repeat * variable.Values.Count * repeatInterval);
 
-                    //TODO double column
-                    //TODO make a SetHeaderCell method with 2 args
-                    //Writes the value text
+                    //Writes the contentInfo text
                     SetCell(
                         sheet.Cell(row, column),
                         CellContentType.Head,
@@ -810,7 +809,7 @@ namespace PCAxis.Serializers
                         c => c.Style.Font.Bold = true
                     );
 
-                    //Writes value notes
+                    //Writes contentInfo notes
                     if (notes != null)
                     {
                         SetCell(
