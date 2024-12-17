@@ -533,7 +533,7 @@ namespace PCAxis.Serializers
             if (!String.IsNullOrEmpty(model.Meta.ContentInfo.SeasAdj) && model.Meta.ContentInfo.SeasAdj.ToUpper().Equals("YES"))
             {
                 SetCell(
-                    sheet.Cell(row++, 1),
+                    sheet.Cell(row, 1),
                     CellContentType.Info,
                     model.Meta.GetLocalizedString("PxcKeywordSeasAdj"),
                     null
@@ -565,7 +565,7 @@ namespace PCAxis.Serializers
             if (!String.IsNullOrEmpty(model.Meta.ContentInfo.SeasAdj) && model.Meta.ContentInfo.SeasAdj.ToUpper().Equals("YES"))
             {
                 SetCell(
-                    sheet.Cell(row++, 1),
+                    sheet.Cell(row, 1),
                     CellContentType.Info,
                     model.Meta.GetLocalizedString("PxcKeywordSeasAdj"),
                     null
