@@ -454,7 +454,7 @@ namespace PCAxis.Serializers
             row = WriteTableInformationContacts(row, meta, sheet);
 
             //Check if the information is attached on the table or on the values on the content variable
-            if (meta.ContentVariable != null && meta.ContentVariable.Values.Count > 0 && meta.ContentInfo is null)
+            if (meta.ContentVariable != null && meta.ContentVariable.Values.Count > 0)
             {
                 WriteTableInformationFromContentVariable(row, model, sheet);
             }
@@ -566,13 +566,13 @@ namespace PCAxis.Serializers
         private int WriteTableInformationContacts(int row, PXMeta meta, IXLWorksheet sheet)
         {
             SetCell(
-                sheet.Cell(row, 1),
+                sheet.Cell(row++, 1),
                 CellContentType.Info,
                 meta.GetLocalizedString("PxcKeywordContact") + ":",
                 null
             );
             var memo = new HashSet<string>();
-            if (meta.ContentInfo != null)
+            if (meta.ContentVariable is null)
             {
                 row = WriteContact(row, meta.ContentInfo.Contact, sheet, memo);
             }
@@ -671,7 +671,14 @@ namespace PCAxis.Serializers
                     continue;
                 }
 
-                map[infoValue] = map[infoValue] is null ? value.Text : map[infoValue] + ", " + value.Text;
+                if (map.ContainsKey(infoValue))
+                {
+                    map[infoValue] = map[infoValue] + ", " + value.Text;
+                }
+                else
+                {
+                    map.Add(infoValue, value.Text);
+                }
             }
 
             if (map.Count == 1)
