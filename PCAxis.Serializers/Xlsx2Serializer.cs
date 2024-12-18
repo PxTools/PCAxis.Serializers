@@ -426,6 +426,10 @@ namespace PCAxis.Serializers
 
             var meta = model.Meta;
 
+            row = WriteTableInformationContacts(row, meta, sheet);
+            // Added some extra spece after the contact information
+            row++;
+
             // Writes the table specific information
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordDatabase") + ":", meta.Database, sheet);
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordMatrix") + ":", meta.Matrix, sheet);
@@ -451,8 +455,6 @@ namespace PCAxis.Serializers
                 );
             }
 
-            row = WriteTableInformationContacts(row, meta, sheet);
-
             //Check if the information is attached on the table or on the values on the content variable
             if (meta.ContentVariable != null && meta.ContentVariable.Values.Count > 0)
             {
@@ -474,6 +476,7 @@ namespace PCAxis.Serializers
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordUnits") + ":", meta, (c) => c.Units, sheet);
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordStockfa") + ":", meta, (c) => c.StockFa, sheet, (s ,m) => ConvertStockFlowAverageToLocalText(s, m));
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordBasePeriod") + ":", meta, (c) => c.Baseperiod, sheet);
+            row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordRefPeriod") + ":", meta, (c) => c.RefPeriod, sheet);
             row = WriteTableInformationValue(row, "", meta, (c) => c.CFPrices, sheet, (s,m) => ConvertCurrentOrFiexedPricesToLocalText(s,m));
             row = WriteTableInformationBooleanValue(row, meta.GetLocalizedString("PxcKeywordDayAdj") + ":", meta, (c) => c.DayAdj, sheet);
             row = WriteTableInformationBooleanValue(row, meta.GetLocalizedString("PxcKeywordSeasAdj") + ":", meta, (c) => c.SeasAdj, sheet);
@@ -498,6 +501,7 @@ namespace PCAxis.Serializers
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordUnits") + ":", meta.ContentInfo.Units, sheet);
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordStockfa") + ":", ConvertStockFlowAverageToLocalText(meta.ContentInfo.StockFa, meta), sheet);
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordBasePeriod") + ":", meta.ContentInfo.Baseperiod, sheet);
+            row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordRefPeriod") + ":", meta.ContentInfo.RefPeriod, sheet);
             row = WriteTableInformationValue(row, "", ConvertCurrentOrFiexedPricesToLocalText(meta.ContentInfo.CFPrices, meta), sheet);
 
             if (!String.IsNullOrEmpty(model.Meta.ContentInfo.DayAdj) && model.Meta.ContentInfo.DayAdj.ToUpper().Equals("YES"))
@@ -681,10 +685,14 @@ namespace PCAxis.Serializers
                 }
             }
 
+            if (map.Count == 0)
+            {
+                return row;
+            }
             if (map.Count == 1)
             {
                 //All are same
-                row = WriteTableInformationValue(row, label, map.First().Value, sheet);
+                row = WriteTableInformationValue(row, label, map.First().Key, sheet);
             } else
             {
                 //Write label
