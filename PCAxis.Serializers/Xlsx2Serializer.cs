@@ -477,7 +477,7 @@ namespace PCAxis.Serializers
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordStockfa") + ":", meta, (c) => c.StockFa, sheet, (s ,m) => ConvertStockFlowAverageToLocalText(s, m));
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordBasePeriod") + ":", meta, (c) => c.Baseperiod, sheet);
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordRefPeriod") + ":", meta, (c) => c.RefPeriod, sheet);
-            row = WriteTableInformationValue(row, "", meta, (c) => c.CFPrices, sheet, (s,m) => ConvertCurrentOrFiexedPricesToLocalText(s,m));
+            row = WriteTableInformationValue(row, "", meta, (c) => c.CFPrices, sheet, (s,m) => ConvertCurrentOrFixedPricesToLocalText(s,m));
             row = WriteTableInformationBooleanValue(row, meta.GetLocalizedString("PxcKeywordDayAdj") + ":", meta, (c) => c.DayAdj, sheet);
             row = WriteTableInformationBooleanValue(row, meta.GetLocalizedString("PxcKeywordSeasAdj") + ":", meta, (c) => c.SeasAdj, sheet);
 
@@ -502,7 +502,7 @@ namespace PCAxis.Serializers
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordStockfa") + ":", ConvertStockFlowAverageToLocalText(meta.ContentInfo.StockFa, meta), sheet);
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordBasePeriod") + ":", meta.ContentInfo.Baseperiod, sheet);
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordRefPeriod") + ":", meta.ContentInfo.RefPeriod, sheet);
-            row = WriteTableInformationValue(row, "", ConvertCurrentOrFiexedPricesToLocalText(meta.ContentInfo.CFPrices, meta), sheet);
+            row = WriteTableInformationValue(row, "", ConvertCurrentOrFixedPricesToLocalText(meta.ContentInfo.CFPrices, meta), sheet);
 
             if (!String.IsNullOrEmpty(model.Meta.ContentInfo.DayAdj) && model.Meta.ContentInfo.DayAdj.ToUpper().Equals("YES"))
             {
@@ -546,7 +546,7 @@ namespace PCAxis.Serializers
             }
         }
 
-        private static string ConvertCurrentOrFiexedPricesToLocalText(string prices, PXMeta meta)
+        private static string ConvertCurrentOrFixedPricesToLocalText(string prices, PXMeta meta)
         {
             if (prices == null)
             {
