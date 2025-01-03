@@ -15,10 +15,10 @@ namespace PCAxis.Serializers
 {
     public class JsonStat2Serializer : IPXModelStreamSerializer
     {
-        private static log4net.ILog _logger = log4net.LogManager.GetLogger(typeof(JsonStat2Serializer));
-        private MetaLinkManager _metaLinkManager = new MetaLinkManager();
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(typeof(JsonStat2Serializer));
+        private readonly MetaLinkManager _metaLinkManager = new MetaLinkManager();
 
-        private Dictionary<double, string> BuildDataSymbolMap(PXMeta meta)
+        private static Dictionary<double, string> BuildDataSymbolMap(PXMeta meta)
         {
             var dataSymbolMap = new Dictionary<double, string>();
 
@@ -96,7 +96,7 @@ namespace PCAxis.Serializers
                     }
                     else
                     {
-                        _logger.Warn("Category" + variableValue.Code + " lacks ContentInfo. Unit, refPeriod and contact not set");
+                        _logger.WarnFormat("Category {CategoryCode} lacks ContentInfo. Unit, refPeriod and contact not set", variableValue.Code);
                     }
 
                     dimensionValue.Category.Unit.Add(variableValue.Code, unitValue);
@@ -111,6 +111,7 @@ namespace PCAxis.Serializers
                 //Variable notes
                 AddVariableNotes(variable, dataset, dimensionValue);
 
+                //MetaID
                 CollectMetaIdsForVariable(variable, ref metaIdsHelper);
 
                 if (metaIdsHelper.Count > 0)
@@ -167,7 +168,7 @@ namespace PCAxis.Serializers
             dataset.Id.Add("ContentsCode");
         }
 
-        private void AddUpdated(PXModel model, Dataset dataset)
+        private static void AddUpdated(PXModel model, Dataset dataset)
         {
             DateTime tempDateTime;
             if (model.Meta.ContentVariable != null && model.Meta.ContentVariable.Values.Count > 0)
@@ -176,8 +177,14 @@ namespace PCAxis.Serializers
                     .OrderByDescending(x => x.ContentInfo.LastUpdated)
                     .FirstOrDefault();
 
-                // ReSharper disable once PossibleNullReferenceException
-                tempDateTime = lastUpdatedContentsVariable.ContentInfo.LastUpdated.PxDateStringToDateTime();
+                if (lastUpdatedContentsVariable != null)
+                {
+                    tempDateTime = lastUpdatedContentsVariable.ContentInfo.LastUpdated.PxDateStringToDateTime();
+                }
+                else
+                {
+                    tempDateTime = model.Meta.CreationDate.PxDateStringToDateTime();
+                }
             }
             else if (model.Meta.ContentInfo.LastUpdated != null)
             {
@@ -191,7 +198,7 @@ namespace PCAxis.Serializers
             dataset.SetUpdatedAsUtcString(tempDateTime);
         }
 
-        private void AddPxToExtension(PXModel model, Dataset dataset)
+        private static void AddPxToExtension(PXModel model, Dataset dataset)
         {
             // TODO should we have included both Decimals and ShowDecimals?
             var decimals = model.Meta.ShowDecimals < 0 ? model.Meta.Decimals : model.Meta.ShowDecimals;
@@ -213,7 +220,7 @@ namespace PCAxis.Serializers
             dataset.AddAggRegAllowed(model.Meta.AggregAllowed);
         }
 
-        private void AddTableNotes(PXModel model, Dataset dataset)
+        private static void AddTableNotes(PXModel model, Dataset dataset)
         {
             var notes = model.Meta.Notes.Where(note => note.Type == NoteType.Table);
 
@@ -231,7 +238,7 @@ namespace PCAxis.Serializers
             }
         }
 
-        private void AddEliminationInfo(DatasetDimensionValue dimensionValue, Variable variable)
+        private static void AddEliminationInfo(DatasetDimensionValue dimensionValue, Variable variable)
         {
             dimensionValue.Extension.Elimination = variable.Elimination;
 
@@ -241,7 +248,7 @@ namespace PCAxis.Serializers
             dimensionValue.Extension.EliminationValueCode = variable.EliminationValue.Code;
         }
 
-        private void AddShow(DatasetDimensionValue dimensionValue, Variable variable)
+        private static void AddShow(DatasetDimensionValue dimensionValue, Variable variable)
         {
             if (Enum.TryParse(variable.PresentationText.ToString(), out PresentationFormType presentationForm))
             {
@@ -249,14 +256,13 @@ namespace PCAxis.Serializers
             }
         }
 
-        private void AddValueNotes(Value variableValue, Dataset dataset, DatasetDimensionValue dimensionValue)
+        private static void AddValueNotes(Value variableValue, Dataset dataset, DatasetDimensionValue dimensionValue)
         {
             if (variableValue.Notes == null) return;
 
             var index = 0;
             foreach (var note in variableValue.Notes)
             {
-                //dataset.AddValueNoteToDimension(dimensionValue, variableValue.Code, note.Mandantory, note.Text);
                 dataset.AddValueNoteToCategory(dimensionValue, variableValue.Code, note.Text);
 
                 if (note.Mandantory)
@@ -266,7 +272,7 @@ namespace PCAxis.Serializers
             }
         }
 
-        private void AddVariableNotes(Variable variable, Dataset dataset, DatasetDimensionValue dimensionValue)
+        private static void AddVariableNotes(Variable variable, Dataset dataset, DatasetDimensionValue dimensionValue)
         {
             if (variable.Notes == null) return;
 
@@ -307,7 +313,7 @@ namespace PCAxis.Serializers
 
             StringBuilder sb = new StringBuilder();
             sb.Append(contact.Forname);
-            sb.Append(" ");
+            sb.Append(' ');
             sb.Append(contact.Surname);
 
             JsonStat2.Model.Contact jsonContact = new JsonStat2.Model.Contact
@@ -320,7 +326,7 @@ namespace PCAxis.Serializers
             if (contInfo.Contact != null)
             {
                 var contacts = contInfo.Contact.Split(new[] { "##" }, StringSplitOptions.RemoveEmptyEntries);
-                var res = contacts.Where(x => x.Contains(contact.Forname) && x.Contains(contact.Surname) && x.Contains(contact.Email) && x.Contains(contact.PhoneNo)).FirstOrDefault();
+                var res = contacts.FirstOrDefault(x => x.Contains(contact.Forname) && x.Contains(contact.Surname) && x.Contains(contact.Email) && x.Contains(contact.PhoneNo));
 
                 if (res != null)
                 {
@@ -359,7 +365,7 @@ namespace PCAxis.Serializers
             }
         }
 
-        private void AddRoles(Variable variable, Dataset dataset)
+        private static void AddRoles(Variable variable, Dataset dataset)
         {
             if (variable.IsTime)
             {
@@ -409,7 +415,7 @@ namespace PCAxis.Serializers
             return (string.Join(" ", metaIdsAsString));
         }
 
-        private void GetValueAndStatus(PXModel model, out List<double?> value, out Dictionary<string, string> status)
+        private static void GetValueAndStatus(PXModel model, out List<double?> value, out Dictionary<string, string> status)
         {
             value = new List<double?>();
             var buffer = new double[model.Data.MatrixColumnCount];
