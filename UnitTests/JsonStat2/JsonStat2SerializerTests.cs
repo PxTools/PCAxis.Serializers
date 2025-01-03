@@ -98,12 +98,12 @@ namespace UnitTests.JsonStat2
         [TestMethod]
         public void CheckIdArray()
         {
-            //Assert.AreEqual("ContentsCode", _jsonBE0101A1["id"][0]);
-            //Assert.AreEqual("region", _jsonBE0101A1["id"][1]);
-            //Assert.AreEqual("marital status", _jsonBE0101A1["id"][2]);
-            //Assert.AreEqual("age", _jsonBE0101A1["id"][3]);
-            //Assert.AreEqual("sex", _jsonBE0101A1["id"][4]);
-            //Assert.AreEqual("period", _jsonBE0101A1["id"][5]);
+            Assert.AreEqual("ContentsCode", _jsonBE0101A1["id"][0]);
+            Assert.AreEqual("region", _jsonBE0101A1["id"][1]);
+            Assert.AreEqual("marital status", _jsonBE0101A1["id"][2]);
+            Assert.AreEqual("age", _jsonBE0101A1["id"][3]);
+            Assert.AreEqual("sex", _jsonBE0101A1["id"][4]);
+            Assert.AreEqual("period", _jsonBE0101A1["id"][5]);
 
             Assert.AreEqual("Statsbrgskap", _jsonMultipleContent["id"][0]);
             Assert.AreEqual("Tid", _jsonMultipleContent["id"][1]);
@@ -113,12 +113,12 @@ namespace UnitTests.JsonStat2
         [TestMethod]
         public void CheckSizeArray()
         {
-            //Assert.AreEqual(1, _jsonBE0101A1["size"][0]);
-            //Assert.AreEqual(1, _jsonBE0101A1["size"][1]);
-            //Assert.AreEqual(1, _jsonBE0101A1["size"][2]);
-            //Assert.AreEqual(1, _jsonBE0101A1["size"][3]);
-            //Assert.AreEqual(1, _jsonBE0101A1["size"][4]);
-            //Assert.AreEqual(1, _jsonBE0101A1["size"][5]);
+            Assert.AreEqual(1, _jsonBE0101A1["size"][0]);
+            Assert.AreEqual(1, _jsonBE0101A1["size"][1]);
+            Assert.AreEqual(1, _jsonBE0101A1["size"][2]);
+            Assert.AreEqual(1, _jsonBE0101A1["size"][3]);
+            Assert.AreEqual(1, _jsonBE0101A1["size"][4]);
+            Assert.AreEqual(1, _jsonBE0101A1["size"][5]);
 
             Assert.AreEqual(276, _jsonMultipleContent["size"][0]);
             Assert.AreEqual(65, _jsonMultipleContent["size"][1]);
@@ -128,8 +128,8 @@ namespace UnitTests.JsonStat2
         [TestMethod]
         public void CheckRoleArray()
         {
-            //Assert.AreEqual("period", _jsonBE0101A1["role"]["time"][0]);
-            //Assert.AreEqual("ContentsCode", _jsonBE0101A1["role"]["metric"][0]);
+            Assert.AreEqual("period", _jsonBE0101A1["role"]["time"][0]);
+            Assert.AreEqual("ContentsCode", _jsonBE0101A1["role"]["metric"][0]);
 
             Assert.AreEqual("Tid", _jsonMultipleContent["role"]["time"][0]);
             Assert.AreEqual("ContentsCode", _jsonMultipleContent["role"]["metric"][0]);

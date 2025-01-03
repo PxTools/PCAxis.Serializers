@@ -161,6 +161,10 @@ namespace PCAxis.Serializers
 
             // Contact
             AddContact(dataset, model.Meta.ContentInfo);
+
+            dataset.AddToMetricRole("ContentsCode");
+            dataset.Size.Add(1);
+            dataset.Id.Add("ContentsCode");
         }
 
         private void AddUpdated(PXModel model, Dataset dataset)
