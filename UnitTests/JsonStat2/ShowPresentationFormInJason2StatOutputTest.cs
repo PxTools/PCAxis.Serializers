@@ -12,7 +12,7 @@ namespace UnitTests.JsonStat2
     [TestClass]
     public class ShowPresentationFormInJason2StatOutputTest
     {
-        private JsonStat2Helper helper = new JsonStat2Helper();
+        private readonly JsonStat2Helper helper = new JsonStat2Helper();
 
         [TestMethod]
         [DeploymentItem("TestFiles/BE0101A1_show_codes_or.px")]

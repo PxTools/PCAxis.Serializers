@@ -10,7 +10,7 @@ namespace UnitTests.JsonStat
     [DeploymentItem("TestFiles/PR0101B3.px")]
     public class FullStringEqualTest
     {
-        private JsonStatHelper helper = new JsonStatHelper();
+        private readonly JsonStatHelper helper = new JsonStatHelper();
 
         [TestMethod]
         public void PR0101B3_finnish()

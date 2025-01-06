@@ -13,7 +13,7 @@ namespace UnitTests.Sdmx
     [DeploymentItem("ExceptationFiles/PR0101B3_sdmx_structure.txt")]
     public class FullStringEqualTest
     {
-        private SdmxHelper helper = new SdmxHelper();
+        private readonly SdmxHelper helper = new SdmxHelper();
 
 
         [TestMethod]

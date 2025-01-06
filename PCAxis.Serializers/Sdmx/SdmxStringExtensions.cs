@@ -8,8 +8,7 @@ namespace PCAxis.Sdmx.ExtensionMethods
 {
     public static class SdmxStringExtensions
     {
-        public static Regex WhiteExpression = new Regex("[^A-Za-z0-9-*_@$]");
-
+        public static Regex WhiteExpression = new Regex("[^A-Za-z0-9-*_@$]", RegexOptions.None, TimeSpan.FromSeconds(1));
         public static String CleanID(this String str)
         {
             return WhiteExpression.Replace(str, "");

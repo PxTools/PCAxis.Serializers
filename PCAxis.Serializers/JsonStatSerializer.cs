@@ -14,13 +14,13 @@ namespace PCAxis.Serializers
 
     public class JsonStatSerializer : PCAxis.Paxiom.IPXModelStreamSerializer
     {
-        private static log4net.ILog _logger = log4net.LogManager.GetLogger(typeof(JsonStatSerializer));
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(typeof(JsonStatSerializer));
 
         // A map between the numerical status-symbols in the array and the actual representation of it
-        private Dictionary<double, string> dataSymbolMap = new Dictionary<double, string>();
-        private Dictionary<string, bool> geoVariableMap = new Dictionary<string, bool>();
+        private readonly Dictionary<double, string> dataSymbolMap = new Dictionary<double, string>();
+        private readonly Dictionary<string, bool> geoVariableMap = new Dictionary<string, bool>();
         private PXMeta meta;
-        private MetaLinkManager metaLinkManager = new MetaLinkManager();
+        private readonly MetaLinkManager metaLinkManager = new MetaLinkManager();
 
         // Reserved fields in JSON-stat (in no particular order)
         private const string TIME = "time";

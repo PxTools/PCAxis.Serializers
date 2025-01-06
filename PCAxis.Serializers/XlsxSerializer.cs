@@ -1360,7 +1360,7 @@ namespace PCAxis.Serializers
         #endregion
 
 
-        static string[] arrFormat = new string[] { "0", "0.0", "0.00", "0.000", "0.0000", "0.00000", "0.000000" };
+        static readonly string[] arrFormat = new string[] { "0", "0.0", "0.00", "0.000", "0.0000", "0.00000", "0.000000" };
 
         /// <summary>
         /// A method for format the cell in Excel that contains numeric/decimal values.
