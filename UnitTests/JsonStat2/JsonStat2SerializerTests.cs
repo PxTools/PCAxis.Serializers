@@ -12,9 +12,14 @@ namespace UnitTests.JsonStat2
 {
     [TestClass]
     [DeploymentItem("TestFiles/HalfYearStatistics.px")]
+    [DeploymentItem("TestFiles/BE0101A1.px")]
+    [DeploymentItem("TestFiles/MultipleContent.px")]
     public class JsonStat2SerializerTests
     {
-        private JObject _jsonstat;
+        private JObject _jsonHalfYearStatistics;
+        private JObject _jsonBE0101A1;
+        private JObject _jsonMultipleContent;
+
 
         [TestInitialize]
         public void TestSetup()
@@ -22,17 +27,24 @@ namespace UnitTests.JsonStat2
             var helper = new JsonStat2Helper();
 
             PXModel myModel = helper.GetSelectAllModel("HalfYearStatistics.px");
-
             var actual = helper.GetActual(myModel);
+            _jsonHalfYearStatistics = JObject.Parse(actual);
 
-            _jsonstat = JObject.Parse(actual);
+            myModel = helper.GetSelectAllModel("BE0101A1.px");
+            actual = helper.GetActual(myModel);
+            _jsonBE0101A1 = JObject.Parse(actual);
+
+            myModel = helper.GetSelectAllModel("MultipleContent.px");
+            actual = helper.GetActual(myModel);
+            _jsonMultipleContent = JObject.Parse(actual);
+
         }
 
         [TestMethod]
         public void Check_Root_Label_Element()
         {
             // TODO: the PxcMeta fileds should be resolved with languages files in these tests
-            var actualLabel = _jsonstat["label"].ToString();
+            var actualLabel = _jsonHalfYearStatistics["label"].ToString();
             actualLabel = actualLabel.Replace("PxcMetaTitleBy", "by");
             actualLabel = actualLabel.Replace("PxcMetaTitleAnd", "and");
 
@@ -45,7 +57,7 @@ namespace UnitTests.JsonStat2
             var localTimeZone = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneInfo.Local.Id);
             var helsinkiTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/Helsinki");
 
-            var updated = _jsonstat["updated"].ToObject<DateTime>();
+            var updated = _jsonHalfYearStatistics["updated"].ToObject<DateTime>();
             updated = TimeZoneInfo.ConvertTimeFromUtc(updated, localTimeZone);
             updated = DateTime.SpecifyKind(updated, DateTimeKind.Unspecified);
             updated = TimeZoneInfo.ConvertTimeToUtc(updated, helsinkiTimeZone);
@@ -58,28 +70,69 @@ namespace UnitTests.JsonStat2
         [TestMethod]
         public void Check_More_Root_Elements()
         {
-            Assert.AreEqual("2.0", _jsonstat["version"]);
-            Assert.AreEqual("dataset", _jsonstat["class"]);
-            Assert.AreEqual("Statistics Finland, wage and salary indices", _jsonstat["source"]);
+            Assert.AreEqual("2.0", _jsonHalfYearStatistics["version"]);
+            Assert.AreEqual("dataset", _jsonHalfYearStatistics["class"]);
+            Assert.AreEqual("Statistics Finland, wage and salary indices", _jsonHalfYearStatistics["source"]);
         }
 
         [TestMethod]
         public void Check_Root_Extension_Px_Elements()
         {
-            Assert.AreEqual("statfin_ktps_pxt_111p", _jsonstat["extension"]["px"]["tableid"]);
-            Assert.AreEqual(1, _jsonstat["extension"]["px"]["decimals"]);
-            Assert.AreEqual(false, _jsonstat["extension"]["px"]["official-statistics"]);
-            Assert.AreEqual(true, _jsonstat["extension"]["px"]["aggregallowed"]);
-            Assert.AreEqual("en", _jsonstat["extension"]["px"]["language"]);
-            Assert.AreEqual("Wage and salary indices by industry 2015=100", _jsonstat["extension"]["px"]["contents"]);
-            Assert.AreEqual("111p -- Wage and salary indices by industry semiannually (2015=100), 1995H1-2022H2", _jsonstat["extension"]["px"]["description"]);
-            Assert.AreEqual(false, _jsonstat["extension"]["px"]["descriptiondefault"]);
-            Assert.AreEqual("Toimiala", _jsonstat["extension"]["px"]["heading"][0]);
-            Assert.AreEqual("Tiedot", _jsonstat["extension"]["px"]["heading"][1]);
-            Assert.AreEqual("Puolivuosi", _jsonstat["extension"]["px"]["stub"][0]);
-            Assert.AreEqual("001_111p_2023m05", _jsonstat["extension"]["px"]["matrix"]);
-            Assert.AreEqual("KTPS", _jsonstat["extension"]["px"]["subject-code"]);
-            Assert.AreEqual("ktps", _jsonstat["extension"]["px"]["subject-area"]);
+            Assert.AreEqual("statfin_ktps_pxt_111p", _jsonHalfYearStatistics["extension"]["px"]["tableid"]);
+            Assert.AreEqual(1, _jsonHalfYearStatistics["extension"]["px"]["decimals"]);
+            Assert.AreEqual("False", _jsonHalfYearStatistics["extension"]["px"]["official-statistics"].ToString());
+            Assert.AreEqual("True", _jsonHalfYearStatistics["extension"]["px"]["aggregallowed"].ToString());
+            Assert.AreEqual("en", _jsonHalfYearStatistics["extension"]["px"]["language"]);
+            Assert.AreEqual("Wage and salary indices by industry 2015=100", _jsonHalfYearStatistics["extension"]["px"]["contents"]);
+            Assert.AreEqual("111p -- Wage and salary indices by industry semiannually (2015=100), 1995H1-2022H2", _jsonHalfYearStatistics["extension"]["px"]["description"]);
+            Assert.AreEqual("False", _jsonHalfYearStatistics["extension"]["px"]["descriptiondefault"].ToString());
+            Assert.AreEqual("Toimiala", _jsonHalfYearStatistics["extension"]["px"]["heading"][0]);
+            Assert.AreEqual("Tiedot", _jsonHalfYearStatistics["extension"]["px"]["heading"][1]);
+            Assert.AreEqual("Puolivuosi", _jsonHalfYearStatistics["extension"]["px"]["stub"][0]);
+            Assert.AreEqual("001_111p_2023m05", _jsonHalfYearStatistics["extension"]["px"]["matrix"]);
+            Assert.AreEqual("KTPS", _jsonHalfYearStatistics["extension"]["px"]["subject-code"]);
+            Assert.AreEqual("ktps", _jsonHalfYearStatistics["extension"]["px"]["subject-area"]);
+        }
+
+
+        [TestMethod]
+        public void CheckIdArray()
+        {
+            Assert.AreEqual("ContentsCode", _jsonBE0101A1["id"][0]);
+            Assert.AreEqual("region", _jsonBE0101A1["id"][1]);
+            Assert.AreEqual("marital status", _jsonBE0101A1["id"][2]);
+            Assert.AreEqual("age", _jsonBE0101A1["id"][3]);
+            Assert.AreEqual("sex", _jsonBE0101A1["id"][4]);
+            Assert.AreEqual("period", _jsonBE0101A1["id"][5]);
+
+            Assert.AreEqual("Statsbrgskap", _jsonMultipleContent["id"][0]);
+            Assert.AreEqual("Tid", _jsonMultipleContent["id"][1]);
+            Assert.AreEqual("ContentsCode", _jsonMultipleContent["id"][2]);
+        }
+
+        [TestMethod]
+        public void CheckSizeArray()
+        {
+            Assert.AreEqual(1, _jsonBE0101A1["size"][0]);
+            Assert.AreEqual(1, _jsonBE0101A1["size"][1]);
+            Assert.AreEqual(1, _jsonBE0101A1["size"][2]);
+            Assert.AreEqual(1, _jsonBE0101A1["size"][3]);
+            Assert.AreEqual(1, _jsonBE0101A1["size"][4]);
+            Assert.AreEqual(1, _jsonBE0101A1["size"][5]);
+
+            Assert.AreEqual(276, _jsonMultipleContent["size"][0]);
+            Assert.AreEqual(65, _jsonMultipleContent["size"][1]);
+            Assert.AreEqual(3, _jsonMultipleContent["size"][2]);
+        }
+
+        [TestMethod]
+        public void CheckRoleArray()
+        {
+            Assert.AreEqual("period", _jsonBE0101A1["role"]["time"][0]);
+            Assert.AreEqual("ContentsCode", _jsonBE0101A1["role"]["metric"][0]);
+
+            Assert.AreEqual("Tid", _jsonMultipleContent["role"]["time"][0]);
+            Assert.AreEqual("ContentsCode", _jsonMultipleContent["role"]["metric"][0]);
         }
     }
 }
