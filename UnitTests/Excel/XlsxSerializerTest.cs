@@ -9,7 +9,7 @@ namespace UnitTests.Excel
     [TestClass]
     public class XlsxSerializerTest
     {
-        ExcelHelper helper = new ExcelHelper();
+        readonly ExcelHelper helper = new ExcelHelper();
 
 
         [TestMethod]

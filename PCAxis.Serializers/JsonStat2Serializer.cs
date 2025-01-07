@@ -146,19 +146,20 @@ namespace PCAxis.Serializers
         private void AddInfoForEliminatedContentVariable(PXModel model, Dataset dataset)
         {
             dataset.AddDimensionValue("ContentsCode", "EliminatedContents", out var dimensionValue);
-            dimensionValue.Category.Label.Add("EliminatedValue", model.Meta.Contents);
-            dimensionValue.Category.Index.Add("EliminatedValue", 0);
+            var eliminatedValue = "EliminatedValue";
+            dimensionValue.Category.Label.Add(eliminatedValue, model.Meta.Contents);
+            dimensionValue.Category.Index.Add(eliminatedValue, 0);
 
             dataset.AddUnitValue(dimensionValue.Category, out var unitValue);
             unitValue.Base = model.Meta.ContentInfo.Units;
             unitValue.Decimals = model.Meta.Decimals;
 
-            dimensionValue.Category.Unit.Add("EliminatedValue", unitValue);
+            dimensionValue.Category.Unit.Add(eliminatedValue, unitValue);
 
             dimensionValue.Extension.Elimination = true;
 
             //refPeriod extension dimension
-            dataset.AddRefPeriod(dimensionValue, "EliminatedValue", model.Meta.ContentInfo.RefPeriod);
+            dataset.AddRefPeriod(dimensionValue, eliminatedValue, model.Meta.ContentInfo.RefPeriod);
 
             // Contact
             AddContact(dataset, model.Meta.ContentInfo);
@@ -200,7 +201,6 @@ namespace PCAxis.Serializers
 
         private static void AddPxToExtension(PXModel model, Dataset dataset)
         {
-            // TODO should we have included both Decimals and ShowDecimals?
             var decimals = model.Meta.ShowDecimals < 0 ? model.Meta.Decimals : model.Meta.ShowDecimals;
 
             dataset.CreateExtensionRootPx();

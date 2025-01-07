@@ -12,7 +12,7 @@ namespace UnitTests.JsonStat
     [DeploymentItem("TestFiles/Issue220Finland.px")]
     public class NoCrashTests_Issue220
     {
-        private JsonStatHelper helper = new JsonStatHelper();
+        private readonly JsonStatHelper helper = new JsonStatHelper();
 
 
         [TestMethod]

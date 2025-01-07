@@ -16,7 +16,7 @@ namespace UnitTests.JsonStat2
     [DeploymentItem("TestFiles", "TestFiles")]
     public class TestAllFiles
     {
-        private JsonStat2Helper helper = new JsonStat2Helper();
+        private readonly JsonStat2Helper helper = new JsonStat2Helper();
         private const string InputDirectoryPath = @"TestFiles";
         private const string OutputDirectoryPath = @"OutputJsonFiles";
 

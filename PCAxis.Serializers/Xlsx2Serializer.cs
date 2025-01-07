@@ -2,19 +2,24 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 using System.Threading;
+
 using ClosedXML.Excel;
-using PCAxis.Serializers.Excel;
+
+using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Office2016.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
+
+using Parquet.Rows;
+
 using PCAxis.Paxiom;
 using PCAxis.Paxiom.Extensions;
-using Value = PCAxis.Paxiom.Value;
-using System.Reflection.Emit;
-using DocumentFormat.OpenXml.EMMA;
+using PCAxis.Serializers.Excel;
 using PCAxis.Serializers.JsonStat2.Model;
-using DocumentFormat.OpenXml.Spreadsheet;
-using System.Runtime.CompilerServices;
-using DocumentFormat.OpenXml.Office2016.Excel;
-using Parquet.Rows;
+
+using Value = PCAxis.Paxiom.Value;
 
 namespace PCAxis.Serializers
 {
@@ -68,12 +73,12 @@ namespace PCAxis.Serializers
             AdditionalSheetFunctionality(book.Worksheet(model.Meta.Matrix), model);
 
             // AdjustToContents is slow and resource intensive so we do not call it.
-            if (output is System.IO.Stream stream) 
-            { 
+            if (output is System.IO.Stream stream)
+            {
                 book.SaveAs(stream);
             }
             else if (output is string path)
-            { 
+            {
                 book.SaveAs(path);
             }
             book.Dispose();
@@ -127,7 +132,7 @@ namespace PCAxis.Serializers
 
                 // Writes the title
                 row = WriteTableTitle(model, sheet);
-                               
+
                 // Writes the heading for the table
                 row = WriteHeading(row, model, sheet);
 
@@ -357,7 +362,7 @@ namespace PCAxis.Serializers
                                 null
                             );
                             row += 2;
-                            
+
                         }
                     }
                 }
@@ -377,7 +382,7 @@ namespace PCAxis.Serializers
                     for (int j = 0; j < var.Notes.Count; j++)
                     {
                         n = var.Notes[j];
-                        
+
                         SetCell(
                             sheet.Cell(row, 1),
                             CellContentType.VariableNote,
@@ -394,7 +399,7 @@ namespace PCAxis.Serializers
                         );
 
                         row += 2;
-                        
+
                     }
                 }
             }
@@ -408,14 +413,14 @@ namespace PCAxis.Serializers
             for (int i = 0; i < model.Meta.Notes.Count; i++)
             {
                 n = model.Meta.Notes[i];
-                
-                    SetCell(
-                        sheet.Cell(row, 1),
-                        CellContentType.Footnote,
-                        n.Text,
-                        c => c.Style.Alignment.WrapText = false
-                    );
-                    row++;
+
+                SetCell(
+                    sheet.Cell(row, 1),
+                    CellContentType.Footnote,
+                    n.Text,
+                    c => c.Style.Alignment.WrapText = false
+                );
+                row++;
             }
             return row;
         }
@@ -474,10 +479,10 @@ namespace PCAxis.Serializers
 
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordLastUpdated") + ":", meta, (c) => c.LastUpdated, sheet);
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordUnits") + ":", meta, (c) => c.Units, sheet);
-            row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordStockfa") + ":", meta, (c) => c.StockFa, sheet, (s ,m) => ConvertStockFlowAverageToLocalText(s, m));
+            row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordStockfa") + ":", meta, (c) => c.StockFa, sheet, (s, m) => ConvertStockFlowAverageToLocalText(s, m));
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordBasePeriod") + ":", meta, (c) => c.Baseperiod, sheet);
             row = WriteTableInformationValue(row, meta.GetLocalizedString("PxcKeywordRefPeriod") + ":", meta, (c) => c.RefPeriod, sheet);
-            row = WriteTableInformationValue(row, "", meta, (c) => c.CFPrices, sheet, (s,m) => ConvertCurrentOrFixedPricesToLocalText(s,m));
+            row = WriteTableInformationValue(row, "", meta, (c) => c.CFPrices, sheet, (s, m) => ConvertCurrentOrFixedPricesToLocalText(s, m));
             row = WriteTableInformationBooleanValue(row, meta.GetLocalizedString("PxcKeywordDayAdj") + ":", meta, (c) => c.DayAdj, sheet);
             row = WriteTableInformationBooleanValue(row, meta.GetLocalizedString("PxcKeywordSeasAdj") + ":", meta, (c) => c.SeasAdj, sheet);
 
@@ -551,7 +556,7 @@ namespace PCAxis.Serializers
             if (prices == null)
             {
                 return null;
-            }   
+            }
             switch (prices.ToUpper())
             {
                 case "C":
@@ -582,7 +587,7 @@ namespace PCAxis.Serializers
             }
             else
             {
-                foreach(var contentInfo in meta.ContentVariable.Values.Select(value => value.ContentInfo))
+                foreach (var contentInfo in meta.ContentVariable.Values.Select(value => value.ContentInfo))
                 {
                     if (contentInfo != null)
                     {
@@ -659,7 +664,7 @@ namespace PCAxis.Serializers
                 converter = (s, m) => s;
             }
 
-            var map = new Dictionary<string, string>(); 
+            var map = new Dictionary<string, string>();
             foreach (var value in meta.ContentVariable.Values)
             {
                 if (value.ContentInfo is null)
@@ -693,7 +698,8 @@ namespace PCAxis.Serializers
             {
                 //All are same
                 row = WriteTableInformationValue(row, label, map.First().Key, sheet);
-            } else
+            }
+            else
             {
                 //Write label
                 SetCell(
@@ -847,7 +853,7 @@ namespace PCAxis.Serializers
                         val.Notes.GetAllNotes(),
                         null
                     );
-                }                
+                }
             }
         }
 
