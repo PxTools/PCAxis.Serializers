@@ -9,6 +9,7 @@ using PCAxis.Paxiom;
 namespace PCAxis.Serializers.Tests.Csv
 {
     [TestClass]
+    [DeploymentItem("TestFiles/PR0101B3.px")]
     public class CsvSerializerTests
     {
         [TestMethod]
@@ -40,7 +41,7 @@ namespace PCAxis.Serializers.Tests.Csv
         {
             var serializer = new CsvSerializer();
             var helper = new UnitTests.Helper();
-            var model = helper.GetSelectAllModel("../../../TestFiles/PR0101B3.px");
+            var model = helper.GetSelectAllModel("PR0101B3.px");
             var path = "test.csv";
 
             serializer.Serialize(model, path);
@@ -54,7 +55,7 @@ namespace PCAxis.Serializers.Tests.Csv
         {
             var serializer = new CsvSerializer();
             var helper = new UnitTests.Helper();
-            var model = helper.GetSelectAllModel("../../../TestFiles/PR0101B3.px");
+            var model = helper.GetSelectAllModel("TestFiles/PR0101B3.px");
             var stream = new MemoryStream();
 
             serializer.Serialize(model, stream);
@@ -86,7 +87,7 @@ namespace PCAxis.Serializers.Tests.Csv
             var serializer = new CsvSerializer();
             serializer.IncludeTitle = true;
             var helper = new UnitTests.Helper();
-            var model = helper.GetSelectAllModel("../../../TestFiles/PR0101B3.px");
+            var model = helper.GetSelectAllModel("PR0101B3.px");
             var stream = new MemoryStream();
             var writer = new StreamWriter(stream, Encoding.UTF8);
 
