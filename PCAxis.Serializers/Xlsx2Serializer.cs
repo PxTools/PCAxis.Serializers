@@ -2,22 +2,13 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
 using System.Threading;
 
 using ClosedXML.Excel;
 
-using DocumentFormat.OpenXml.EMMA;
-using DocumentFormat.OpenXml.Office2016.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
-
-using Parquet.Rows;
-
 using PCAxis.Paxiom;
 using PCAxis.Paxiom.Extensions;
 using PCAxis.Serializers.Excel;
-using PCAxis.Serializers.JsonStat2.Model;
 
 using Value = PCAxis.Paxiom.Value;
 
@@ -758,7 +749,7 @@ namespace PCAxis.Serializers
             string notes;
             for (int valueIndex = 0; valueIndex < variable.Values.Count; valueIndex++)
             {
-                text = variable.Values[valueIndex].Text;
+                text = GetLabel(variable.Values[valueIndex]);
                 if (variable.Values[valueIndex].HasNotes())
                 {
                     notes = variable.Values[valueIndex].Notes.GetAllNotes();
@@ -841,7 +832,7 @@ namespace PCAxis.Serializers
                 SetCell(
                     sheet.Cell(row, column),
                     CellContentType.Stub,
-                    val.Text,
+                    GetLabel(val),
                     c => c.Style.Font.Bold = true
                 );
 
@@ -922,6 +913,21 @@ namespace PCAxis.Serializers
 
             fmt.InformationLevel = InformationLevelType.AllInformation;
             return fmt;
+        }
+
+        private string GetLabel(Value value)
+        {
+            switch (ValueLablesDisplay)
+            {
+                case LablePreference.Code:
+                    return value.Code;
+                case LablePreference.Text:
+                    return value.Text;
+                case LablePreference.BothCodeAndText:
+                    return value.Code + " " + value.Text;
+                default:
+                    return value.Text;
+            }
         }
     }
 }

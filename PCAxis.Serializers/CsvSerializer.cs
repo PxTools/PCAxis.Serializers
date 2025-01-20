@@ -138,7 +138,7 @@ namespace PCAxis.Paxiom
         {
             wr.Write('"');
             wr.Write(value);
-            wr.WriteLine('"');
+            wr.Write('"');
         }
 
         protected string GetLabel(Variable variable)
@@ -179,7 +179,7 @@ namespace PCAxis.Paxiom
             if (this.IncludeTitle)
             {
                 WriteStringValue(wr, Util.GetModelTitle(_model));
-                wr.WriteLine();
+                wr.WriteLine("");
             }
         }
 

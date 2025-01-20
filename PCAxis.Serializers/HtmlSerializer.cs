@@ -243,7 +243,7 @@ namespace PCAxis.Serializers
                     wr.WriteLine("<tr>");
                     wr.Write(@"<th scope=""row"">");
 
-                    wr.Write(values[i].Text);
+                    wr.Write(GetLabel(values[i]));
                     wr.WriteLine("</th>");
                     _fmt = new DataFormatter(model);
 
