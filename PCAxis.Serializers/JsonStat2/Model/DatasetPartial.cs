@@ -144,6 +144,22 @@ namespace PCAxis.Serializers.JsonStat2.Model
             Extension.Px.Aggregallowed = isAggRegAllowed;
         }
 
+        public void AddSurvey(string survey)
+        {
+            if (survey != null)
+            {
+                Extension.Px.Survey = survey;
+            }
+        }
+
+        public void AddLink(string link)
+        {
+            if (link != null)
+            {
+                Extension.Px.Link = link;
+            }
+        }
+
         public void AddDescription(string description)
         {
             if (description != null)
@@ -278,9 +294,46 @@ namespace PCAxis.Serializers.JsonStat2.Model
             };
         }
 
-        public void SetUpdatedAsUtcString(DateTime datetime)
+        public void AddMeasuringType(DatasetDimensionValue dimensionValue, string valueCode, MeasuringType measuringType)
         {
-            Updated = datetime.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
+            if (dimensionValue.Extension.MeasuringType == null)
+                dimensionValue.Extension.MeasuringType = new Dictionary<string, MeasuringType>();
+
+            dimensionValue.Extension.MeasuringType.Add(valueCode, measuringType);
+        }
+
+        public void AddPriceType(DatasetDimensionValue dimensionValue, string valueCode, PriceType priceType)
+        {
+            if (dimensionValue.Extension.PriceType == null)
+                dimensionValue.Extension.PriceType = new Dictionary<string, PriceType>();
+
+            dimensionValue.Extension.PriceType.Add(valueCode, priceType);
+        }
+
+        public void AddAdjustment(DatasetDimensionValue dimensionValue, string valueCode, Adjustment adjustment)
+        {
+            if (dimensionValue.Extension.Adjustment == null)
+                dimensionValue.Extension.Adjustment = new Dictionary<string, Adjustment>();
+
+            dimensionValue.Extension.Adjustment.Add(valueCode, adjustment);
+        }
+
+        public void AddBasePeriod(DatasetDimensionValue dimensionValue, string valueCode, string basePeriod)
+        {
+            if (!string.IsNullOrEmpty(basePeriod))
+            {
+                if (dimensionValue.Extension.BasePeriod == null)
+                    dimensionValue.Extension.BasePeriod = new Dictionary<string, string>();
+
+                dimensionValue.Extension.BasePeriod.Add(valueCode, basePeriod);
+            }
+        }
+
+        public void AddUpdateFrequency(string updateFrequency)
+        {
+            if (updateFrequency != null)
+                Extension.Px.UpdateFrequency = updateFrequency;
+
         }
     }
 }
