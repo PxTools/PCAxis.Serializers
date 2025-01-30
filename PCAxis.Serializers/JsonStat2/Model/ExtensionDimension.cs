@@ -89,7 +89,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// <summary>
         /// Gets or Sets TimeUnit
         /// </summary>
-        [DataMember(Name = "timeUnit", EmitDefaultValue = true)]
+        [DataMember(Name = "timeUnit", EmitDefaultValue = false)]
         public TimeUnit TimeUnit { get; set; }
 
         /// <summary>
