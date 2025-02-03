@@ -141,7 +141,7 @@ namespace PCAxis.Serializers
                 //TimeUnit
                 if (variable.IsTime || (variable.VariableType != null && variable.VariableType.Equals("T")))
                 {
-                    AddTimeUnit(dimensionValue, variable);
+                    AddTimeUnit(dataset, variable);
                 }
             }
 
@@ -162,9 +162,9 @@ namespace PCAxis.Serializers
             return result;
         }
 
-        private static void AddTimeUnit(DatasetDimensionValue dimensionValue, Variable variable)
+        private static void AddTimeUnit(Dataset dataset, Variable variable)
         {
-            dimensionValue.Extension.TimeUnit = GetTimeUnit(variable.TimeScale);
+            dataset.Extension.TimeUnit = GetTimeUnit(variable.TimeScale);
         }
 
         private static TimeUnit GetTimeUnit(TimeScaleType timeScaleType)

@@ -48,7 +48,7 @@ namespace UnitTests.JsonStat2
         public void TestTimeUnit()
         {
             var expectedtimeUnit = "Annual";
-            var actualTimeUnit = jsonstat2AsJObjectBE0101A1["dimension"]["period"]["extension"]["timeUnit"].ToString();
+            var actualTimeUnit = jsonstat2AsJObjectBE0101A1["extension"]["timeUnit"].ToString();
 
             Assert.AreEqual(expectedtimeUnit, actualTimeUnit);
         }
