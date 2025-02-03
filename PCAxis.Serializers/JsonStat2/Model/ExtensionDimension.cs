@@ -87,12 +87,6 @@ namespace PCAxis.Serializers.JsonStat2.Model
         public string LastPeriod { get; set; }
 
         /// <summary>
-        /// Gets or Sets TimeUnit
-        /// </summary>
-        [DataMember(Name = "timeUnit", EmitDefaultValue = false)]
-        public TimeUnit TimeUnit { get; set; }
-
-        /// <summary>
         /// Indicates if data is stock, flow or average.
         /// </summary>
         /// <value>Indicates if data is stock, flow or average.</value>
@@ -137,7 +131,6 @@ namespace PCAxis.Serializers.JsonStat2.Model
             sb.Append("  CodeLists: ").Append(CodeLists).Append("\n");
             sb.Append("  FirstPeriod: ").Append(FirstPeriod).Append("\n");
             sb.Append("  LastPeriod: ").Append(LastPeriod).Append("\n");
-            sb.Append("  TimeUnit: ").Append(TimeUnit).Append("\n");
             sb.Append("  MeasuringType: ").Append(MeasuringType).Append("\n");
             sb.Append("  PriceType: ").Append(PriceType).Append("\n");
             sb.Append("  Adjustment: ").Append(Adjustment).Append("\n");
@@ -228,11 +221,6 @@ namespace PCAxis.Serializers.JsonStat2.Model
                     LastPeriod.Equals(other.LastPeriod)
                 ) &&
                 (
-                    TimeUnit == other.TimeUnit ||
-
-                    TimeUnit.Equals(other.TimeUnit)
-                ) &&
-                (
                     MeasuringType == other.MeasuringType ||
                     MeasuringType != null &&
                     other.MeasuringType != null &&
@@ -286,8 +274,6 @@ namespace PCAxis.Serializers.JsonStat2.Model
                     hashCode = hashCode * 59 + FirstPeriod.GetHashCode();
                 if (LastPeriod != null)
                     hashCode = hashCode * 59 + LastPeriod.GetHashCode();
-
-                hashCode = hashCode * 59 + TimeUnit.GetHashCode();
                 if (MeasuringType != null)
                     hashCode = hashCode * 59 + MeasuringType.GetHashCode();
                 if (PriceType != null)
