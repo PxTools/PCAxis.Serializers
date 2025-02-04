@@ -10,9 +10,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace PCAxis.Serializers.JsonStat2.Model
 {
@@ -41,21 +43,21 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// </summary>
         /// <value>The number of decimals in the table cells</value>
         [DataMember(Name = "decimals", EmitDefaultValue = true)]
-        public int Decimals { get; set; }
+        public int? Decimals { get; set; }
 
         /// <summary>
         /// Indicates if the data table is included in the official statistics of the organization
         /// </summary>
         /// <value>Indicates if the data table is included in the official statistics of the organization</value>
         [DataMember(Name = "official-statistics", EmitDefaultValue = true)]
-        public bool OfficialStatistics { get; set; }
+        public bool? OfficialStatistics { get; set; }
 
         /// <summary>
         /// If the contents of the table cannot be aggregated
         /// </summary>
         /// <value>If the contents of the table cannot be aggregated</value>
         [DataMember(Name = "aggregallowed", EmitDefaultValue = true)]
-        public bool Aggregallowed { get; set; }
+        public bool? Aggregallowed { get; set; }
 
         /// <summary>
         /// Copyright is given as YES or NO
@@ -90,7 +92,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// </summary>
         /// <value>For some languages it is difficult to build a table title dynamically. The keyword descriptiondefault &#x3D; True; means that the text after keyword Description will be used as title for the table</value>
         [DataMember(Name = "descriptiondefault", EmitDefaultValue = true)]
-        public bool Descriptiondefault { get; set; }
+        public bool? Descriptiondefault { get; set; }
 
         /// <summary>
         /// List of suggested variables for table head
@@ -128,6 +130,35 @@ namespace PCAxis.Serializers.JsonStat2.Model
         public string SubjectArea { get; set; }
 
         /// <summary>
+        /// See https://json-stat.org/full/#updated
+        /// </summary>
+        /// <value>See https://json-stat.org/full/#updated</value>
+        [RegularExpression("^((19|20)\\d\\d)\\-(0?[1-9]|1[012])\\-(0?[1-9]|[12][0-9]|3[01])$")]
+        [DataMember(Name = "nextUpdate", EmitDefaultValue = false)]
+        public string NextUpdate { get; set; }
+
+        /// <summary>
+        /// Survey for table
+        /// </summary>
+        /// <value>Survey for table</value>
+        [DataMember(Name = "survey", EmitDefaultValue = false)]
+        public string Survey { get; set; }
+
+        /// <summary>
+        /// Links for tables
+        /// </summary>
+        /// <value>Links for tables</value>
+        [DataMember(Name = "link", EmitDefaultValue = false)]
+        public string Link { get; set; }
+
+        /// <summary>
+        /// How often a table is updated
+        /// </summary>
+        /// <value>How often a table is updated</value>
+        [DataMember(Name = "updateFrequency", EmitDefaultValue = false)]
+        public string UpdateFrequency { get; set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -150,6 +181,10 @@ namespace PCAxis.Serializers.JsonStat2.Model
             sb.Append("  Matrix: ").Append(Matrix).Append("\n");
             sb.Append("  SubjectCode: ").Append(SubjectCode).Append("\n");
             sb.Append("  SubjectArea: ").Append(SubjectArea).Append("\n");
+            sb.Append("  NextUpdate: ").Append(NextUpdate).Append("\n");
+            sb.Append("  Survey: ").Append(Survey).Append("\n");
+            sb.Append("  Link: ").Append(Link).Append("\n");
+            sb.Append("  UpdateFrequency: ").Append(UpdateFrequency).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -160,7 +195,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -262,6 +297,26 @@ namespace PCAxis.Serializers.JsonStat2.Model
                     SubjectArea == other.SubjectArea ||
                     SubjectArea != null &&
                     SubjectArea.Equals(other.SubjectArea)
+                ) &&
+                (
+                    NextUpdate == other.NextUpdate ||
+                    NextUpdate != null &&
+                    NextUpdate.Equals(other.NextUpdate)
+                ) &&
+                (
+                    Survey == other.Survey ||
+                    Survey != null &&
+                    Survey.Equals(other.Survey)
+                ) &&
+                (
+                    Link == other.Link ||
+                    Link != null &&
+                    Link.Equals(other.Link)
+                ) &&
+                (
+                    UpdateFrequency == other.UpdateFrequency ||
+                    UpdateFrequency != null &&
+                    UpdateFrequency.Equals(other.UpdateFrequency)
                 );
         }
 
@@ -305,6 +360,14 @@ namespace PCAxis.Serializers.JsonStat2.Model
                     hashCode = hashCode * 59 + SubjectCode.GetHashCode();
                 if (SubjectArea != null)
                     hashCode = hashCode * 59 + SubjectArea.GetHashCode();
+                if (NextUpdate != null)
+                    hashCode = hashCode * 59 + NextUpdate.GetHashCode();
+                if (Survey != null)
+                    hashCode = hashCode * 59 + Survey.GetHashCode();
+                if (Link != null)
+                    hashCode = hashCode * 59 + Link.GetHashCode();
+                if (UpdateFrequency != null)
+                    hashCode = hashCode * 59 + UpdateFrequency.GetHashCode();
                 return hashCode;
             }
         }

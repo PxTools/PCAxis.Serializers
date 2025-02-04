@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -91,6 +92,18 @@ namespace PCAxis.Serializers
                         //refPeriod extension dimension
                         dataset.AddRefPeriod(dimensionValue, variableValue.Code, variableValue.ContentInfo.RefPeriod);
 
+                        //measuringType extension dimension
+                        dataset.AddMeasuringType(dimensionValue, variableValue.Code, GetMeasuringType(variableValue.ContentInfo.StockFa));
+
+                        //priceType extension dimension
+                        dataset.AddPriceType(dimensionValue, variableValue.Code, GetPriceType(variableValue.ContentInfo.CFPrices));
+
+                        //adjustment extension dimension
+                        dataset.AddAdjustment(dimensionValue, variableValue.Code, GetAdjustment(variableValue.ContentInfo.DayAdj, variableValue.ContentInfo.SeasAdj));
+
+                        //basePeriod extension dimension
+                        dataset.AddBasePeriod(dimensionValue, variableValue.Code, variableValue.ContentInfo.Baseperiod);
+
                         // Contact
                         AddContact(dataset, variableValue.ContentInfo);
                     }
@@ -124,6 +137,12 @@ namespace PCAxis.Serializers
 
                 //Role
                 AddRoles(variable, dataset);
+
+                //TimeUnit
+                if (variable.IsTime || (variable.VariableType != null && variable.VariableType.Equals("T")))
+                {
+                    AddTimeUnit(dataset, variable);
+                }
             }
 
             AddTableNotes(model, dataset);
@@ -143,6 +162,90 @@ namespace PCAxis.Serializers
             return result;
         }
 
+        private static void AddTimeUnit(Dataset dataset, Variable variable)
+        {
+            dataset.Extension.TimeUnit = GetTimeUnit(variable.TimeScale);
+        }
+
+        private static TimeUnit GetTimeUnit(TimeScaleType timeScaleType)
+        {
+            switch (timeScaleType)
+            {
+                case TimeScaleType.NotSet:
+                    return TimeUnit.OtherEnum;
+                case TimeScaleType.Annual:
+                    return TimeUnit.AnnualEnum;
+                case TimeScaleType.Halfyear:
+                    return TimeUnit.HalfYearEnum;
+                case TimeScaleType.Quartely:
+                    return TimeUnit.QuarterlyEnum;
+                case TimeScaleType.Monthly:
+                    return TimeUnit.MonthlyEnum;
+                case TimeScaleType.Weekly:
+                    return TimeUnit.WeeklyEnum;
+                default:
+                    return TimeUnit.OtherEnum;
+            }
+        }
+
+        private static PriceType GetPriceType(string cfprices)
+        {
+            string cfp = cfprices != null ? cfprices.ToUpper() : "";
+
+            switch (cfp)
+            {
+                case "C":
+                    return PriceType.CurrentEnum;
+                case "F":
+                    return PriceType.FixedEnum;
+                default:
+                    return PriceType.NotApplicableEnum;
+            }
+        }
+
+        private static Adjustment GetAdjustment(string dayAdj, string seasAdj)
+        {
+            string dadj = dayAdj != null ? dayAdj.ToUpper() : "";
+            string sadj = seasAdj != null ? seasAdj.ToUpper() : "";
+
+            if (dadj.Equals("YES") && sadj.Equals("YES"))
+            {
+                return Adjustment.WorkAndSesEnum;
+            }
+            else if (sadj.Equals("YES"))
+            {
+                return Adjustment.SesOnlyEnum;
+            }
+            else if (dadj.Equals("YES"))
+            {
+                return Adjustment.WorkOnlyEnum;
+            }
+            else
+            {
+                return Adjustment.NoneEnum;
+            }
+        }
+
+        private static MeasuringType GetMeasuringType(string stockfa)
+        {
+            if (stockfa == null)
+            {
+                return MeasuringType.OtherEnum;
+            }
+            switch (stockfa.ToUpper())
+            {
+                case "S":
+                    return MeasuringType.StockEnum;
+                case "F":
+                    return MeasuringType.FlowEnum;
+                case "A":
+                    return MeasuringType.AverageEnum;
+                default:
+                    return MeasuringType.OtherEnum;
+            }
+        }
+
+
         private void AddInfoForEliminatedContentVariable(PXModel model, Dataset dataset)
         {
             dataset.AddDimensionValue("ContentsCode", "EliminatedContents", out var dimensionValue);
@@ -160,6 +263,18 @@ namespace PCAxis.Serializers
 
             //refPeriod extension dimension
             dataset.AddRefPeriod(dimensionValue, eliminatedValue, model.Meta.ContentInfo.RefPeriod);
+
+            //measuringType extension dimension
+            dataset.AddMeasuringType(dimensionValue, eliminatedValue, GetMeasuringType(model.Meta.ContentInfo.StockFa));
+
+            //priceType extension dimension
+            dataset.AddPriceType(dimensionValue, eliminatedValue, GetPriceType(model.Meta.ContentInfo.CFPrices));
+
+            //adjustment extension dimension
+            dataset.AddAdjustment(dimensionValue, eliminatedValue, GetAdjustment(model.Meta.ContentInfo.DayAdj, model.Meta.ContentInfo.SeasAdj));
+
+            //basePeriod extension dimension
+            dataset.AddBasePeriod(dimensionValue, eliminatedValue, model.Meta.ContentInfo.Baseperiod);
 
             // Contact
             AddContact(dataset, model.Meta.ContentInfo);
@@ -196,7 +311,23 @@ namespace PCAxis.Serializers
                 tempDateTime = model.Meta.CreationDate.PxDateStringToDateTime();
             }
 
-            dataset.SetUpdatedAsUtcString(tempDateTime);
+            dataset.Updated = DateTimeAsUtcString(tempDateTime);
+        }
+
+        public static string DateTimeAsUtcString(DateTime datetime)
+        {
+            return datetime.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
+        }
+
+        private static void AddNextUpdate(Dataset dataset, string nextUpdate)
+        {
+            if (nextUpdate != null)
+            {
+                DateTime tempDatetime;
+                tempDatetime = nextUpdate.PxDateStringToDateTime();
+
+                dataset.Extension.Px.NextUpdate = DateTimeAsUtcString(tempDatetime);
+            }
         }
 
         private static void AddPxToExtension(PXModel model, Dataset dataset)
@@ -218,6 +349,10 @@ namespace PCAxis.Serializers
             dataset.AddSubjectCode(model.Meta.SubjectCode);
             dataset.AddSubjectArea(model.Meta.SubjectArea);
             dataset.AddAggRegAllowed(model.Meta.AggregAllowed);
+            dataset.AddSurvey(model.Meta.Survey);
+            dataset.AddLink(model.Meta.Link);
+            dataset.AddUpdateFrequency(model.Meta.UpdateFrequency);
+            AddNextUpdate(dataset, model.Meta.NextUpdate);
         }
 
         private static void AddTableNotes(PXModel model, Dataset dataset)

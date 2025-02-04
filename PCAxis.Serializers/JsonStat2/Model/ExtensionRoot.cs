@@ -14,6 +14,8 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
+using Newtonsoft.Json;
+
 namespace PCAxis.Serializers.JsonStat2.Model
 {
     /// <summary>
@@ -36,6 +38,12 @@ namespace PCAxis.Serializers.JsonStat2.Model
         public ExtensionRootPx Px { get; set; }
 
         /// <summary>
+        /// Gets or Sets TimeUnit
+        /// </summary>
+        [DataMember(Name = "timeUnit", EmitDefaultValue = true)]
+        public TimeUnit? TimeUnit { get; set; }
+
+        /// <summary>
         /// Tag for table
         /// </summary>
         /// <value>Tag for table</value>
@@ -43,10 +51,10 @@ namespace PCAxis.Serializers.JsonStat2.Model
         public List<string> Tags { get; set; }
 
         /// <summary>
-        /// Table will no longer be updated
+        /// If the table is discontinued or not. That is if it no longer updated with new figures.
         /// </summary>
-        /// <value>Table will no longer be updated</value>
-        [DataMember(Name = "discontinued", EmitDefaultValue = false)]
+        /// <value>If the table is discontinued or not. That is if it no longer updated with new figures.</value>
+        [DataMember(Name = "discontinued", EmitDefaultValue = true)]
         public bool? Discontinued { get; set; }
 
         /// <summary>
@@ -66,6 +74,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
             sb.Append("class ExtensionRoot {\n");
             sb.Append("  NoteMandatory: ").Append(NoteMandatory).Append("\n");
             sb.Append("  Px: ").Append(Px).Append("\n");
+            sb.Append("  TimeUnit: ").Append(TimeUnit).Append("\n");
             sb.Append("  Tags: ").Append(Tags).Append("\n");
             sb.Append("  Discontinued: ").Append(Discontinued).Append("\n");
             sb.Append("  Contact: ").Append(Contact).Append("\n");
@@ -79,7 +88,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -117,6 +126,11 @@ namespace PCAxis.Serializers.JsonStat2.Model
                     Px.Equals(other.Px)
                 ) &&
                 (
+                    TimeUnit == other.TimeUnit ||
+
+                    TimeUnit.Equals(other.TimeUnit)
+                ) &&
+                (
                     Tags == other.Tags ||
                     Tags != null &&
                     other.Tags != null &&
@@ -149,6 +163,8 @@ namespace PCAxis.Serializers.JsonStat2.Model
                     hashCode = hashCode * 59 + NoteMandatory.GetHashCode();
                 if (Px != null)
                     hashCode = hashCode * 59 + Px.GetHashCode();
+
+                hashCode = hashCode * 59 + TimeUnit.GetHashCode();
                 if (Tags != null)
                     hashCode = hashCode * 59 + Tags.GetHashCode();
                 if (Discontinued != null)
