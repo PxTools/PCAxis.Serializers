@@ -27,6 +27,7 @@ namespace PCAxis.Serializers
             this.dataSymbolMap = BuildDataSymbolMap(model.Meta);
         }
 
+
         /// <summary>
         /// Builds a mapping between PX constants representing data symbols and their corresponding string representations in the PXMeta.
         /// </summary>
@@ -46,6 +47,7 @@ namespace PCAxis.Serializers
             { PXConstant.DATASYMBOL_NIL, string.IsNullOrEmpty(meta.DataSymbolNIL) ? PXConstant.DATASYMBOL_NIL_STRING : meta.DataSymbolNIL }
          };
         }
+
 
         /// <summary>
         /// Populates the Parquet table based on the PXModel data and metadata.
@@ -76,6 +78,7 @@ namespace PCAxis.Serializers
             return table;
         }
 
+
         /// <summary>
         /// Creates the Parquet schema fields based on the PXModel metadata.
         /// </summary>
@@ -101,6 +104,13 @@ namespace PCAxis.Serializers
             return dataFields;
         }
 
+
+        /// <summary>
+        /// If the variable is a Content variable AND there is more than one value, create two columns (times number of Contents). The _symbol column is used to
+        /// show data symbols, like ".." or similar.
+        /// </summary>
+        /// <param name="dataFields"></param>
+        /// <param name="variable"></param>
         private static void AddContentVariableFields(List<DataField> dataFields, Variable variable)
         {
             foreach (var value in variable.Values)
@@ -111,6 +121,13 @@ namespace PCAxis.Serializers
             }
         }
 
+
+        /// <summary>
+        /// Make columns for all other variables. If there is a single Content, add a symbol column. If the variable is a time variable
+        /// add another column, which represents the DateTime object of the time variable.
+        /// </summary>
+        /// <param name="dataFields"></param>
+        /// <param name="variable"></param>
         private static void AddNonContentVariableFields(List<DataField> dataFields, Variable variable)
         {
             if (variable.IsContentVariable)
@@ -166,7 +183,15 @@ namespace PCAxis.Serializers
 
             return row;
         }
-
+        /// <summary>
+        /// Populates the row when there is only one Content
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="variableValueCounts"></param>
+        /// <param name="data"></param>
+        /// <param name="row"></param>
+        /// <param name="dataFieldIndices"></param>
+        /// <param name="variable"></param>
         private void PopulateContentVariableRow(int[] index, int[] variableValueCounts, double[] data, object[] row, Dictionary<string, int> dataFieldIndices, Variable variable)
         {
             for (int j = 0; j < variable.Values.Count; j++)
@@ -178,7 +203,7 @@ namespace PCAxis.Serializers
                 {
                     var value = variable.Values[j];
                     columnName = $"{variable.Code}_{value.Code}";
-                    symbolColumnName = $"{columnName}_symbol"; 
+                    symbolColumnName = $"{columnName}_symbol";
                 }
                 else
                 {
@@ -211,6 +236,15 @@ namespace PCAxis.Serializers
             }
         }
 
+
+        /// <summary>
+        /// Populates the row for all other variabletypes
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="row"></param>
+        /// <param name="dataFieldIndices"></param>
+        /// <param name="variable"></param>
+        /// <param name="i"></param>
         private void PopulateNonContentVariableRow(int[] index, object[] row, Dictionary<string, int> dataFieldIndices, Variable variable, int i)
         {
             var value = variable.Values[index[i]].Code;
@@ -268,6 +302,13 @@ namespace PCAxis.Serializers
             return parsedDate;
         }
 
+
+        /// <summary>
+        /// Parses the value from the dataset and returns a DateTime object representing Annual
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns>A DateTime object</returns>
+        /// <exception cref="ArgumentException"></exception>
         private static DateTime ParseAnnual(string value)
         {
             if (int.TryParse(value, out int year))
@@ -277,6 +318,13 @@ namespace PCAxis.Serializers
             throw new ArgumentException("Invalid value for Annual TimeScaleType.");
         }
 
+
+        /// <summary>
+        /// Parses the value from the dataset and returns a DateTime object representing HalfYear
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns>A DateTime object</returns>
+        /// <exception cref="ArgumentException"></exception>
         private static DateTime ParseHalfyear(string value)
         {
             if (int.TryParse(value.Substring(0, 4), out int halfYearYear) && int.TryParse(value.Substring(4), out int halfYear))
@@ -287,6 +335,13 @@ namespace PCAxis.Serializers
             throw new ArgumentException("Invalid value for Halfyear TimeScaleType.");
         }
 
+
+        /// <summary>
+        /// Parses the value from the dataset and returns a DateTime object representing Quarterly
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns>A DateTime object</returns>
+        /// <exception cref="ArgumentException"></exception>
         private static DateTime ParseQuarterly(string value)
         {
             if (int.TryParse(value.Substring(0, 4), out int quarterYear) && int.TryParse(value.Substring(4), out int quarter))
@@ -297,6 +352,12 @@ namespace PCAxis.Serializers
             throw new ArgumentException("Invalid value for Quarterly TimeScaleType.");
         }
 
+        /// <summary>
+        /// Parses the value from the dataset and returns a DateTime object representing Monthly
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns>A DateTime object</returns>
+        /// <exception cref="ArgumentException"></exception>
         private static DateTime ParseMonthly(string value)
         {
             if (int.TryParse(value.Substring(0, 4), out int monthYear) && int.TryParse(value.Substring(4, 2), out int month))
@@ -306,6 +367,12 @@ namespace PCAxis.Serializers
             throw new ArgumentException("Invalid value for Monthly TimeScaleType.");
         }
 
+        /// <summary>
+        /// Parses the value from the dataset and returns a DateTime object representing Weekly
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns>A DateTime object</returns>
+        /// <exception cref="ArgumentException"></exception>
         private static DateTime ParseWeekly(string value)
         {
             if (int.TryParse(value.Substring(0, 4), out int weekYear) && int.TryParse(value.Substring(4), out int week))
@@ -318,6 +385,7 @@ namespace PCAxis.Serializers
             throw new ArgumentException("Invalid value for Weekly TimeScaleType.");
         }
 
+
         /// <summary>
         /// Retrieves the variable value counts from the PXModel.
         /// </summary>
@@ -329,6 +397,14 @@ namespace PCAxis.Serializers
                 .ToArray();
         }
 
+
+        /// <summary>
+        /// Returns the point in the matrix based on which coordinate is supplied. This is based on standard row-major order algorithm.
+        /// https://en.wikipedia.org/wiki/Row-_and_column-major_order
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="variableValueCounts"></param>
+        /// <returns>Returns the position in the data matrix</returns>
         static int GetDataIndex(int[] index, int[] variableValueCounts)
         {
             int dataIndex = 0;
@@ -345,6 +421,7 @@ namespace PCAxis.Serializers
 
             return dataIndex;
         }
+
 
         /// <summary>
         /// Rearranges the values in the PXModel based on the variable descriptions.
@@ -364,12 +441,11 @@ namespace PCAxis.Serializers
             }
             else
             {
-                // FIXME: There is no explicit content in a lot of PX Files. Let's fake it.
-                // FIXME: There must be a better way than this. Paxiom should have handled this.
+                // There is no explicit content in a lot of PX Files. Let's fake it.
+                // There must be a better way than this. Paxiom should have handled this.
 
                 if (model.Meta.ContentVariable == null)
                 {
-                    #region
                     var virtualContent = new Variable();
                     var virtualContentValue = new Value();
 
@@ -383,7 +459,6 @@ namespace PCAxis.Serializers
 
                     model.Meta.AddVariable(virtualContent);
                     model.Meta.ContentVariable = virtualContent;
-                    #endregion
 
                     pivotDescriptions.Add(new PivotDescription(model.Meta.ContentVariable.Name, PlacementType.Heading));
                 }
@@ -392,8 +467,9 @@ namespace PCAxis.Serializers
             return new Pivot().Execute(model, pivotDescriptions.ToArray());
         }
 
+
         /// <summary>
-        /// Generates the data point indices for the Parquet table based on the data and variable value countsspecified.
+        /// Generates the data point indices for the Parquet table based on the data and variable value counts specified.
         /// </summary>
         /// <param name="variableValueCounts">An array of integers representing the counts of values for each variable.</param>
         /// <returns>A list of integer arrays representing the data point indices.</returns>
