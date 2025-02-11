@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32319.34
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serializers", "PCAxis.Serializers\Serializers.csproj", "{7ACACE11-9150-47AC-B82C-6BBFCB912610}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serializers", "PCAxis.Serializers\PCAxis.Serializers.csproj", "{7ACACE11-9150-47AC-B82C-6BBFCB912610}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{8DCFDCAD-E8E0-4602-BA54-769CB0B39662}"
 EndProject

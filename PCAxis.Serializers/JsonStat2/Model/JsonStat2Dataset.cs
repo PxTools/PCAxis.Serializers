@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Globalization;
 
+using PxWeb.Api2.Server.Models;
+
 namespace PCAxis.Serializers.JsonStat2.Model
 {
-    public partial class Dataset
+    public class JsonStat2Dataset : Dataset
     {
-        public Dataset()
+        public JsonStat2Dataset()
         {
             Id = new List<string>();
             Size = new List<int>();

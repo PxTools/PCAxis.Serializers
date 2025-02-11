@@ -12,6 +12,8 @@ using PCAxis.Paxiom;
 using PCAxis.Paxiom.Extensions;
 using PCAxis.Serializers.JsonStat2.Model;
 
+using PxWeb.Api2.Server.Models;
+
 namespace PCAxis.Serializers
 {
     public class JsonStat2Serializer : IPXModelStreamSerializer
@@ -38,7 +40,7 @@ namespace PCAxis.Serializers
 
         public string BuildJsonStructure(PXModel model)
         {
-            var dataset = new Dataset();
+            var dataset = new JsonStat2Dataset();
 
             //Updated
             AddUpdated(model, dataset);
@@ -162,7 +164,7 @@ namespace PCAxis.Serializers
             return result;
         }
 
-        private static void AddTimeUnit(Dataset dataset, Variable variable)
+        private static void AddTimeUnit(JsonStat2Dataset dataset, Variable variable)
         {
             dataset.Extension.TimeUnit = GetTimeUnit(variable.TimeScale);
         }
@@ -246,7 +248,7 @@ namespace PCAxis.Serializers
         }
 
 
-        private void AddInfoForEliminatedContentVariable(PXModel model, Dataset dataset)
+        private void AddInfoForEliminatedContentVariable(PXModel model, JsonStat2Dataset dataset)
         {
             dataset.AddDimensionValue("ContentsCode", "EliminatedContents", out var dimensionValue);
             var eliminatedValue = "EliminatedValue";
@@ -284,7 +286,7 @@ namespace PCAxis.Serializers
             dataset.Id.Add("ContentsCode");
         }
 
-        private static void AddUpdated(PXModel model, Dataset dataset)
+        private static void AddUpdated(PXModel model, JsonStat2Dataset dataset)
         {
             DateTime tempDateTime;
             if (model.Meta.ContentVariable != null && model.Meta.ContentVariable.Values.Count > 0)
@@ -330,7 +332,7 @@ namespace PCAxis.Serializers
             }
         }
 
-        private static void AddPxToExtension(PXModel model, Dataset dataset)
+        private static void AddPxToExtension(PXModel model, JsonStat2Dataset dataset)
         {
             var decimals = model.Meta.ShowDecimals < 0 ? model.Meta.Decimals : model.Meta.ShowDecimals;
 
@@ -355,7 +357,7 @@ namespace PCAxis.Serializers
             AddNextUpdate(dataset, model.Meta.NextUpdate);
         }
 
-        private static void AddTableNotes(PXModel model, Dataset dataset)
+        private static void AddTableNotes(PXModel model, JsonStat2Dataset dataset)
         {
             var notes = model.Meta.Notes.Where(note => note.Type == NoteType.Table);
 
@@ -391,7 +393,7 @@ namespace PCAxis.Serializers
             }
         }
 
-        private static void AddValueNotes(Value variableValue, Dataset dataset, DatasetDimensionValue dimensionValue)
+        private static void AddValueNotes(PCAxis.Paxiom.Value variableValue, JsonStat2Dataset dataset, DatasetDimensionValue dimensionValue)
         {
             if (variableValue.Notes == null) return;
 
@@ -407,7 +409,7 @@ namespace PCAxis.Serializers
             }
         }
 
-        private static void AddVariableNotes(Variable variable, Dataset dataset, DatasetDimensionValue dimensionValue)
+        private static void AddVariableNotes(Variable variable, JsonStat2Dataset dataset, DatasetDimensionValue dimensionValue)
         {
             if (variable.Notes == null) return;
 
@@ -423,7 +425,7 @@ namespace PCAxis.Serializers
             }
         }
 
-        private void AddContact(Dataset dataset, ContInfo contInfo)
+        private void AddContact(JsonStat2Dataset dataset, ContInfo contInfo)
         {
             if (contInfo.ContactInfo != null && contInfo.ContactInfo.Count > 0)
             {
@@ -438,12 +440,12 @@ namespace PCAxis.Serializers
             }
         }
 
-        private void MapContact(Dataset dataset, Paxiom.Contact contact, ContInfo contInfo)
+        private void MapContact(JsonStat2Dataset dataset, Paxiom.Contact contact, ContInfo contInfo)
         {
 
             if (dataset.Extension.Contact == null)
             {
-                dataset.Extension.Contact = new List<JsonStat2.Model.Contact>();
+                dataset.Extension.Contact = new List<PxWeb.Api2.Server.Models.Contact>();
             }
 
             StringBuilder sb = new StringBuilder();
@@ -451,7 +453,7 @@ namespace PCAxis.Serializers
             sb.Append(' ');
             sb.Append(contact.Surname);
 
-            JsonStat2.Model.Contact jsonContact = new JsonStat2.Model.Contact
+            PxWeb.Api2.Server.Models.Contact jsonContact = new PxWeb.Api2.Server.Models.Contact
             {
                 Name = sb.ToString(),
                 Mail = contact.Email,
@@ -476,13 +478,13 @@ namespace PCAxis.Serializers
             }
         }
 
-        private void MapContact(Dataset dataset, string contactString)
+        private void MapContact(JsonStat2Dataset dataset, string contactString)
         {
             if (contactString != null)
             {
                 if (dataset.Extension.Contact == null)
                 {
-                    dataset.Extension.Contact = new List<JsonStat2.Model.Contact>();
+                    dataset.Extension.Contact = new List<PxWeb.Api2.Server.Models.Contact>();
                 }
 
                 var contacts = contactString.Split(new[] { "##" }, StringSplitOptions.RemoveEmptyEntries);
@@ -491,7 +493,7 @@ namespace PCAxis.Serializers
                 {
                     if (!dataset.Extension.Contact.Exists(x => x.Raw.Equals(contact)))
                     {
-                        dataset.Extension.Contact.Add(new JsonStat2.Model.Contact
+                        dataset.Extension.Contact.Add(new PxWeb.Api2.Server.Models.Contact
                         {
                             Raw = contact
                         });
@@ -500,7 +502,7 @@ namespace PCAxis.Serializers
             }
         }
 
-        private static void AddRoles(Variable variable, Dataset dataset)
+        private static void AddRoles(Variable variable, JsonStat2Dataset dataset)
         {
             if (variable.IsTime)
             {
@@ -527,7 +529,7 @@ namespace PCAxis.Serializers
             }
         }
 
-        private void CollectMetaIdsForValue(Value value, ref Dictionary<string, string> metaIds)
+        private void CollectMetaIdsForValue(PCAxis.Paxiom.Value value, ref Dictionary<string, string> metaIds)
         {
             if (!string.IsNullOrWhiteSpace(value.MetaId))
             {

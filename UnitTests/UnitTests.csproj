@@ -22,7 +22,7 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\PCAxis.Serializers\Serializers.csproj" />
+    <ProjectReference Include="../PCAxis.Serializers/PCAxis.Serializers.csproj" />
   </ItemGroup>
 
   <ItemGroup>
