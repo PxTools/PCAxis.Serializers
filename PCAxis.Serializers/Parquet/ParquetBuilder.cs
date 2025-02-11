@@ -14,7 +14,7 @@ namespace PCAxis.Serializers
     {
         private readonly PXModel model;
         private readonly Dictionary<string, DateTime> parseCache = new Dictionary<string, DateTime>();
-        private readonly Dictionary<double, string> dataSymbolMap = new Dictionary<double, string>();
+        private readonly Dictionary<double, string> dataSymbolMap;
 
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace PCAxis.Serializers
         /// <param name="model">The PXModel to be used for constructing the Parquet table.</param>
         public ParquetBuilder(PXModel model)
         {
-            this.model = RearrangeValues(model);
+            this.model = ParquetBuilder.RearrangeValues(model);
             this.dataSymbolMap = BuildDataSymbolMap(model.Meta);
         }
 
@@ -32,7 +32,7 @@ namespace PCAxis.Serializers
         /// </summary>
         /// <param name="meta">The PXMeta object containing metadata.</param>
         /// <returns>A dictionary where keys are PX constants for data symbols and values are their string representations.</returns>
-        private Dictionary<double, string> BuildDataSymbolMap(PXMeta meta)
+        private static Dictionary<double, string> BuildDataSymbolMap(PXMeta meta)
         {
             return new Dictionary<double, string>
         {
@@ -165,7 +165,7 @@ namespace PCAxis.Serializers
 
                         int columnIndex = dataFieldIndices[columnName];
                         int symbolColumnIndex = dataFieldIndices[symbolColumnName]; // Get index of the symbol column
-                        int dataIndex = GetDataIndex(index, variableValueCounts);
+                        int dataIndex = ParquetBuilder.GetDataIndex(index, variableValueCounts);
 
                         if (dataIndex + j < data.Length)
                         {
@@ -292,7 +292,7 @@ namespace PCAxis.Serializers
                 .ToArray();
         }
 
-        int GetDataIndex(int[] index, int[] variableValueCounts)
+        static int GetDataIndex(int[] index, int[] variableValueCounts)
         {
             int dataIndex = 0;
             int multiplier = 1;
@@ -314,7 +314,7 @@ namespace PCAxis.Serializers
         /// </summary>
         /// <param name="model">The PXModel to be rearranged.</param>
         /// <returns>The rearranged PXModel.</returns>
-        private PXModel RearrangeValues(PXModel model)
+        private static PXModel RearrangeValues(PXModel model)
         {
             var pivotDescriptions = model.Meta.Variables
                 .Where(col => !col.IsContentVariable)
@@ -332,7 +332,7 @@ namespace PCAxis.Serializers
 
                 if (model.Meta.ContentVariable == null)
                 {
-                    #region 
+                    #region
                     var virtualContent = new Variable();
                     var virtualContentValue = new Value();
 
