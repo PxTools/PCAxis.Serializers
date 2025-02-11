@@ -79,7 +79,7 @@ namespace PCAxis.Serializers
                     CollectMetaIdsForValue(variableValue, ref metaIdsHelper);
 
                     // ValueNote
-                    AddValueNotes(variableValue, dataset, dimensionValue);
+                    AddValueNotes(variableValue, dimensionValue);
 
                     if (!variable.IsContentVariable) continue;
 
@@ -124,7 +124,7 @@ namespace PCAxis.Serializers
                 AddShow(dimensionValue, variable);
 
                 //Variable notes
-                AddVariableNotes(variable, dataset, dimensionValue);
+                AddVariableNotes(variable, dimensionValue);
 
                 //MetaID
                 CollectMetaIdsForVariable(variable, ref metaIdsHelper);
@@ -393,7 +393,7 @@ namespace PCAxis.Serializers
             }
         }
 
-        private static void AddValueNotes(PCAxis.Paxiom.Value variableValue, JsonStat2Dataset dataset, DatasetDimensionValue dimensionValue)
+        private static void AddValueNotes(PCAxis.Paxiom.Value variableValue, DatasetDimensionValue dimensionValue)
         {
             if (variableValue.Notes == null) return;
 
@@ -409,7 +409,7 @@ namespace PCAxis.Serializers
             }
         }
 
-        private static void AddVariableNotes(Variable variable, JsonStat2Dataset dataset, DatasetDimensionValue dimensionValue)
+        private static void AddVariableNotes(Variable variable, DatasetDimensionValue dimensionValue)
         {
             if (variable.Notes == null) return;
 
