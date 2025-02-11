@@ -225,21 +225,21 @@ namespace PCAxis.Serializers.JsonStat2.Model
             Dimension.Add(dimensionKey, dimensionValue);
         }
 
-        public void AddNoteToDimension(DatasetDimensionValue dimensionValue, string text)
+        public static void AddNoteToDimension(DatasetDimensionValue dimensionValue, string text)
         {
             if (dimensionValue.Note == null) dimensionValue.Note = new List<string>();
 
             dimensionValue.Note.Add(text);
         }
 
-        public void AddIsMandatoryForDimensionNote(DatasetDimensionValue dimensionValue, string index)
+        public static void AddIsMandatoryForDimensionNote(DatasetDimensionValue dimensionValue, string index)
         {
             if (dimensionValue.Extension.NoteMandatory == null) dimensionValue.Extension.NoteMandatory = new Dictionary<string, bool>();
 
             dimensionValue.Extension.NoteMandatory.Add(index, true);
         }
 
-        public void AddValueNoteToCategory(DatasetDimensionValue dimensionValue, string valueNoteKey, string text)
+        public static void AddValueNoteToCategory(DatasetDimensionValue dimensionValue, string valueNoteKey, string text)
         {
             if (dimensionValue.Category.Note == null) dimensionValue.Category.Note = new Dictionary<string, List<string>>();
 
@@ -255,7 +255,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
             }
         }
 
-        public void AddIsMandatoryForCategoryNote(DatasetDimensionValue dimensionValue, string valueNoteKey, string index)
+        public static void AddIsMandatoryForCategoryNote(DatasetDimensionValue dimensionValue, string valueNoteKey, string index)
         {
             if (dimensionValue.Extension.CategoryNoteMandatory == null) dimensionValue.Extension.CategoryNoteMandatory = new Dictionary<string, Dictionary<string, bool>>();
 
@@ -271,14 +271,14 @@ namespace PCAxis.Serializers.JsonStat2.Model
             }
         }
 
-        public void AddUnitValue(JsonstatCategory category, out JsonstatCategoryUnitValue unitValue)
+        public static void AddUnitValue(JsonstatCategory category, out JsonstatCategoryUnitValue unitValue)
         {
             if (category.Unit == null) category.Unit = new Dictionary<string, JsonstatCategoryUnitValue>();
 
             unitValue = new JsonstatCategoryUnitValue();
         }
 
-        public void AddRefPeriod(DatasetDimensionValue dimensionValue, string valueCode, string refPeriod)
+        public static void AddRefPeriod(DatasetDimensionValue dimensionValue, string valueCode, string refPeriod)
         {
             if (refPeriod == null) return;
 
@@ -288,7 +288,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
             dimensionValue.Extension.Refperiod.Add(valueCode, refPeriod);
         }
 
-        public void AddDimensionLink(DatasetDimensionValue dimensionValue, Dictionary<string, string> metaIds)
+        public static void AddDimensionLink(DatasetDimensionValue dimensionValue, Dictionary<string, string> metaIds)
         {
             dimensionValue.Link = new JsonstatExtensionLink
             {
@@ -296,7 +296,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
             };
         }
 
-        public void AddMeasuringType(DatasetDimensionValue dimensionValue, string valueCode, MeasuringType measuringType)
+        public static void AddMeasuringType(DatasetDimensionValue dimensionValue, string valueCode, MeasuringType measuringType)
         {
             if (dimensionValue.Extension.MeasuringType == null)
                 dimensionValue.Extension.MeasuringType = new Dictionary<string, MeasuringType>();
@@ -304,7 +304,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
             dimensionValue.Extension.MeasuringType.Add(valueCode, measuringType);
         }
 
-        public void AddPriceType(DatasetDimensionValue dimensionValue, string valueCode, PriceType priceType)
+        public static void AddPriceType(DatasetDimensionValue dimensionValue, string valueCode, PriceType priceType)
         {
             if (dimensionValue.Extension.PriceType == null)
                 dimensionValue.Extension.PriceType = new Dictionary<string, PriceType>();
@@ -312,7 +312,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
             dimensionValue.Extension.PriceType.Add(valueCode, priceType);
         }
 
-        public void AddAdjustment(DatasetDimensionValue dimensionValue, string valueCode, Adjustment adjustment)
+        public static void AddAdjustment(DatasetDimensionValue dimensionValue, string valueCode, Adjustment adjustment)
         {
             if (dimensionValue.Extension.Adjustment == null)
                 dimensionValue.Extension.Adjustment = new Dictionary<string, Adjustment>();
@@ -320,7 +320,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
             dimensionValue.Extension.Adjustment.Add(valueCode, adjustment);
         }
 
-        public void AddBasePeriod(DatasetDimensionValue dimensionValue, string valueCode, string basePeriod)
+        public static void AddBasePeriod(DatasetDimensionValue dimensionValue, string valueCode, string basePeriod)
         {
             if (!string.IsNullOrEmpty(basePeriod))
             {

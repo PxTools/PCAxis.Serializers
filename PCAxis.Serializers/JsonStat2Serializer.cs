@@ -84,7 +84,7 @@ namespace PCAxis.Serializers
                     if (!variable.IsContentVariable) continue;
 
                     var unitDecimals = (variableValue.HasPrecision()) ? variableValue.Precision : model.Meta.ShowDecimals;
-                    dataset.AddUnitValue(dimensionValue.Category, out var unitValue);
+                    JsonStat2Dataset.AddUnitValue(dimensionValue.Category, out var unitValue);
 
                     if (variableValue.ContentInfo != null)
                     {
@@ -92,19 +92,19 @@ namespace PCAxis.Serializers
                         unitValue.Decimals = unitDecimals;
 
                         //refPeriod extension dimension
-                        dataset.AddRefPeriod(dimensionValue, variableValue.Code, variableValue.ContentInfo.RefPeriod);
+                        JsonStat2Dataset.AddRefPeriod(dimensionValue, variableValue.Code, variableValue.ContentInfo.RefPeriod);
 
                         //measuringType extension dimension
-                        dataset.AddMeasuringType(dimensionValue, variableValue.Code, GetMeasuringType(variableValue.ContentInfo.StockFa));
+                        JsonStat2Dataset.AddMeasuringType(dimensionValue, variableValue.Code, GetMeasuringType(variableValue.ContentInfo.StockFa));
 
                         //priceType extension dimension
-                        dataset.AddPriceType(dimensionValue, variableValue.Code, GetPriceType(variableValue.ContentInfo.CFPrices));
+                        JsonStat2Dataset.AddPriceType(dimensionValue, variableValue.Code, GetPriceType(variableValue.ContentInfo.CFPrices));
 
                         //adjustment extension dimension
-                        dataset.AddAdjustment(dimensionValue, variableValue.Code, GetAdjustment(variableValue.ContentInfo.DayAdj, variableValue.ContentInfo.SeasAdj));
+                        JsonStat2Dataset.AddAdjustment(dimensionValue, variableValue.Code, GetAdjustment(variableValue.ContentInfo.DayAdj, variableValue.ContentInfo.SeasAdj));
 
                         //basePeriod extension dimension
-                        dataset.AddBasePeriod(dimensionValue, variableValue.Code, variableValue.ContentInfo.Baseperiod);
+                        JsonStat2Dataset.AddBasePeriod(dimensionValue, variableValue.Code, variableValue.ContentInfo.Baseperiod);
 
                         // Contact
                         AddContact(dataset, variableValue.ContentInfo);
@@ -131,7 +131,7 @@ namespace PCAxis.Serializers
 
                 if (metaIdsHelper.Count > 0)
                 {
-                    dataset.AddDimensionLink(dimensionValue, metaIdsHelper);
+                    JsonStat2Dataset.AddDimensionLink(dimensionValue, metaIdsHelper);
                 }
 
                 dataset.Size.Add(variable.Values.Count);
@@ -255,7 +255,7 @@ namespace PCAxis.Serializers
             dimensionValue.Category.Label.Add(eliminatedValue, model.Meta.Contents);
             dimensionValue.Category.Index.Add(eliminatedValue, 0);
 
-            dataset.AddUnitValue(dimensionValue.Category, out var unitValue);
+            JsonStat2Dataset.AddUnitValue(dimensionValue.Category, out var unitValue);
             unitValue.Base = model.Meta.ContentInfo.Units;
             unitValue.Decimals = model.Meta.Decimals;
 
@@ -264,19 +264,19 @@ namespace PCAxis.Serializers
             dimensionValue.Extension.Elimination = true;
 
             //refPeriod extension dimension
-            dataset.AddRefPeriod(dimensionValue, eliminatedValue, model.Meta.ContentInfo.RefPeriod);
+            JsonStat2Dataset.AddRefPeriod(dimensionValue, eliminatedValue, model.Meta.ContentInfo.RefPeriod);
 
             //measuringType extension dimension
-            dataset.AddMeasuringType(dimensionValue, eliminatedValue, GetMeasuringType(model.Meta.ContentInfo.StockFa));
+            JsonStat2Dataset.AddMeasuringType(dimensionValue, eliminatedValue, GetMeasuringType(model.Meta.ContentInfo.StockFa));
 
             //priceType extension dimension
-            dataset.AddPriceType(dimensionValue, eliminatedValue, GetPriceType(model.Meta.ContentInfo.CFPrices));
+            JsonStat2Dataset.AddPriceType(dimensionValue, eliminatedValue, GetPriceType(model.Meta.ContentInfo.CFPrices));
 
             //adjustment extension dimension
-            dataset.AddAdjustment(dimensionValue, eliminatedValue, GetAdjustment(model.Meta.ContentInfo.DayAdj, model.Meta.ContentInfo.SeasAdj));
+            JsonStat2Dataset.AddAdjustment(dimensionValue, eliminatedValue, GetAdjustment(model.Meta.ContentInfo.DayAdj, model.Meta.ContentInfo.SeasAdj));
 
             //basePeriod extension dimension
-            dataset.AddBasePeriod(dimensionValue, eliminatedValue, model.Meta.ContentInfo.Baseperiod);
+            JsonStat2Dataset.AddBasePeriod(dimensionValue, eliminatedValue, model.Meta.ContentInfo.Baseperiod);
 
             // Contact
             AddContact(dataset, model.Meta.ContentInfo);
@@ -400,10 +400,10 @@ namespace PCAxis.Serializers
             var index = 0;
             foreach (var note in variableValue.Notes)
             {
-                dataset.AddValueNoteToCategory(dimensionValue, variableValue.Code, note.Text);
+                JsonStat2Dataset.AddValueNoteToCategory(dimensionValue, variableValue.Code, note.Text);
 
                 if (note.Mandantory)
-                    dataset.AddIsMandatoryForCategoryNote(dimensionValue, variableValue.Code, index.ToString());
+                    JsonStat2Dataset.AddIsMandatoryForCategoryNote(dimensionValue, variableValue.Code, index.ToString());
 
                 index++;
             }
@@ -416,10 +416,10 @@ namespace PCAxis.Serializers
             var noteIndex = 0;
             foreach (var note in variable.Notes)
             {
-                dataset.AddNoteToDimension(dimensionValue, note.Text);
+                JsonStat2Dataset.AddNoteToDimension(dimensionValue, note.Text);
 
                 if (note.Mandantory)
-                    dataset.AddIsMandatoryForDimensionNote(dimensionValue, noteIndex.ToString());
+                    JsonStat2Dataset.AddIsMandatoryForDimensionNote(dimensionValue, noteIndex.ToString());
 
                 noteIndex++;
             }
