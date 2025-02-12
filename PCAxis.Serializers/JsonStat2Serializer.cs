@@ -12,6 +12,8 @@ using PCAxis.Paxiom;
 using PCAxis.Paxiom.Extensions;
 using PCAxis.Serializers.JsonStat2.Model;
 
+using PxWeb.Api2.Server.Models;
+
 namespace PCAxis.Serializers
 {
     public class JsonStat2Serializer : IPXModelStreamSerializer
@@ -38,7 +40,7 @@ namespace PCAxis.Serializers
 
         public string BuildJsonStructure(PXModel model)
         {
-            var dataset = new Dataset();
+            var dataset = new JsonStat2Dataset();
 
             //Updated
             AddUpdated(model, dataset);
@@ -77,12 +79,12 @@ namespace PCAxis.Serializers
                     CollectMetaIdsForValue(variableValue, ref metaIdsHelper);
 
                     // ValueNote
-                    AddValueNotes(variableValue, dataset, dimensionValue);
+                    AddValueNotes(variableValue, dimensionValue);
 
                     if (!variable.IsContentVariable) continue;
 
                     var unitDecimals = (variableValue.HasPrecision()) ? variableValue.Precision : model.Meta.ShowDecimals;
-                    dataset.AddUnitValue(dimensionValue.Category, out var unitValue);
+                    JsonStat2Dataset.AddUnitValue(dimensionValue.Category, out var unitValue);
 
                     if (variableValue.ContentInfo != null)
                     {
@@ -90,19 +92,19 @@ namespace PCAxis.Serializers
                         unitValue.Decimals = unitDecimals;
 
                         //refPeriod extension dimension
-                        dataset.AddRefPeriod(dimensionValue, variableValue.Code, variableValue.ContentInfo.RefPeriod);
+                        JsonStat2Dataset.AddRefPeriod(dimensionValue, variableValue.Code, variableValue.ContentInfo.RefPeriod);
 
                         //measuringType extension dimension
-                        dataset.AddMeasuringType(dimensionValue, variableValue.Code, GetMeasuringType(variableValue.ContentInfo.StockFa));
+                        JsonStat2Dataset.AddMeasuringType(dimensionValue, variableValue.Code, GetMeasuringType(variableValue.ContentInfo.StockFa));
 
                         //priceType extension dimension
-                        dataset.AddPriceType(dimensionValue, variableValue.Code, GetPriceType(variableValue.ContentInfo.CFPrices));
+                        JsonStat2Dataset.AddPriceType(dimensionValue, variableValue.Code, GetPriceType(variableValue.ContentInfo.CFPrices));
 
                         //adjustment extension dimension
-                        dataset.AddAdjustment(dimensionValue, variableValue.Code, GetAdjustment(variableValue.ContentInfo.DayAdj, variableValue.ContentInfo.SeasAdj));
+                        JsonStat2Dataset.AddAdjustment(dimensionValue, variableValue.Code, GetAdjustment(variableValue.ContentInfo.DayAdj, variableValue.ContentInfo.SeasAdj));
 
                         //basePeriod extension dimension
-                        dataset.AddBasePeriod(dimensionValue, variableValue.Code, variableValue.ContentInfo.Baseperiod);
+                        JsonStat2Dataset.AddBasePeriod(dimensionValue, variableValue.Code, variableValue.ContentInfo.Baseperiod);
 
                         // Contact
                         AddContact(dataset, variableValue.ContentInfo);
@@ -122,14 +124,14 @@ namespace PCAxis.Serializers
                 AddShow(dimensionValue, variable);
 
                 //Variable notes
-                AddVariableNotes(variable, dataset, dimensionValue);
+                AddVariableNotes(variable, dimensionValue);
 
                 //MetaID
                 CollectMetaIdsForVariable(variable, ref metaIdsHelper);
 
                 if (metaIdsHelper.Count > 0)
                 {
-                    dataset.AddDimensionLink(dimensionValue, metaIdsHelper);
+                    JsonStat2Dataset.AddDimensionLink(dimensionValue, metaIdsHelper);
                 }
 
                 dataset.Size.Add(variable.Values.Count);
@@ -162,7 +164,7 @@ namespace PCAxis.Serializers
             return result;
         }
 
-        private static void AddTimeUnit(Dataset dataset, Variable variable)
+        private static void AddTimeUnit(JsonStat2Dataset dataset, Variable variable)
         {
             dataset.Extension.TimeUnit = GetTimeUnit(variable.TimeScale);
         }
@@ -246,14 +248,14 @@ namespace PCAxis.Serializers
         }
 
 
-        private void AddInfoForEliminatedContentVariable(PXModel model, Dataset dataset)
+        private void AddInfoForEliminatedContentVariable(PXModel model, JsonStat2Dataset dataset)
         {
             dataset.AddDimensionValue("ContentsCode", "EliminatedContents", out var dimensionValue);
             var eliminatedValue = "EliminatedValue";
             dimensionValue.Category.Label.Add(eliminatedValue, model.Meta.Contents);
             dimensionValue.Category.Index.Add(eliminatedValue, 0);
 
-            dataset.AddUnitValue(dimensionValue.Category, out var unitValue);
+            JsonStat2Dataset.AddUnitValue(dimensionValue.Category, out var unitValue);
             unitValue.Base = model.Meta.ContentInfo.Units;
             unitValue.Decimals = model.Meta.Decimals;
 
@@ -262,19 +264,19 @@ namespace PCAxis.Serializers
             dimensionValue.Extension.Elimination = true;
 
             //refPeriod extension dimension
-            dataset.AddRefPeriod(dimensionValue, eliminatedValue, model.Meta.ContentInfo.RefPeriod);
+            JsonStat2Dataset.AddRefPeriod(dimensionValue, eliminatedValue, model.Meta.ContentInfo.RefPeriod);
 
             //measuringType extension dimension
-            dataset.AddMeasuringType(dimensionValue, eliminatedValue, GetMeasuringType(model.Meta.ContentInfo.StockFa));
+            JsonStat2Dataset.AddMeasuringType(dimensionValue, eliminatedValue, GetMeasuringType(model.Meta.ContentInfo.StockFa));
 
             //priceType extension dimension
-            dataset.AddPriceType(dimensionValue, eliminatedValue, GetPriceType(model.Meta.ContentInfo.CFPrices));
+            JsonStat2Dataset.AddPriceType(dimensionValue, eliminatedValue, GetPriceType(model.Meta.ContentInfo.CFPrices));
 
             //adjustment extension dimension
-            dataset.AddAdjustment(dimensionValue, eliminatedValue, GetAdjustment(model.Meta.ContentInfo.DayAdj, model.Meta.ContentInfo.SeasAdj));
+            JsonStat2Dataset.AddAdjustment(dimensionValue, eliminatedValue, GetAdjustment(model.Meta.ContentInfo.DayAdj, model.Meta.ContentInfo.SeasAdj));
 
             //basePeriod extension dimension
-            dataset.AddBasePeriod(dimensionValue, eliminatedValue, model.Meta.ContentInfo.Baseperiod);
+            JsonStat2Dataset.AddBasePeriod(dimensionValue, eliminatedValue, model.Meta.ContentInfo.Baseperiod);
 
             // Contact
             AddContact(dataset, model.Meta.ContentInfo);
@@ -284,7 +286,7 @@ namespace PCAxis.Serializers
             dataset.Id.Add("ContentsCode");
         }
 
-        private static void AddUpdated(PXModel model, Dataset dataset)
+        private static void AddUpdated(PXModel model, JsonStat2Dataset dataset)
         {
             DateTime tempDateTime;
             if (model.Meta.ContentVariable != null && model.Meta.ContentVariable.Values.Count > 0)
@@ -330,7 +332,7 @@ namespace PCAxis.Serializers
             }
         }
 
-        private static void AddPxToExtension(PXModel model, Dataset dataset)
+        private static void AddPxToExtension(PXModel model, JsonStat2Dataset dataset)
         {
             var decimals = model.Meta.ShowDecimals < 0 ? model.Meta.Decimals : model.Meta.ShowDecimals;
 
@@ -355,7 +357,7 @@ namespace PCAxis.Serializers
             AddNextUpdate(dataset, model.Meta.NextUpdate);
         }
 
-        private static void AddTableNotes(PXModel model, Dataset dataset)
+        private static void AddTableNotes(PXModel model, JsonStat2Dataset dataset)
         {
             var notes = model.Meta.Notes.Where(note => note.Type == NoteType.Table);
 
@@ -391,39 +393,39 @@ namespace PCAxis.Serializers
             }
         }
 
-        private static void AddValueNotes(Value variableValue, Dataset dataset, DatasetDimensionValue dimensionValue)
+        private static void AddValueNotes(PCAxis.Paxiom.Value variableValue, DatasetDimensionValue dimensionValue)
         {
             if (variableValue.Notes == null) return;
 
             var index = 0;
             foreach (var note in variableValue.Notes)
             {
-                dataset.AddValueNoteToCategory(dimensionValue, variableValue.Code, note.Text);
+                JsonStat2Dataset.AddValueNoteToCategory(dimensionValue, variableValue.Code, note.Text);
 
                 if (note.Mandantory)
-                    dataset.AddIsMandatoryForCategoryNote(dimensionValue, variableValue.Code, index.ToString());
+                    JsonStat2Dataset.AddIsMandatoryForCategoryNote(dimensionValue, variableValue.Code, index.ToString());
 
                 index++;
             }
         }
 
-        private static void AddVariableNotes(Variable variable, Dataset dataset, DatasetDimensionValue dimensionValue)
+        private static void AddVariableNotes(Variable variable, DatasetDimensionValue dimensionValue)
         {
             if (variable.Notes == null) return;
 
             var noteIndex = 0;
             foreach (var note in variable.Notes)
             {
-                dataset.AddNoteToDimension(dimensionValue, note.Text);
+                JsonStat2Dataset.AddNoteToDimension(dimensionValue, note.Text);
 
                 if (note.Mandantory)
-                    dataset.AddIsMandatoryForDimensionNote(dimensionValue, noteIndex.ToString());
+                    JsonStat2Dataset.AddIsMandatoryForDimensionNote(dimensionValue, noteIndex.ToString());
 
                 noteIndex++;
             }
         }
 
-        private void AddContact(Dataset dataset, ContInfo contInfo)
+        private void AddContact(JsonStat2Dataset dataset, ContInfo contInfo)
         {
             if (contInfo.ContactInfo != null && contInfo.ContactInfo.Count > 0)
             {
@@ -438,12 +440,12 @@ namespace PCAxis.Serializers
             }
         }
 
-        private void MapContact(Dataset dataset, Paxiom.Contact contact, ContInfo contInfo)
+        private void MapContact(JsonStat2Dataset dataset, Paxiom.Contact contact, ContInfo contInfo)
         {
 
             if (dataset.Extension.Contact == null)
             {
-                dataset.Extension.Contact = new List<JsonStat2.Model.Contact>();
+                dataset.Extension.Contact = new List<PxWeb.Api2.Server.Models.Contact>();
             }
 
             StringBuilder sb = new StringBuilder();
@@ -451,7 +453,7 @@ namespace PCAxis.Serializers
             sb.Append(' ');
             sb.Append(contact.Surname);
 
-            JsonStat2.Model.Contact jsonContact = new JsonStat2.Model.Contact
+            PxWeb.Api2.Server.Models.Contact jsonContact = new PxWeb.Api2.Server.Models.Contact
             {
                 Name = sb.ToString(),
                 Mail = contact.Email,
@@ -476,13 +478,13 @@ namespace PCAxis.Serializers
             }
         }
 
-        private void MapContact(Dataset dataset, string contactString)
+        private void MapContact(JsonStat2Dataset dataset, string contactString)
         {
             if (contactString != null)
             {
                 if (dataset.Extension.Contact == null)
                 {
-                    dataset.Extension.Contact = new List<JsonStat2.Model.Contact>();
+                    dataset.Extension.Contact = new List<PxWeb.Api2.Server.Models.Contact>();
                 }
 
                 var contacts = contactString.Split(new[] { "##" }, StringSplitOptions.RemoveEmptyEntries);
@@ -491,7 +493,7 @@ namespace PCAxis.Serializers
                 {
                     if (!dataset.Extension.Contact.Exists(x => x.Raw.Equals(contact)))
                     {
-                        dataset.Extension.Contact.Add(new JsonStat2.Model.Contact
+                        dataset.Extension.Contact.Add(new PxWeb.Api2.Server.Models.Contact
                         {
                             Raw = contact
                         });
@@ -500,7 +502,7 @@ namespace PCAxis.Serializers
             }
         }
 
-        private static void AddRoles(Variable variable, Dataset dataset)
+        private static void AddRoles(Variable variable, JsonStat2Dataset dataset)
         {
             if (variable.IsTime)
             {
@@ -527,7 +529,7 @@ namespace PCAxis.Serializers
             }
         }
 
-        private void CollectMetaIdsForValue(Value value, ref Dictionary<string, string> metaIds)
+        private void CollectMetaIdsForValue(PCAxis.Paxiom.Value value, ref Dictionary<string, string> metaIds)
         {
             if (!string.IsNullOrWhiteSpace(value.MetaId))
             {
