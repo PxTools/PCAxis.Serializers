@@ -10,20 +10,15 @@ permissions:
 jobs:
   release:
 
-    runs-on: windows-2022
+    runs-on: windows-latest
 
     steps:
 
     - uses: actions/checkout@v4
       with:
-        fetch-depth: 0    
+        fetch-depth: 0
 
     - uses: microsoft/setup-msbuild@6fb02220983dee41ce7ae257b6f4d8f9bf5ed4ce #v2
-    
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 6.0.x
 
     - uses: NuGet/setup-nuget@323ab0502cd38fdc493335025a96c8fdb0edc71f #v2.0.1
 
@@ -39,4 +34,3 @@ jobs:
            nuget push $package $env:nuget_api_key -src https://nuget.org
       env:
         nuget_api_key: ${{ secrets.NUGET_API_KEY }}
-        
