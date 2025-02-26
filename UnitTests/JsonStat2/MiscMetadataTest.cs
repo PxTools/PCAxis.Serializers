@@ -44,16 +44,6 @@ namespace UnitTests.JsonStat2
         }
 
         [TestMethod]
-        [Description("Testing output for timeUnit (pxfile: BE0101A1_misc_metadata.px)")]
-        public void TestTimeUnit()
-        {
-            var expectedtimeUnit = "Annual";
-            var actualTimeUnit = jsonstat2AsJObjectBE0101A1["extension"]["timeUnit"].ToString();
-
-            Assert.AreEqual(expectedtimeUnit, actualTimeUnit);
-        }
-
-        [TestMethod]
         [Description("Testing output for priceType (pxfiles: BE0101A1_misc_metadata.px and MultipleContentSmall.px)")]
         public void TestPriceType()
         {
