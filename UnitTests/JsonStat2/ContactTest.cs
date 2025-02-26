@@ -125,7 +125,7 @@ namespace UnitTests.JsonStat2
         [Description("Testing contact count for pxfile without contentvaribale defined (pxfile: BE0101A1_contact.px)")]
         public void TestContactWithPipesCount()
         {
-            var expectedContactCount = 2;
+            var expectedContactCount = 5;
             var actualContactCount = jsonstat2AsJObject["extension"]["contact"].Count();
             Assert.AreEqual(expectedContactCount, actualContactCount);
         }
@@ -148,6 +148,50 @@ namespace UnitTests.JsonStat2
             Assert.AreEqual(expectedMail, actualMail);
             Assert.AreEqual(expextedPhone, actualPhone);
             Assert.AreEqual(expectedRaw, actualRaw);
+        }
+
+        [TestMethod]
+        [Description("Test organization for third contact  (pxfile: BE0101A1_contact.px)")]
+        public void TestOrganzation()
+        {
+            var expectedOrg = "This is my org";
+
+            var actualOrg = jsonstat2AsJObject["extension"]["contact"][2]["organization"].ToString();
+
+            Assert.AreEqual(expectedOrg, actualOrg);
+        }
+
+        [TestMethod]
+        [Description("Test name combinations with only forname (pxfile: BE0101A1_contact.px)")]
+        public void TestNameOnlyForname()
+        {
+            var expectedName = "Only Forname";
+
+            var actualName = jsonstat2AsJObject["extension"]["contact"][2]["name"].ToString();
+
+            Assert.AreEqual(expectedName, actualName);
+        }
+
+        [TestMethod]
+        [Description("Test name combinations with only surname (pxfile: BE0101A1_contact.px)")]
+        public void TestNameOnlySurname()
+        {
+            var expectedName = "Only Surname";
+
+            var actualName = jsonstat2AsJObject["extension"]["contact"][3]["name"].ToString();
+
+            Assert.AreEqual(expectedName, actualName);
+        }
+
+        [TestMethod]
+        [Description("Test name without forname/surname should return empty string (pxfile: BE0101A1_contact.px)")]
+        public void TestNameEmptyString()
+        {
+            var expectedName = "";
+
+            var actualName = jsonstat2AsJObject["extension"]["contact"][4]["name"].ToString();
+
+            Assert.AreEqual(expectedName, actualName);
         }
     }
 }
