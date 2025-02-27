@@ -139,12 +139,6 @@ namespace PCAxis.Serializers
 
                 //Role
                 AddRoles(variable, dataset);
-
-                //TimeUnit
-                if (variable.IsTime || (variable.VariableType != null && variable.VariableType.Equals("T")))
-                {
-                    AddTimeUnit(dataset, variable);
-                }
             }
 
             AddTableNotes(model, dataset);
@@ -162,32 +156,6 @@ namespace PCAxis.Serializers
             var result = JsonConvert.SerializeObject(dataset, new DecimalJsonConverter());
 
             return result;
-        }
-
-        private static void AddTimeUnit(JsonStat2Dataset dataset, Variable variable)
-        {
-            dataset.Extension.TimeUnit = GetTimeUnit(variable.TimeScale);
-        }
-
-        private static TimeUnit GetTimeUnit(TimeScaleType timeScaleType)
-        {
-            switch (timeScaleType)
-            {
-                case TimeScaleType.NotSet:
-                    return TimeUnit.OtherEnum;
-                case TimeScaleType.Annual:
-                    return TimeUnit.AnnualEnum;
-                case TimeScaleType.Halfyear:
-                    return TimeUnit.HalfYearEnum;
-                case TimeScaleType.Quartely:
-                    return TimeUnit.QuarterlyEnum;
-                case TimeScaleType.Monthly:
-                    return TimeUnit.MonthlyEnum;
-                case TimeScaleType.Weekly:
-                    return TimeUnit.WeeklyEnum;
-                default:
-                    return TimeUnit.OtherEnum;
-            }
         }
 
         private static PriceType GetPriceType(string cfprices)
@@ -375,7 +343,7 @@ namespace PCAxis.Serializers
             }
         }
 
-        private static void AddEliminationInfo(DatasetDimensionValue dimensionValue, Variable variable)
+        private static void AddEliminationInfo(DimensionValue dimensionValue, Variable variable)
         {
             dimensionValue.Extension.Elimination = variable.Elimination;
 
@@ -385,7 +353,7 @@ namespace PCAxis.Serializers
             dimensionValue.Extension.EliminationValueCode = variable.EliminationValue.Code;
         }
 
-        private static void AddShow(DatasetDimensionValue dimensionValue, Variable variable)
+        private static void AddShow(DimensionValue dimensionValue, Variable variable)
         {
             if (Enum.TryParse(variable.PresentationText.ToString(), out PresentationFormType presentationForm))
             {
@@ -393,7 +361,7 @@ namespace PCAxis.Serializers
             }
         }
 
-        private static void AddValueNotes(PCAxis.Paxiom.Value variableValue, DatasetDimensionValue dimensionValue)
+        private static void AddValueNotes(PCAxis.Paxiom.Value variableValue, DimensionValue dimensionValue)
         {
             if (variableValue.Notes == null) return;
 
@@ -409,7 +377,7 @@ namespace PCAxis.Serializers
             }
         }
 
-        private static void AddVariableNotes(Variable variable, DatasetDimensionValue dimensionValue)
+        private static void AddVariableNotes(Variable variable, DimensionValue dimensionValue)
         {
             if (variable.Notes == null) return;
 
@@ -448,16 +416,12 @@ namespace PCAxis.Serializers
                 dataset.Extension.Contact = new List<PxWeb.Api2.Server.Models.Contact>();
             }
 
-            StringBuilder sb = new StringBuilder();
-            sb.Append(contact.Forname);
-            sb.Append(' ');
-            sb.Append(contact.Surname);
-
             PxWeb.Api2.Server.Models.Contact jsonContact = new PxWeb.Api2.Server.Models.Contact
             {
-                Name = sb.ToString(),
+                Name = GetFullName(contact),
                 Mail = contact.Email,
-                Phone = contact.PhoneNo
+                Phone = contact.PhoneNo,
+                Organization = contact.OrganizationName
             };
 
             if (contInfo.Contact != null)
@@ -500,6 +464,26 @@ namespace PCAxis.Serializers
                     }
                 }
             }
+        }
+
+        private static string GetFullName(Paxiom.Contact contact)
+        {
+            if (string.IsNullOrEmpty(contact.Forname) && string.IsNullOrEmpty(contact.Surname))
+            {
+                return string.Empty;
+            }
+
+            if (string.IsNullOrEmpty(contact.Forname))
+            {
+                return contact.Surname;
+            }
+
+            if (string.IsNullOrEmpty(contact.Surname))
+            {
+                return contact.Forname;
+            }
+
+            return $"{contact.Forname} {contact.Surname}";
         }
 
         private static void AddRoles(Variable variable, JsonStat2Dataset dataset)
