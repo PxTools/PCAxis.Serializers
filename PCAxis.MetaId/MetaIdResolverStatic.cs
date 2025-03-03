@@ -9,36 +9,6 @@ namespace PCAxis.MetaId
     /// </summary>
     public class MetaIdResolverStatic
     {
-        /// <summary>
-        /// Class holding format information for a link
-        /// </summary>
-        private sealed class MetaLinkFormat
-        {
-            public MetaLinkFormat(string textFormat, string linkFormat, string linkType, string linkRelation)
-            {
-                this.LinkTextFormat = textFormat;
-                this.LinkUrlFormat = linkFormat;
-                this.LinkType = linkType;
-                this.LinkRelation = linkRelation;
-            }
-
-            /// <summary>
-            /// Format of the link text
-            /// </summary>
-            public string LinkTextFormat { get; }
-
-            /// <summary>
-            /// Format of the link (URL)
-            /// </summary>
-            public string LinkUrlFormat { get; }
-
-            /// <summary>
-            /// Content-type Type 
-            /// </summary>
-            public string LinkType { get; }
-            public string LinkRelation { get; }
-        }
-
 
         #region "Private fields"
 
@@ -51,19 +21,19 @@ namespace PCAxis.MetaId
         /// Dictionary of metadata systems containing table information. 
         /// Key = Metadata system id, Value = dictionary of linkformats per language (key = language, value = linkformat-object). 
         /// </summary>
-        private static readonly Dictionary<string, Dictionary<string, List<MetaLinkFormat>>> _tableLinkFormats;
+        private static readonly MetaSystems _tableLinkFormats;
 
         /// <summary>
         /// Dictionary of metadata systems containing variable information. 
         /// Key = Metadata system id, Value = dictionary of linkformats per language (key = language, value = linkformat-object). 
         /// </summary>
-        private static readonly Dictionary<string, Dictionary<string, List<MetaLinkFormat>>> _variableLinkFormats;
+        private static readonly MetaSystems _variableLinkFormats;
 
         /// <summary>
         /// Dictionary of metadata systems containing value information. 
         /// Key = Metadata system id, Value = dictionary of linkformats per language (key = language, value = linkformat-object). 
         /// </summary>
-        private static readonly Dictionary<string, Dictionary<string, List<MetaLinkFormat>>> _valueLinkFormats;
+        private static readonly MetaSystems _valueLinkFormats;
 
         /// <summary>
         /// Logging to Log4Net
@@ -92,9 +62,9 @@ namespace PCAxis.MetaId
         /// </summary>
         static MetaIdResolverStatic()
         {
-            _tableLinkFormats = new Dictionary<string, Dictionary<string, List<MetaLinkFormat>>>();
-            _variableLinkFormats = new Dictionary<string, Dictionary<string, List<MetaLinkFormat>>>();
-            _valueLinkFormats = new Dictionary<string, Dictionary<string, List<MetaLinkFormat>>>();
+            _tableLinkFormats = new MetaSystems();
+            _variableLinkFormats = new MetaSystems();
+            _valueLinkFormats = new MetaSystems();
 
             _hasEntries = LoadConfiguration("metaid.config");
         }
@@ -134,7 +104,7 @@ namespace PCAxis.MetaId
         /// <param name="section">Name of the section</param>
         /// <param name="dictionary">Dictionary to store section data in</param>
         /// <returns></returns>
-        private static void LoadConfigurationSection(string section, Dictionary<string, Dictionary<string, List<MetaLinkFormat>>> dictionaryForSection)
+        private static void LoadConfigurationSection(string section, MetaSystems dictionaryForSection)
         {
             string xpath;
             XmlNode node;
@@ -161,7 +131,7 @@ namespace PCAxis.MetaId
                     throw new ApplicationException("metaSystem element in Section " + section + " : Duplicate id: " + sysId);
                 }
 
-                dictionaryForSection.Add(sysId, new Dictionary<string, List<MetaLinkFormat>>()); // add system to dictionary
+                dictionaryForSection.Add(sysId, new MetaLinkFormatsByLanguage()); // add system to dictionary
 
                 // Find all language nodes for the system
                 xpath = ".//links";
@@ -215,7 +185,7 @@ namespace PCAxis.MetaId
         /// <param name="language">Language</param>
         /// <param name="dictionary">Dictionary containing the link formats</param>
         /// <returns></returns>
-        private static List<Link> GetLinks(string metaIdList, string language, Dictionary<string, Dictionary<string, List<MetaLinkFormat>>> dictionary, string[] textParams)
+        private static List<Link> GetLinks(string metaIdList, string language, MetaSystems dictionary, string[] textParams)
         {
             List<Link> myOut = new List<Link>();
 
