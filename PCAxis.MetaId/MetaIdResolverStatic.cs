@@ -12,7 +12,7 @@ namespace PCAxis.MetaId
         /// <summary>
         /// Class holding format information for a link
         /// </summary>
-        private class MetaLinkFormat
+        private sealed class MetaLinkFormat
         {
             public MetaLinkFormat(string textFormat, string linkFormat, string linkType, string linkRelation)
             {
@@ -80,7 +80,10 @@ namespace PCAxis.MetaId
         /// </summary>
         private static readonly char[] _paramSeparator = { ':' };
 
+
         private static readonly bool _hasEntries;
+
+        //public static bool HasEntries => _hasEntries;
 
 
         #endregion
@@ -89,13 +92,11 @@ namespace PCAxis.MetaId
         /// </summary>
         static MetaIdResolverStatic()
         {
-            // _metadataSystems = new List<MetadataSystem>();
             _tableLinkFormats = new Dictionary<string, Dictionary<string, List<MetaLinkFormat>>>();
             _variableLinkFormats = new Dictionary<string, Dictionary<string, List<MetaLinkFormat>>>();
             _valueLinkFormats = new Dictionary<string, Dictionary<string, List<MetaLinkFormat>>>();
 
             _hasEntries = LoadConfiguration("metaid.config");
-
         }
 
         /// <summary>
@@ -133,7 +134,7 @@ namespace PCAxis.MetaId
         /// <param name="section">Name of the section</param>
         /// <param name="dictionary">Dictionary to store section data in</param>
         /// <returns></returns>
-        private static bool LoadConfigurationSection(string section, Dictionary<string, Dictionary<string, List<MetaLinkFormat>>> dictionaryForSection)
+        private static void LoadConfigurationSection(string section, Dictionary<string, Dictionary<string, List<MetaLinkFormat>>> dictionaryForSection)
         {
             string xpath;
             XmlNode node;
@@ -202,8 +203,6 @@ namespace PCAxis.MetaId
                 }
 
             }
-
-            return true;
         }
 
 
@@ -234,9 +233,6 @@ namespace PCAxis.MetaId
 
                         string rawParamsString = metaId.Replace(theMetadataSystemId, "");
                         string[] linkParams = rawParamsString.Split(_paramSeparator, StringSplitOptions.RemoveEmptyEntries);
-                        //char ddsfs = ':';
-                        //string[] linkParams2 = rawParamsString.Split(ddsfs);
-
 
                         if (dictionary[theMetadataSystemId].ContainsKey(language))
                         {
