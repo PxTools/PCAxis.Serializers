@@ -7,7 +7,7 @@ namespace PCAxis.MetaId
     /// <summary>
     /// Class that encapsulates a metaid.config file containing link-definitions to metadata systems, and has methodsw that resolves a "raw" meta-id string to Links.
     /// </summary>
-    public class MetaIdResolverStatic
+    public static class MetaIdResolverStatic
     {
 
         #region "Private fields"
@@ -21,19 +21,19 @@ namespace PCAxis.MetaId
         /// Dictionary of metadata systems containing table information. 
         /// Key = Metadata system id, Value = dictionary of linkformats per language (key = language, value = List of linkformat-object). 
         /// </summary>
-        private static readonly MetaSystems _tableLinkFormats;
+        private static readonly MetaSystems _tableLinkFormats = new MetaSystems();
 
         /// <summary>
         /// Dictionary of metadata systems containing variable information. 
         /// Key = Metadata system id, Value = dictionary of linkformats per language (key = language, value = List of linkformat-object). 
         /// </summary>
-        private static readonly MetaSystems _variableLinkFormats;
+        private static readonly MetaSystems _variableLinkFormats = new MetaSystems();
 
         /// <summary>
         /// Dictionary of metadata systems containing value information. 
         /// Key = Metadata system id, Value = dictionary of linkformats per language (key = language, value = List of linkformat-object). 
         /// </summary>
-        private static readonly MetaSystems _valueLinkFormats;
+        private static readonly MetaSystems _valueLinkFormats = new MetaSystems();
 
         /// <summary>
         /// Logging to Log4Net
@@ -51,23 +51,10 @@ namespace PCAxis.MetaId
         private static readonly char[] _paramSeparator = { ':' };
 
 
-        private static readonly bool _hasEntries;
-
-        //public static bool HasEntries => _hasEntries;
-
+        private static readonly bool _hasEntries = LoadConfiguration("metaid.config");
 
         #endregion
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        static MetaIdResolverStatic()
-        {
-            _tableLinkFormats = new MetaSystems();
-            _variableLinkFormats = new MetaSystems();
-            _valueLinkFormats = new MetaSystems();
 
-            _hasEntries = LoadConfiguration("metaid.config");
-        }
 
         /// <summary>
         /// Load metadata.config file
@@ -76,10 +63,10 @@ namespace PCAxis.MetaId
         /// <returns>True if the configuration file was successfully loaded, else false</returns>
         private static bool LoadConfiguration(string configurationFile)
         {
-            //Todo make void and throw something if configurationFile isNotNullOrEmptry?
+            //It is ok to not use metaid 
             if (!System.IO.File.Exists(configurationFile))
             {
-                _logger.ErrorFormat("Metadata configuration file '{0}' does not exist", configurationFile);
+                _logger.WarnFormat("Metadata configuration file '{0}' does not exist", configurationFile);
                 return false;
             }
 
@@ -188,6 +175,10 @@ namespace PCAxis.MetaId
         private static List<Link> GetLinks(string metaIdList, string language, MetaSystems dictionary, string[] textParams)
         {
             List<Link> myOut = new List<Link>();
+            if (!_hasEntries)
+            {
+                return myOut;
+            }
 
             string[] metaIds = metaIdList.Split(_systemSeparator, StringSplitOptions.RemoveEmptyEntries);
 

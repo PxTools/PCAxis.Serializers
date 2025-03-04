@@ -1,12 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <Description>MetaId for PCAxis</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageProjectUrl>https://github.com/PxTools/PCAxis.MetaId</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/PxTools/PCAxis.MetaId.git</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/PxTools/PCAxis.Serializers</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/PxTools/PCAxis.Serializers.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageTags>PX</PackageTags>
