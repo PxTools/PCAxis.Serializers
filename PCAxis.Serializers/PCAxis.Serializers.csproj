@@ -54,4 +54,8 @@
       <PackagePath></PackagePath>
     </None>
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PCAxis.MetaId\PCAxis.MetaId.csproj" />
+  </ItemGroup>
 </Project>
