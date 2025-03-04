@@ -19,26 +19,26 @@ namespace PCAxis.MetaId
 
         /// <summary>
         /// Dictionary of metadata systems containing table information. 
-        /// Key = Metadata system id, Value = dictionary of linkformats per language (key = language, value = linkformat-object). 
+        /// Key = Metadata system id, Value = dictionary of linkformats per language (key = language, value = List of linkformat-object). 
         /// </summary>
         private static readonly MetaSystems _tableLinkFormats;
 
         /// <summary>
         /// Dictionary of metadata systems containing variable information. 
-        /// Key = Metadata system id, Value = dictionary of linkformats per language (key = language, value = linkformat-object). 
+        /// Key = Metadata system id, Value = dictionary of linkformats per language (key = language, value = List of linkformat-object). 
         /// </summary>
         private static readonly MetaSystems _variableLinkFormats;
 
         /// <summary>
         /// Dictionary of metadata systems containing value information. 
-        /// Key = Metadata system id, Value = dictionary of linkformats per language (key = language, value = linkformat-object). 
+        /// Key = Metadata system id, Value = dictionary of linkformats per language (key = language, value = List of linkformat-object). 
         /// </summary>
         private static readonly MetaSystems _valueLinkFormats;
 
         /// <summary>
         /// Logging to Log4Net
         /// </summary>
-        private static log4net.ILog _logger = log4net.LogManager.GetLogger(typeof(MetaIdResolverStatic));
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(typeof(MetaIdResolverStatic));
 
         /// <summary>
         /// Character that separates the systems within a META-ID 
