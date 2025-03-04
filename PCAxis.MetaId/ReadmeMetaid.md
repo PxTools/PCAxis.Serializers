@@ -4,16 +4,29 @@ String replacement system to turn things like
 "KORTNAVN:aku"
 
 into 
-
+```
 "relation": "statistics-homepage"
-"href": "https://www.ssb.no/befolkning/folketall/statistikk/befolkning"
+"href": "https://www.ssb.no/en/aku"
 "label": "Statistics homepage"
 "type": "text/html"
+```
 
-
-using a file called metaid.config.
+using a file called metaid.config. There a fragment:
+```
+    <metaSystem id="KORTNAVN">
+      ...
+      <links type="text/html" relation="statistics-homepage">
+        ...
+        <link px-lang="en" labelStringFormat="Statistics homepage" urlStringFormat="https://www.ssb.no/en/{0}" />
+      </links>
+    </metaSystem> 
+``` 
 
 The usecase is to provide content in pxweb2gui for the areas shown in Figma_infomation_defs.png
+
+  ![Information pane in figma](Figma_infomation_defs.png?raw=true)
+
+
 The client is the mapper that maps a paxiom to jsonstat2 for the metadata endpoint in pxwebapi, which produces something like what is shown in example.json.
 
 
