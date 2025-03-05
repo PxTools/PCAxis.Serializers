@@ -19,7 +19,7 @@ namespace PCAxis.MetaId.UnitTest
         [TestMethod]
         public void TestOnTable()
         {
-            string metaid_raw = "KORTNAVN:aku";
+            string metaid_raw = "STATISTICS:aku";
             string expectedUrl = "https://www.ssb.no/aku#om-statistikken";
             string expectedLinkText = "Om statistikken";
             string expectedType = "text/html";
@@ -28,10 +28,10 @@ namespace PCAxis.MetaId.UnitTest
 
             var links = MetaIdResolverStatic.GetTableLinks(metaid_raw, "no");
             Assert.AreEqual(2, links.Count);
-            Assert.AreEqual(expectedUrl, links[0].Url);
-            Assert.AreEqual(expectedLinkText, links[0].Label);
-            Assert.AreEqual(expectedRelation, links[0].Relation);
-            Assert.AreEqual(expectedType, links[0].Type);
+            Assert.AreEqual(expectedUrl, links[1].Url);
+            Assert.AreEqual(expectedLinkText, links[1].Label);
+            Assert.AreEqual(expectedRelation, links[1].Relation);
+            Assert.AreEqual(expectedType, links[1].Type);
 
         }
 
@@ -73,7 +73,7 @@ namespace PCAxis.MetaId.UnitTest
             string expectedUrl_no = "https://www.ssb.no/a/metadata/conceptvariable/vardok/123/nb";
 
             string expectedLinkText_en = "Definition of Oslo for vaiable region.";
-            string expectedLinkText_no = "Definisjon av Oslo.";
+            string expectedLinkText_no = "Definisjon av Oslo for vaiabel region.";
 
             string expectedType = "text/html";
             string expectedRelation = "definition-value";
