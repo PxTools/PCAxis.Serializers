@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Xml;
 
 namespace PCAxis.Serializers.Util.MetaId
@@ -18,20 +19,20 @@ namespace PCAxis.Serializers.Util.MetaId
         private static XmlDocument _xdoc;
 
         /// <summary>
-        /// Dictionary of metadata systems containing table information. 
-        /// Key = Metadata system id, Value = dictionary of linkformats per language (key = language, value = List of linkformat-object). 
+        /// Dictionary of metadata systems containing table information.
+        /// Key = Metadata system id, Value = dictionary of linkformats per language (key = language, value = List of linkformat-object).
         /// </summary>
         private static readonly MetaSystems _tableLinkFormats = new MetaSystems();
 
         /// <summary>
-        /// Dictionary of metadata systems containing variable information. 
-        /// Key = Metadata system id, Value = dictionary of linkformats per language (key = language, value = List of linkformat-object). 
+        /// Dictionary of metadata systems containing variable information.
+        /// Key = Metadata system id, Value = dictionary of linkformats per language (key = language, value = List of linkformat-object).
         /// </summary>
         private static readonly MetaSystems _variableLinkFormats = new MetaSystems();
 
         /// <summary>
-        /// Dictionary of metadata systems containing value information. 
-        /// Key = Metadata system id, Value = dictionary of linkformats per language (key = language, value = List of linkformat-object). 
+        /// Dictionary of metadata systems containing value information.
+        /// Key = Metadata system id, Value = dictionary of linkformats per language (key = language, value = List of linkformat-object).
         /// </summary>
         private static readonly MetaSystems _valueLinkFormats = new MetaSystems();
 
@@ -41,7 +42,7 @@ namespace PCAxis.Serializers.Util.MetaId
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(typeof(MetaIdResolverStatic));
 
         /// <summary>
-        /// Character that separates the systems within a META-ID 
+        /// Character that separates the systems within a META-ID
         /// </summary>
         private static readonly char[] _systemSeparator = { ',', ' ' };
 
@@ -63,7 +64,7 @@ namespace PCAxis.Serializers.Util.MetaId
         /// <returns>True if the configuration file was successfully loaded, else false</returns>
         private static bool LoadConfiguration(string configurationFile)
         {
-            //It is ok to not use metaid 
+            //It is ok to not use metaid
             if (!System.IO.File.Exists(configurationFile))
             {
                 _logger.WarnFormat("Metaid configuration file '{0}' does not exist in the folder where the dlls are ...", configurationFile);
@@ -93,16 +94,9 @@ namespace PCAxis.Serializers.Util.MetaId
         /// <returns></returns>
         private static void LoadConfigurationSection(string section, MetaSystems dictionaryForSection)
         {
-            string xpath;
-            XmlNode node;
-            XmlNodeList xmlnodes;
-
-            xpath = "/metaId/" + section;
-            node = _xdoc.SelectSingleNode(xpath);
-
             // Find all metaSystem nodes in section
-            xpath = ".//metaSystem";
-            xmlnodes = node.SelectNodes(xpath);
+            string xpath = "/metaId/" + section + "/metaSystem";
+            XmlNodeList xmlnodes = _xdoc.SelectNodes(xpath);
 
             foreach (XmlNode sysNode in xmlnodes)
             {
@@ -110,12 +104,12 @@ namespace PCAxis.Serializers.Util.MetaId
 
                 if (string.IsNullOrWhiteSpace(sysId))
                 {
-                    throw new ApplicationException("metaSystem element must have non null id");
+                    throw new ConfigurationErrorsException("MetaId config: metaSystem element in Section " + section + " : must have non null id");
                 }
 
                 if (dictionaryForSection.ContainsKey(sysId))
                 {
-                    throw new ApplicationException("metaSystem element in Section " + section + " : Duplicate id: " + sysId);
+                    throw new ConfigurationErrorsException("MetaId config: metaSystem element in Section " + section + " : Duplicate id: " + sysId);
                 }
 
                 dictionaryForSection.Add(sysId, new MetaLinkFormatsByLanguage()); // add system to dictionary
@@ -131,29 +125,28 @@ namespace PCAxis.Serializers.Util.MetaId
 
                     // Find all language nodes for the system
                     xpath = ".//link";
-                    XmlNodeList langNodes = linksNode.SelectNodes(xpath);
+                    XmlNodeList linkNodes = linksNode.SelectNodes(xpath);
 
 
-                    foreach (XmlNode langNode in langNodes)
+                    foreach (XmlNode linkNode in linkNodes)
                     {
-                        string language = langNode.Attributes["px-lang"].Value;
-                        string textFormat = langNode.Attributes["labelStringFormat"].Value;
-                        string linkFormat = langNode.Attributes["urlStringFormat"].Value;
+                        string pxLang = linkNode.Attributes["px-lang"].Value;
+                        string labelStringFormat = linkNode.Attributes["labelStringFormat"].Value;
+                        string urlStringFormat = linkNode.Attributes["urlStringFormat"].Value;
 
-
-                        if (!string.IsNullOrWhiteSpace(language) && !string.IsNullOrWhiteSpace(textFormat) && !string.IsNullOrWhiteSpace(linkFormat))
+                        if (string.IsNullOrWhiteSpace(pxLang) || string.IsNullOrWhiteSpace(labelStringFormat) || string.IsNullOrWhiteSpace(urlStringFormat))
                         {
-                            if (!dictionaryForSection[sysId].ContainsKey(language))
-                            {
-                                dictionaryForSection[sysId].Add(language, new List<MetaLinkFormat>());
-                            }
-
-                            MetaLinkFormat format = new MetaLinkFormat(textFormat, linkFormat, linkType, linkRelation);
-
-
-                            dictionaryForSection[sysId][language].Add(format); // Add format for this language to dictionary
-
+                            continue;
                         }
+
+                        if (!dictionaryForSection[sysId].ContainsKey(pxLang))
+                        {
+                            dictionaryForSection[sysId].Add(pxLang, new List<MetaLinkFormat>());
+                        }
+
+                        MetaLinkFormat format = new MetaLinkFormat(labelStringFormat, urlStringFormat, linkType, linkRelation);
+
+                        dictionaryForSection[sysId][pxLang].Add(format); // Add format for this language to dictionary
                     }
 
 
@@ -170,9 +163,9 @@ namespace PCAxis.Serializers.Util.MetaId
         /// </summary>
         /// <param name="metaId">META-ID</param>
         /// <param name="language">Language</param>
-        /// <param name="dictionary">Dictionary containing the link formats</param>
+        /// <param name="metaSystems">Dictionary containing the link formats</param>
         /// <returns></returns>
-        private static List<Link> GetLinks(string metaIdList, string language, MetaSystems dictionary, string[] textParams)
+        private static List<Link> GetLinks(string metaIdList, string language, MetaSystems metaSystems, string[] textParams)
         {
             List<Link> myOut = new List<Link>();
             if (!_hasEntries)
@@ -186,36 +179,44 @@ namespace PCAxis.Serializers.Util.MetaId
             {
                 string theMetadataSystemId = "";
 
-                foreach (string aMetadataSystemId in dictionary.Keys)
+                foreach (string aMetadataSystemId in metaSystems.Keys)
                 {
-                    if (metaId.StartsWith(aMetadataSystemId))
+                    if (!metaId.StartsWith(aMetadataSystemId))
                     {
-                        theMetadataSystemId = aMetadataSystemId;
+                        break;
+                    }
 
-                        string rawParamsString = metaId.Replace(theMetadataSystemId, "");
-                        string[] linkParams = rawParamsString.Split(_paramSeparator, StringSplitOptions.RemoveEmptyEntries);
+                    theMetadataSystemId = aMetadataSystemId;
 
-                        if (dictionary[theMetadataSystemId].ContainsKey(language))
+                    string rawParamsString = metaId.Replace(theMetadataSystemId, "");
+                    string[] linkParams = rawParamsString.Split(_paramSeparator, StringSplitOptions.RemoveEmptyEntries);
+
+                    if (metaSystems[theMetadataSystemId].ContainsKey(language))
+                    {
+                        // Get format object from dictionary
+                        foreach (MetaLinkFormat format in metaSystems[theMetadataSystemId][language])
                         {
-                            // Get format object from dictionary
-                            foreach (MetaLinkFormat format in dictionary[theMetadataSystemId][language])
-                            {
+                            Link lnk = GetFormattedLink(textParams, linkParams, format);
 
-                                Link lnk = new Link();
-                                lnk.Relation = format.LinkRelation;
-                                lnk.Type = format.LinkType;
-
-                                lnk.Url = String.Format(format.LinkUrlFormat, linkParams);
-                                lnk.Label = String.Format(format.LinkTextFormat, textParams);
-
-                                myOut.Add(lnk);
-                            }
+                            myOut.Add(lnk);
                         }
                     }
+
                 }
             }
 
             return myOut;
+        }
+
+        private static Link GetFormattedLink(string[] textParams, string[] linkParams, MetaLinkFormat format)
+        {
+            Link link = new Link();
+            link.Relation = format.LinkRelation;
+            link.Type = format.LinkType;
+
+            link.Url = String.Format(format.LinkUrlFormat, linkParams);
+            link.Label = String.Format(format.LinkTextFormat, textParams);
+            return link;
         }
 
         #region "Implementation of IMetaIdProvider"
