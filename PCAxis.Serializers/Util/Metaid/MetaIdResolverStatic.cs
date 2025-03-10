@@ -59,18 +59,18 @@ namespace PCAxis.Serializers.Util.MetaId
             _xdoc = new XmlDocument();
             _xdoc.Load(configurationFile);
 
-            LinkTemplatesHolder holder = new LinkTemplatesHolder();
+            LinkTemplatesHolder myOut = new LinkTemplatesHolder();
 
             // Table-level
-            LoadConfigurationSection(AttachmentLevel.onTable, holder);
+            LoadConfigurationSection(AttachmentLevel.onTable, myOut);
 
             // Variable-level
-            LoadConfigurationSection(AttachmentLevel.onVariable, holder);
+            LoadConfigurationSection(AttachmentLevel.onVariable, myOut);
 
             // Value-level
-            LoadConfigurationSection(AttachmentLevel.onValue, holder);
+            LoadConfigurationSection(AttachmentLevel.onValue, myOut);
 
-            return holder;
+            return myOut;
         }
 
         /// <summary>

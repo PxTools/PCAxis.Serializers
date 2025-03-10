@@ -44,10 +44,10 @@ For example this fragment of the config file:
 <metaId>
   <onTable>
     <metaSystem id="STATISTICS">
-      <links type="text/html" relation="statistics-homepage">
-        <link px-lang="no" labelStringFormat="Statistikkens hjemmeside" urlStringFormat="https://www.ssb.no/{0}" />
-        <link px-lang="en" labelStringFormat="Statistics homepage" urlStringFormat="https://www.ssb.no/en/{0}" />
-      </links>
+      <relationalGroup relation="statistics-homepage" type="text/html">
+        <link pxLang="no" labelStringFormat="Statistikkens hjemmeside" urlStringFormat="https://www.ssb.no/{0}" />
+        <link pxLang="en" labelStringFormat="Statistics homepage" urlStringFormat="https://www.ssb.no/en/{0}" />
+      </relationalGroup>
      ... 
  
 ```
@@ -71,49 +71,50 @@ Here is a full metaid.config:
 <metaId>
   <onTable>
     <metaSystem id="STATISTICS">
-      <links type="text/html" relation="statistics-homepage">
-        <link px-lang="no" labelStringFormat="Statistikkens hjemmeside" urlStringFormat="https://www.ssb.no/{0}" />
-        <link px-lang="en" labelStringFormat="Statistics homepage" urlStringFormat="https://www.ssb.no/en/{0}" />
-      </links>
-      <links type="text/html" relation="about-statistics">
-         <link px-lang="no" labelStringFormat="Om statistikken" urlStringFormat="https://www.ssb.no/{0}#om-statistikken" />
-         <link px-lang="en" labelStringFormat="About the statistics" urlStringFormat="https://www.ssb.no/en/{0}#om-statistikken" />
-      </links>
+      <relationalGroup relation="statistics-homepage" type="text/html">
+        <link pxLang="no" labelStringFormat="Statistikkens hjemmeside" urlStringFormat="https://www.ssb.no/{0}" />
+        <link pxLang="en" labelStringFormat="Statistics homepage" urlStringFormat="https://www.ssb.no/en/{0}" />
+      </relationalGroup>
+      <relationalGroup relation="about-statistics" type="text/html">
+         <link pxLang="no" labelStringFormat="Om statistikken" urlStringFormat="https://www.ssb.no/{0}#om-statistikken" />
+         <link pxLang="en" labelStringFormat="About the statistics" urlStringFormat="https://www.ssb.no/en/{0}#om-statistikken" />
+      </relationalGroup>
     </metaSystem> 
   </onTable>
   <onVariable>
     <metaSystem id="urn:ssb:classification:klass">
-       <links type="text/html" relation="definition-classification">   
-         <link px-lang="no" labelStringFormat="Klassifikasjon for {0}." urlStringFormat="https://www.ssb.no/klass/klassifikasjoner/{0}" />
-         <link px-lang="en" labelStringFormat="Classification for {0}." urlStringFormat="https://www.ssb.no/en/klass/klassifikasjoner/{0}" />
-       </links>  
+       <relationalGroup relation="definition-classification" type="text/html">   
+         <link pxLang="no" labelStringFormat="Klassifikasjon for {0}." urlStringFormat="https://www.ssb.no/klass/klassifikasjoner/{0}" />
+         <link pxLang="en" labelStringFormat="Classification for {0}." urlStringFormat="https://www.ssb.no/en/klass/klassifikasjoner/{0}" />
+       </relationalGroup>  
     </metaSystem>
     <metaSystem id="urn:ssb:conceptvariable:vardok">
-      <links type="text/html" relation="definition-classification">   
-         <link px-lang="no" labelStringFormat="Definisjon av {0}." urlStringFormat="https://www.ssb.no/a/metadata/conceptvariable/vardok/{0}/nb" />
-         <link px-lang="en" labelStringFormat="Definition of {0}." urlStringFormat="https://www.ssb.no/a/metadata/conceptvariable/vardok/{0}/en" />
-      </links>
+      <relationalGroup relation="definition-classification" type="text/html">   
+         <link pxLang="no" labelStringFormat="Definisjon av {0}." urlStringFormat="https://www.ssb.no/a/metadata/conceptvariable/vardok/{0}/nb" />
+         <link pxLang="en" labelStringFormat="Definition of {0}." urlStringFormat="https://www.ssb.no/a/metadata/conceptvariable/vardok/{0}/en" />
+      </relationalGroup>
     </metaSystem>
   </onVariable>
   <onValue>
     <metaSystem id="urn:ssb:conceptvariable:vardok">
-      <links type="text/html" relation="definition-value">
-        <link px-lang="no" labelStringFormat="Definisjon av {1} for vaiabel {0}." urlStringFormat="https://www.ssb.no/a/metadata/conceptvariable/vardok/{0}/nb" />
-        <link px-lang="en" labelStringFormat="Definition of {1} for vaiable {0}." urlStringFormat="https://www.ssb.no/a/metadata/conceptvariable/vardok/{0}/en" />
-      </links>
+      <relationalGroup relation="definition-value" type="text/html">
+        <link pxLang="no" labelStringFormat="Definisjon av {1} for vaiabel {0}." urlStringFormat="https://www.ssb.no/a/metadata/conceptvariable/vardok/{0}/nb" />
+        <link pxLang="en" labelStringFormat="Definition of {1} for vaiable {0}." urlStringFormat="https://www.ssb.no/a/metadata/conceptvariable/vardok/{0}/en" />
+      </relationalGroup>
     </metaSystem>
     <metaSystem id="urn:ssb:contextvariable:common">
-      <links type="text/html" relation="definition-value">
-        <link px-lang="no" labelStringFormat="Definisjon av {1} (Kostra)." urlStringFormat="https://www.ssb.no/kompis/statbank/?id={0}&amp;ver={1}&amp;val={2}" />
-        <link px-lang="en" labelStringFormat="Definition of {1} (Kostra)." urlStringFormat="https://www.ssb.no/kompis/statbank/?id={0}&amp;ver={1}&amp;val={2}" />
-      </links>  
+      <relationalGroup relation="definition-value" type="text/html">
+        <link pxLang="no" labelStringFormat="Definisjon av {1} (Kostra)." urlStringFormat="https://www.ssb.no/kompis/statbank/?id={0}&amp;ver={1}&amp;val={2}" />
+        <link pxLang="en" labelStringFormat="Definition of {1} (Kostra)." urlStringFormat="https://www.ssb.no/kompis/statbank/?id={0}&amp;ver={1}&amp;val={2}" />
+      </relationalGroup>  
     </metaSystem>
   </onValue>
 </metaId>
+
 ``` 
 Note: 
 * The metaSystem STATISTICS creates 2 links per language. 
-* The last metaSystem on value does not use the name of the variable.
+* The last metaSystem on value does not use the name of the variable, only the name of the value.
 
 ## In the gui
 The usecase is to provide content in pxweb2gui for the areas shown in Figma_infomation_defs.png

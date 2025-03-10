@@ -1,7 +1,7 @@
 # The Meta-id system
 String replacement system to turn things like
 
-"KORTNAVN:aku"
+"STATISTICS:aku"
 
 into 
 ```
@@ -13,13 +13,12 @@ into
 
 using a file called metaid.config. There a fragment:
 ```
-    <metaSystem id="KORTNAVN">
-      ...
-      <links type="text/html" relation="statistics-homepage">
+    <metaSystem id="STATISTICS">
+      <relationalGroup relation="statistics-homepage" type="text/html">
         ...
-        <link px-lang="en" labelStringFormat="Statistics homepage" urlStringFormat="https://www.ssb.no/en/{0}" />
-      </links>
-    </metaSystem> 
+        <link pxLang="en" labelStringFormat="Statistics homepage" urlStringFormat="https://www.ssb.no/en/{0}" />
+      </relationalGroup>
+      ....
 ``` 
 
 The usecase is to provide content in pxweb2gui for the areas shown in Figma_infomation_defs.png
