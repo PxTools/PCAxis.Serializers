@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Xml;
+
+using PCAxis.Serializers.Util.Metaid;
 
 namespace PCAxis.Serializers.Util.MetaId
 {
@@ -19,24 +20,6 @@ namespace PCAxis.Serializers.Util.MetaId
         private static XmlDocument _xdoc;
 
         /// <summary>
-        /// Dictionary of metadata systems containing table information.
-        /// Key = Metadata system id, Value = dictionary of linkformats per language (key = language, value = List of linkformat-object).
-        /// </summary>
-        private static readonly MetaSystems _tableLinkFormats = new MetaSystems();
-
-        /// <summary>
-        /// Dictionary of metadata systems containing variable information.
-        /// Key = Metadata system id, Value = dictionary of linkformats per language (key = language, value = List of linkformat-object).
-        /// </summary>
-        private static readonly MetaSystems _variableLinkFormats = new MetaSystems();
-
-        /// <summary>
-        /// Dictionary of metadata systems containing value information.
-        /// Key = Metadata system id, Value = dictionary of linkformats per language (key = language, value = List of linkformat-object).
-        /// </summary>
-        private static readonly MetaSystems _valueLinkFormats = new MetaSystems();
-
-        /// <summary>
         /// Logging to Log4Net
         /// </summary>
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(typeof(MetaIdResolverStatic));
@@ -51,8 +34,10 @@ namespace PCAxis.Serializers.Util.MetaId
         /// </summary>
         private static readonly char[] _paramSeparator = { ':' };
 
-
-        private static readonly bool _hasEntries = LoadConfiguration("metaid.config");
+        /// <summary>
+        /// Holds all data loaded from config, reshuffled so using it easy.
+        /// </summary>
+        private static readonly LinkTemplatesHolder holder = LoadConfiguration("metaid.config");
 
         #endregion
 
@@ -62,28 +47,30 @@ namespace PCAxis.Serializers.Util.MetaId
         /// </summary>
         /// <param name="configurationFile">Path to the configuration file</param>
         /// <returns>True if the configuration file was successfully loaded, else false</returns>
-        private static bool LoadConfiguration(string configurationFile)
+        private static LinkTemplatesHolder LoadConfiguration(string configurationFile)
         {
             //It is ok to not use metaid
             if (!System.IO.File.Exists(configurationFile))
             {
                 _logger.WarnFormat("Metaid configuration file '{0}' does not exist in the folder where the dlls are ...", configurationFile);
-                return false;
+                return new LinkTemplatesHolder();
             }
 
             _xdoc = new XmlDocument();
             _xdoc.Load(configurationFile);
 
+            LinkTemplatesHolder holder = new LinkTemplatesHolder();
+
             // Table-level
-            LoadConfigurationSection("onTable", _tableLinkFormats);
+            LoadConfigurationSection(AttachmentLevel.onTable, holder);
 
             // Variable-level
-            LoadConfigurationSection("onVariable", _variableLinkFormats);
+            LoadConfigurationSection(AttachmentLevel.onVariable, holder);
 
             // Value-level
-            LoadConfigurationSection("onValue", _valueLinkFormats);
+            LoadConfigurationSection(AttachmentLevel.onValue, holder);
 
-            return true;
+            return holder;
         }
 
         /// <summary>
@@ -92,9 +79,11 @@ namespace PCAxis.Serializers.Util.MetaId
         /// <param name="section">Name of the section</param>
         /// <param name="dictionary">Dictionary to store section data in</param>
         /// <returns></returns>
-        private static void LoadConfigurationSection(string section, MetaSystems dictionaryForSection)
+        private static void LoadConfigurationSection(AttachmentLevel attachmentLevel, LinkTemplatesHolder holder)
         {
             // Find all metaSystem nodes in section
+            string section = attachmentLevel.ToString();
+
             string xpath = "/metaId/" + section + "/metaSystem";
             XmlNodeList xmlnodes = _xdoc.SelectNodes(xpath);
 
@@ -102,73 +91,45 @@ namespace PCAxis.Serializers.Util.MetaId
             {
                 string sysId = sysNode.Attributes["id"].Value;
 
-                if (string.IsNullOrWhiteSpace(sysId))
-                {
-                    throw new ConfigurationErrorsException("MetaId config: metaSystem element in Section " + section + " : must have non null id");
-                }
-
-                if (dictionaryForSection.ContainsKey(sysId))
-                {
-                    throw new ConfigurationErrorsException("MetaId config: metaSystem element in Section " + section + " : Duplicate id: " + sysId);
-                }
-
-                dictionaryForSection.Add(sysId, new MetaLinkFormatsByLanguage()); // add system to dictionary
-
                 // Find all language nodes for the system
-                xpath = ".//links";
-                XmlNodeList linksNodes = sysNode.SelectNodes(xpath);
+                xpath = ".//relationalGroup";
+                XmlNodeList relationalGroupNodes = sysNode.SelectNodes(xpath);
 
-                foreach (XmlNode linksNode in linksNodes)
+                foreach (XmlNode relationalGroupNode in relationalGroupNodes)
                 {
-                    string linkType = linksNode.Attributes["type"].Value;
-                    string linkRelation = linksNode.Attributes["relation"].Value;
+                    string linkType = relationalGroupNode.Attributes["type"].Value;
+                    string linkRelation = relationalGroupNode.Attributes["relation"].Value;
 
                     // Find all language nodes for the system
                     xpath = ".//link";
-                    XmlNodeList linkNodes = linksNode.SelectNodes(xpath);
-
+                    XmlNodeList linkNodes = relationalGroupNode.SelectNodes(xpath);
 
                     foreach (XmlNode linkNode in linkNodes)
                     {
-                        string pxLang = linkNode.Attributes["px-lang"].Value;
+                        string pxLang = linkNode.Attributes["pxLang"].Value;
                         string labelStringFormat = linkNode.Attributes["labelStringFormat"].Value;
                         string urlStringFormat = linkNode.Attributes["urlStringFormat"].Value;
 
-                        if (string.IsNullOrWhiteSpace(pxLang) || string.IsNullOrWhiteSpace(labelStringFormat) || string.IsNullOrWhiteSpace(urlStringFormat))
-                        {
-                            continue;
-                        }
-
-                        if (!dictionaryForSection[sysId].ContainsKey(pxLang))
-                        {
-                            dictionaryForSection[sysId].Add(pxLang, new List<MetaLinkFormat>());
-                        }
-
-                        MetaLinkFormat format = new MetaLinkFormat(labelStringFormat, urlStringFormat, linkType, linkRelation);
-
-                        dictionaryForSection[sysId][pxLang].Add(format); // Add format for this language to dictionary
+                        LinkTemplate temp = new LinkTemplate(sysId, labelStringFormat, urlStringFormat, linkType, linkRelation);
+                        holder.Add(attachmentLevel, pxLang, temp);
                     }
-
-
                 }
-
             }
         }
-
-
 
 
         /// <summary>
         /// Create links
         /// </summary>
-        /// <param name="metaId">META-ID</param>
-        /// <param name="language">Language</param>
-        /// <param name="metaSystems">Dictionary containing the link formats</param>
+        /// <param name="metaIdList">META-ID one or more</param>
+        /// <param name="templates">templates for Language and attachmentlevel</param>
+        /// <param name="textParams">0,1 or 2 text parameters, depending on attachmentleve</param>
         /// <returns></returns>
-        private static List<Link> GetLinks(string metaIdList, string language, MetaSystems metaSystems, string[] textParams)
+        private static List<Link> GetLinks(string metaIdList, List<LinkTemplate> templates, string[] textParams)
         {
             List<Link> myOut = new List<Link>();
-            if (!_hasEntries)
+
+            if (templates.Count == 0)
             {
                 return myOut;
             }
@@ -177,30 +138,17 @@ namespace PCAxis.Serializers.Util.MetaId
 
             foreach (string metaId in metaIds)
             {
-                string theMetadataSystemId = "";
-
-                foreach (string aMetadataSystemId in metaSystems.Keys)
+                foreach (LinkTemplate template in templates)
                 {
-                    if (!metaId.StartsWith(aMetadataSystemId))
+                    if (!template.Match(metaId))
                     {
                         break;
                     }
 
-                    theMetadataSystemId = aMetadataSystemId;
-
-                    string rawParamsString = metaId.Replace(theMetadataSystemId, "");
+                    string rawParamsString = metaId.Replace(template.MetaSysId, "");
                     string[] linkParams = rawParamsString.Split(_paramSeparator, StringSplitOptions.RemoveEmptyEntries);
 
-                    if (metaSystems[theMetadataSystemId].ContainsKey(language))
-                    {
-                        // Get format object from dictionary
-                        foreach (MetaLinkFormat format in metaSystems[theMetadataSystemId][language])
-                        {
-                            Link lnk = GetFormattedLink(textParams, linkParams, format);
-
-                            myOut.Add(lnk);
-                        }
-                    }
+                    myOut.Add(template.GetFormattedLink(textParams, linkParams));
 
                 }
             }
@@ -208,16 +156,7 @@ namespace PCAxis.Serializers.Util.MetaId
             return myOut;
         }
 
-        private static Link GetFormattedLink(string[] textParams, string[] linkParams, MetaLinkFormat format)
-        {
-            Link link = new Link();
-            link.Relation = format.LinkRelation;
-            link.Type = format.LinkType;
 
-            link.Url = String.Format(format.LinkUrlFormat, linkParams);
-            link.Label = String.Format(format.LinkTextFormat, textParams);
-            return link;
-        }
 
         #region "Implementation of IMetaIdProvider"
 
@@ -225,19 +164,19 @@ namespace PCAxis.Serializers.Util.MetaId
         public static List<Link> GetTableLinks(string metaIdField, string language)
         {
             string[] textParams = new string[] { };
-            return GetLinks(metaIdField, language, _tableLinkFormats, textParams);
+            return GetLinks(metaIdField, holder.GetTemplates(AttachmentLevel.onTable, language), textParams);
         }
 
         public static List<Link> GetVariableLinks(string metaIdField, string language, string variableLabel)
         {
             string[] textParams = new string[] { variableLabel };
-            return GetLinks(metaIdField, language, _variableLinkFormats, textParams);
+            return GetLinks(metaIdField, holder.GetTemplates(AttachmentLevel.onVariable, language), textParams);
         }
 
         public static List<Link> GetValueLinks(string metaIdField, string language, string variableLabel, string valueLabel)
         {
             string[] textParams = new string[] { variableLabel, valueLabel };
-            return GetLinks(metaIdField, language, _valueLinkFormats, textParams);
+            return GetLinks(metaIdField, holder.GetTemplates(AttachmentLevel.onValue, language), textParams);
         }
         #endregion
 
