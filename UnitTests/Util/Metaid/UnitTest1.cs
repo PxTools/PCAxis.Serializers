@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using PCAxis.Serializers.Util.MetaId;
 
-namespace PCAxis.MetaId.UnitTest
+namespace UnitTests.Util.Metaid
 {
     [TestClass]
     public class UnitTest1
@@ -17,6 +17,7 @@ namespace PCAxis.MetaId.UnitTest
         }
 
         [TestMethod]
+        [DeploymentItem("Util/Metaid/metaid.config")]
         public void TestOnTable()
         {
             string metaid_raw = "STATISTICS:aku";
@@ -36,6 +37,7 @@ namespace PCAxis.MetaId.UnitTest
         }
 
         [TestMethod]
+        [DeploymentItem("Util/Metaid/metaid.config")]
         public void TestOnVaiable()
         {
 
@@ -65,6 +67,7 @@ namespace PCAxis.MetaId.UnitTest
         }
 
         [TestMethod]
+        [DeploymentItem("Util/Metaid/metaid.config")]
         public void TestOnValue()
         {
 
@@ -95,6 +98,7 @@ namespace PCAxis.MetaId.UnitTest
 
 
         [TestMethod]
+        [DeploymentItem("Util/Metaid/metaid.config")]
         public void TestMissing()
         {
             string metaid_raw = "missing:123";
@@ -103,6 +107,7 @@ namespace PCAxis.MetaId.UnitTest
         }
 
         [TestMethod]
+        [DeploymentItem("Util/Metaid/metaid.config")]
         public void TestMulti()
         {
             // both comma and space as separators

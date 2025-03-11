@@ -32,7 +32,10 @@
     <None Update="TestFiles\*.px">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-</ItemGroup>
+    <None Update="Util/Metaid/metaid.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="ExceptationFiles\" />

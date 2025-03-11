@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\Unit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleTestApp", "ConsoleTestApp\ConsoleTestApp.csproj", "{975A204D-A48E-4BB2-84E9-5C4E6744A758}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PCAxis.MetaId.UnitTest", "Util.Metaid.UnitTest\PCAxis.MetaId.UnitTest.csproj", "{F7588591-1FF5-439D-973B-6128C5778C24}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +27,6 @@ Global
 		{975A204D-A48E-4BB2-84E9-5C4E6744A758}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{975A204D-A48E-4BB2-84E9-5C4E6744A758}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{975A204D-A48E-4BB2-84E9-5C4E6744A758}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F7588591-1FF5-439D-973B-6128C5778C24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F7588591-1FF5-439D-973B-6128C5778C24}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F7588591-1FF5-439D-973B-6128C5778C24}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F7588591-1FF5-439D-973B-6128C5778C24}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
