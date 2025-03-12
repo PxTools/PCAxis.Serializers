@@ -1,0 +1,199 @@
+{
+  "version": "2.0",
+  "class": "dataset",
+  "label": "13526: KOSTRA-nøkkeltall for miljøforvaltning, etter region, statistikkvariabel og år",
+  "source": "Statistisk sentralbyrå",
+  "updated": "2024-06-17T06:00:00Z",
+  "note": [
+    "Tabellen inneholder KOSTRA-nøkkeltall for miljøforvaltning.\n<br>\n<br>\nKommune 1867 Bø har trukket sine innrapporterte regnskapstall for 2022 til KOSTRA.",
+    "<a href='https://www.ssb.no/offentlig-sektor/kommunekatalog/endringer-i-de-regionale-inndelingene' target='footnote'><b>Se liste over endringer i de regionale inndelingene.</b></a> <br><br>\n<a href='https://www.ssb.no/statbank/hvordan-bruke-statistikkbanken/statistikkbanktabeller-med-sammenslatte-tidsserier' target='footnote'>Tabeller som bruker ny regioninndeling også for årene før 2024.</a>"
+  ],
+  "role": {
+    "time": [ "Tid" ],
+    "geo": [ "KOKkommuneregion0000" ],
+    "metric": [ "ContentsCode" ]
+  },
+  "id": [ "KOKkommuneregion0000", "ContentsCode", "Tid" ],
+  "size": [ 2, 3, 2 ],
+  "link": {
+    "related": [
+      {
+        "extension": {
+          "root": [
+            {
+              "relation": "statistics-homepage",
+              "metaid": "KORTNAVN:aku",
+              "href": "https://www.ssb.no/befolkning/folketall/statistikk/befolkning",
+              "label": "Statistics homepage",
+              "type": "text/html"
+            },
+            {
+              "relation": "about-statistics",
+              "metaid": "KORTNAVN:aku",
+              "href": "https://www.ssb.no/befolkning/folketall/statistikk/befolkning#om-statistikken",
+              "label": "About the statistics",
+              "type": "text/html"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "dimension": {
+    "KOKkommuneregion0000": {
+      "label": "region",
+      "category": {
+        "index": {
+          "EAK": 0,
+          "EAKUO": 1
+        },
+        "label": {
+          "EAK": "Landet",
+          "EAKUO": "Landet uten Oslo"
+        }
+      },
+      "extension": {
+        "elimination": false,
+        "show": "code_value"
+      },
+      "link": { 
+         "describedby": [ { "extension": { "KOKkommuneregion0000": "urn:ssb:classification:klass:231" } } ] ,
+         "related": [
+            {
+              "extension": {
+                "KOKkommuneregion0000": [
+                  {
+                    "relation": "definition-classification",
+                    "metaid": "urn:ssb:classification:klass:231",
+                    "href": "https://www.ssb.no/klass/klassifikasjoner/231",
+                    "label": "Classification for region.",
+                    "type": "text/html"
+                  },
+                  {
+                    "relation": "definition-dimension",
+                    "metaid": "def:2",
+                    "href": "https://www.ssb.no/whatIs/region",
+                    "label": "Definition of region",
+                    "type": "text/html"
+                  }
+                ]
+              }
+            }
+          ]
+      }
+    },
+    "ContentsCode": {
+      "label": "statistikkvariabel",
+      "category": {
+        "index": {
+          "KOSplanernyereen0000": 0,
+          "KOSinnsigregplan0000": 1,
+          "KOSarkuln0000": 2
+        },
+        "label": {
+          "KOSplanernyereen0000": "Gjeldende overordnede planer nyere enn 5 år som angår naturmangfold, landskap, friluftsliv, folkehelse, universell utforming, kulturminner, klima og energi samt klimatilpasning som kommunen har utarbeidet i alt (antall)",
+          "KOSinnsigregplan0000": "Innsigelser til reguleringsplaner i alt begrunnet med miljøvernhensyn inkl. kulturminner (antall)",
+          "KOSarkuln0000": "Areal som omfatter naturvern, landskap og kulturminner i reguleringsplaner (dekar)"
+        },
+        "unit": {
+          "KOSplanernyereen0000": {
+            "base": "antall",
+            "decimals": 0
+          },
+          "KOSinnsigregplan0000": {
+            "base": "antall",
+            "decimals": 0
+          },
+          "KOSarkuln0000": {
+            "base": "dekar",
+            "decimals": 0
+          }
+        }
+      },
+      "extension": {
+        "elimination": false,
+        "refperiod": {
+          "KOSplanernyereen0000": "31.12",
+          "KOSinnsigregplan0000": "31.12",
+          "KOSarkuln0000": "31.12"
+        },
+        "show": "value"
+      },
+      "link": {
+        "describedby": [
+          {
+            "extension": {
+              "KOSinnsigregplan0000": "urn:ssb:contextvariable:common:0ba230e1-38b6-4b9a-8deb-5c636d18a175:359649:KOSinnsigregplan0000"
+            }
+          }
+        ],
+        "related": [
+            {
+              "extension": {
+                
+                "KOSinnsigregplan0000": [
+                  {
+                    "relation": "definition-value",
+                    "metaid": "HOMEPAGE:aku",
+                    "href": "https://www.ssb.no/kompis/statbank/?id=0ba230e1-38b6-4b9a-8deb-5c636d18a175&ver=359649&val=KOSinnsigregplan0000&lang=no",
+                    "label": "Stat",
+                    "type": "text/html"
+                  }
+                ]
+              }
+            }
+          ]
+        
+      }
+    },
+    "Tid": {
+      "label": "år",
+      "category": {
+        "index": {
+          "2022": 0,
+          "2023": 1
+        },
+        "label": {
+          "2022": "2022",
+          "2023": "2023"
+        }
+      },
+      "extension": {
+        "elimination": false,
+        "show": "code"
+      }
+    }
+  },
+  "extension": {
+    "px": {
+      "infofile": "None",
+      "tableid": "13526",
+      "decimals": 0,
+      "official-statistics": true,
+      "aggregallowed": false,
+      "language": "no",
+      "contents": "13526: KOSTRA-nøkkeltall for miljøforvaltning,",
+      "descriptiondefault": false,
+      "heading": [ "ContentsCode", "Tid" ],
+      "stub": [ "KOKkommuneregion0000" ],
+      "matrix": "KOSplanernyereen0000",
+      "subject-code": "al",
+      "subject-area": "Arbeid og lønn"
+    },
+    "contact": [
+      {
+        "name": "Henrik Langbråten",
+        "phone": "92 09 70 70",
+        "mail": "hln@ssb.no",
+        "raw": "Henrik Langbråten, Statistisk sentralbyrå# +47 92 09 70 70#hln@ssb.no"
+      },
+      {
+        "name": "Jørn Kristian Undelstvedt",
+        "phone": "945 06 864",
+        "mail": "jku@ssb.no",
+        "raw": "Jørn Kristian Undelstvedt, Statistisk sentralbyrå# +47 945 06 864#jku@ssb.no"
+      }
+    ]
+  },
+  "value": [ 908, 1046, 251, 318, 365231, 353282, 904, 1040, 242, 309, 364006, 351893 ]
+}
