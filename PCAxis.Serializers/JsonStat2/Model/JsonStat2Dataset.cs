@@ -117,6 +117,11 @@ namespace PCAxis.Serializers.JsonStat2.Model
             Extension.Px.OfficialStatistics = isOfficialStatistics;
         }
 
+        public void AddCopyright(bool isCopyrighted)
+        {
+            Extension.Px.Copyright = isCopyrighted;
+        }
+
         public void AddMatrix(string matrix)
         {
             if (matrix != null)

@@ -315,6 +315,7 @@ namespace PCAxis.Serializers
             dataset.AddHeading(model.Meta.Heading.Select(v => v.Code).ToList());
             dataset.AddLanguage(model.Meta.Language);
             dataset.AddOfficialStatistics(model.Meta.OfficialStatistics);
+            dataset.AddCopyright(model.Meta.Copyright);
             dataset.AddMatrix(model.Meta.Matrix);
             dataset.AddSubjectCode(model.Meta.SubjectCode);
             dataset.AddSubjectArea(model.Meta.SubjectArea);

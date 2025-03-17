@@ -158,5 +158,15 @@ namespace UnitTests.JsonStat2
 
             Assert.AreEqual(expectedSurvey, actualSurvey);
         }
+
+        [TestMethod]
+        [Description("Testing output for copyright (pxfile: BE0101A1_misc_metadata.px)")]
+        public void TestCopyright()
+        {
+            var expectedCopyright = "True";
+            var actualCopyright = jsonstat2AsJObjectBE0101A1["extension"]["px"]["copyright"].ToString();
+
+            Assert.AreEqual(expectedCopyright, actualCopyright);
+        }
     }
 }
