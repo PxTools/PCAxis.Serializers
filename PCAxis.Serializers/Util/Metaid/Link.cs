@@ -25,5 +25,10 @@
         /// What type of information is the link to: about-statistics, statistics-homepage, definition-classification, definition-value ,,,
         /// </summary>
         public string Relation { get; set; }
+
+        /// <summary>
+        /// MetaId that was the source for this Link  
+        /// </summary>
+        public string MetaId { get; set; }
     }
 }
