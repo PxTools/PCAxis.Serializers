@@ -27,7 +27,7 @@ namespace PCAxis.Serializers.Util.MetaId
         /// <summary>
         /// Character that separates the systems within a META-ID
         /// </summary>
-        private static readonly char[] _systemSeparator = { ',', ' ' };
+        public static readonly char[] _systemSeparator = { ',', ' ' };
 
         /// <summary>
         /// Character that separates the parameters within a system META-ID
@@ -142,13 +142,13 @@ namespace PCAxis.Serializers.Util.MetaId
                 {
                     if (!template.Match(metaId))
                     {
-                        break;
+                        continue;
                     }
 
                     string rawParamsString = metaId.Replace(template.MetaSysId, "");
                     string[] linkParams = rawParamsString.Split(_paramSeparator, StringSplitOptions.RemoveEmptyEntries);
 
-                    myOut.Add(template.GetFormattedLink(textParams, linkParams));
+                    myOut.Add(template.GetFormattedLink(textParams, linkParams, metaId));
 
                 }
             }

@@ -3,6 +3,7 @@ using System.Configuration;
 
 using PCAxis.Serializers.Util.MetaId;
 
+
 namespace PCAxis.Serializers.Util.Metaid
 {
     /// <summary>
@@ -61,15 +62,32 @@ namespace PCAxis.Serializers.Util.Metaid
         /// <param name="textParams"></param>
         /// <param name="linkParams"></param>
         /// <returns></returns>
-        public Link GetFormattedLink(string[] textParams, string[] linkParams)
+        public Link GetFormattedLink(string[] textParams, string[] linkParams, string metaId)
         {
             Link link = new Link();
             link.Relation = this.LinkRelation;
             link.Type = this.LinkType;
-
-            link.Url = String.Format(this.LinkUrlFormat, linkParams);
-            link.Label = String.Format(this.LinkTextFormat, textParams);
+            link.Url = FormatText(this.LinkUrlFormat, linkParams);
+            link.Label = FormatText(this.LinkTextFormat, textParams);
+            link.MetaId = metaId;
             return link;
+        }
+
+
+        private static string FormatText(string text, string[] formatParams)
+        {
+            if (String.IsNullOrEmpty(text))
+            {
+                return text;
+            }
+            try
+            {
+                return String.Format(text, formatParams);
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
         }
     }
 }
