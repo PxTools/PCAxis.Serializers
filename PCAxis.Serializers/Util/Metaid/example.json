@@ -116,9 +116,9 @@
       "matrix": "KOSplanernyereen0000",
       "subject-code": "al",
       "subject-area": "Arbeid og lønn",
-      "eksternal-links": {
+      "metaid-links": {
         "statistics-homepage": {
-          "root_links": [
+          "dataset_links": [
             {
               "metaid": "KORTNAVN:aku",
               "href": "https://www.ssb.no/befolkning/folketall/statistikk/befolkning",
@@ -128,7 +128,7 @@
           ]
         },
         "about-statistics": {
-          "root_links": [
+          "dataset_links": [
             {
               "metaid": "KORTNAVN:aku",
               "href": "https://www.ssb.no/befolkning/folketall/statistikk/befolkning#om-statistikken",
@@ -139,7 +139,7 @@
         },
         "definitions": {
           "KOKkommuneregion0000": {
-            "dim_links": [
+            "dimension_links": [
               {
                 "metaid": "urn:ssb:classification:klass:231",
                 "href": "https://www.ssb.no/klass/klassifikasjoner/231",
@@ -149,34 +149,36 @@
             ]
           },
           "ContentsCode": {
-            "KOSKBDU0000": [
-              {
-                "href": "https://www.ssb.no/contextvariable/KOSKBDU0000",
-                "label": "Korrigerte brutto driftsutgifter  (1000 kr)",
-                "type": "text/html",
-                "metaid": "urn:ssb:contextvariable:common:8c42e415-e5dc-4a47-93bf-c9c515b39aa6:104549:KOSKBDU0000"
-              }
-            ],
-            "KOSKBDUperelev0000": [
-              {
-                "href": "https://www.ssb.no/contextvariable/KOSKBDUperelev0000",
-                "label": "Korrigerte brutto driftsutgifter per elev (kr)",
-                "type": "text/html",
-                "metaid": "urn:ssb:contextvariable:common:8c42e415-e5dc-4a47-93bf-c9c515b39aa6:104549:KOSKBDUperelev0000"
-              }
-            ],
-            "KOSKBDUperskyss0000": [
-              {
-                "href": "https://www.ssb.no/contextvariable/KOSKBDUperskyss0000",
-                "label": "Korrigerte brutto driftsutgifter per elev  som får skoleskyss (223) (kr)",
-                "type": "text/html",
-                "metaid": "urn:ssb:contextvariable:common:8c42e415-e5dc-4a47-93bf-c9c515b39aa6:104549:KOSKBDUperskyss0000"
-              }
-            ]
+            "category_links": {
+              "KOSKBDU0000": [
+                {
+                  "href": "https://www.ssb.no/contextvariable/KOSKBDU0000",
+                  "label": "Korrigerte brutto driftsutgifter  (1000 kr)",
+                  "type": "text/html",
+                  "metaid": "urn:ssb:contextvariable:common:8c42e415-e5dc-4a47-93bf-c9c515b39aa6:104549:KOSKBDU0000"
+                }
+              ],
+              "KOSKBDUperelev0000": [
+                {
+                  "href": "https://www.ssb.no/contextvariable/KOSKBDUperelev0000",
+                  "label": "Korrigerte brutto driftsutgifter per elev (kr)",
+                  "type": "text/html",
+                  "metaid": "urn:ssb:contextvariable:common:8c42e415-e5dc-4a47-93bf-c9c515b39aa6:104549:KOSKBDUperelev0000"
+                }
+              ],
+              "KOSKBDUperskyss0000": [
+                {
+                  "href": "https://www.ssb.no/contextvariable/KOSKBDUperskyss0000",
+                  "label": "Korrigerte brutto driftsutgifter per elev  som får skoleskyss (223) (kr)",
+                  "type": "text/html",
+                  "metaid": "urn:ssb:contextvariable:common:8c42e415-e5dc-4a47-93bf-c9c515b39aa6:104549:KOSKBDUperskyss0000"
+                }
+              ]
+            }
           }
         },
         "example-of-all-attachments": {
-          "root_links": [
+          "dataset_links": [
             {
               "metaid": "example:1",
               "href": "https://www.example.no/example",
@@ -185,7 +187,7 @@
             }
           ],
           "DimentionA": {
-            "dim_links": [
+            "dimension_links": [
               {
                 "metaid": "example:1",
                 "href": "https://www.example.no/example",
@@ -193,34 +195,35 @@
                 "type": "text/html"
               }
             ],
-            "ValueA": [
-              {
-                "metaid": "example:1",
-                "href": "https://www.example.no/example",
-                "label": "Value attachment",
-                "type": "text/html"
-              }
-            ]
+            "category_links": {
+              "category_A": [
+                {
+                  "metaid": "example:1",
+                  "href": "https://www.example.no/example",
+                  "label": "Category attachment",
+                  "type": "text/html"
+                }
+              ]
+            }
           }
         }
+      }
+    },
+    "contact": [
+      {
+        "name": "Henrik Langbråten",
+        "phone": "92 09 70 70",
+        "mail": "hln@ssb.no",
+        "raw": "Henrik Langbråten, Statistisk sentralbyrå# +47 92 09 70 70#hln@ssb.no"
       },
+      {
+        "name": "Jørn Kristian Undelstvedt",
+        "phone": "945 06 864",
+        "mail": "jku@ssb.no",
+        "raw": "Jørn Kristian Undelstvedt, Statistisk sentralbyrå# +47 945 06 864#jku@ssb.no"
+      }
+    ]
 
-
-      "contact": [
-        {
-          "name": "Henrik Langbråten",
-          "phone": "92 09 70 70",
-          "mail": "hln@ssb.no",
-          "raw": "Henrik Langbråten, Statistisk sentralbyrå# +47 92 09 70 70#hln@ssb.no"
-        },
-        {
-          "name": "Jørn Kristian Undelstvedt",
-          "phone": "945 06 864",
-          "mail": "jku@ssb.no",
-          "raw": "Jørn Kristian Undelstvedt, Statistisk sentralbyrå# +47 945 06 864#jku@ssb.no"
-        }
-      ]
-    }
   },
   "value": [ 908, 1046, 251, 318, 365231, 353282, 904, 1040, 242, 309, 364006, 351893 ]
 }
