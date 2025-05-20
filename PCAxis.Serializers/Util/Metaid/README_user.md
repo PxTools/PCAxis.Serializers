@@ -7,8 +7,7 @@ Some metadata for a table will exist externaly, e.g. definitions in a classifica
     root((PxWeb))
       statistics-homepage
       about-statistics
-      definitions of variables 
-      definitions of classifications
+      definitions
       other infomation
 ```
 
