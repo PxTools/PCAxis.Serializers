@@ -118,7 +118,7 @@
       "subject-area": "Arbeid og lønn",
       "metaid-links": {
         "statistics-homepage": {
-          "dataset_links": [
+          "dataset-links": [
             {
               "metaid": "KORTNAVN:aku",
               "href": "https://www.ssb.no/befolkning/folketall/statistikk/befolkning",
@@ -128,7 +128,7 @@
           ]
         },
         "about-statistics": {
-          "dataset_links": [
+          "dataset-links": [
             {
               "metaid": "KORTNAVN:aku",
               "href": "https://www.ssb.no/befolkning/folketall/statistikk/befolkning#om-statistikken",
@@ -139,7 +139,7 @@
         },
         "definitions": {
           "KOKkommuneregion0000": {
-            "dimension_links": [
+            "dimension-links": [
               {
                 "metaid": "urn:ssb:classification:klass:231",
                 "href": "https://www.ssb.no/klass/klassifikasjoner/231",
@@ -149,7 +149,7 @@
             ]
           },
           "ContentsCode": {
-            "category_links": {
+            "category-links": {
               "KOSKBDU0000": [
                 {
                   "href": "https://www.ssb.no/contextvariable/KOSKBDU0000",
@@ -178,7 +178,7 @@
           }
         },
         "example-of-all-attachments": {
-          "dataset_links": [
+          "dataset-links": [
             {
               "metaid": "example:1",
               "href": "https://www.example.no/example",
@@ -187,7 +187,7 @@
             }
           ],
           "DimentionA": {
-            "dimension_links": [
+            "dimension-links": [
               {
                 "metaid": "example:1",
                 "href": "https://www.example.no/example",
@@ -195,7 +195,7 @@
                 "type": "text/html"
               }
             ],
-            "category_links": {
+            "category-links": {
               "category_A": [
                 {
                   "metaid": "example:1",
