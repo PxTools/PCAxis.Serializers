@@ -15,30 +15,6 @@
   },
   "id": [ "KOKkommuneregion0000", "ContentsCode", "Tid" ],
   "size": [ 2, 3, 2 ],
-  "link": {
-    "related": [
-      {
-        "extension": {
-          "root": [
-            {
-              "relation": "statistics-homepage",
-              "metaid": "KORTNAVN:aku",
-              "href": "https://www.ssb.no/befolkning/folketall/statistikk/befolkning",
-              "label": "Statistics homepage",
-              "type": "text/html"
-            },
-            {
-              "relation": "about-statistics",
-              "metaid": "KORTNAVN:aku",
-              "href": "https://www.ssb.no/befolkning/folketall/statistikk/befolkning#om-statistikken",
-              "label": "About the statistics",
-              "type": "text/html"
-            }
-          ]
-        }
-      }
-    ]
-  },
   "dimension": {
     "KOKkommuneregion0000": {
       "label": "region",
@@ -56,30 +32,8 @@
         "elimination": false,
         "show": "code_value"
       },
-      "link": { 
-         "describedby": [ { "extension": { "KOKkommuneregion0000": "urn:ssb:classification:klass:231" } } ] ,
-         "related": [
-            {
-              "extension": {
-                "KOKkommuneregion0000": [
-                  {
-                    "relation": "definition-classification",
-                    "metaid": "urn:ssb:classification:klass:231",
-                    "href": "https://www.ssb.no/klass/klassifikasjoner/231",
-                    "label": "Classification for region.",
-                    "type": "text/html"
-                  },
-                  {
-                    "relation": "definition-dimension",
-                    "metaid": "def:2",
-                    "href": "https://www.ssb.no/whatIs/region",
-                    "label": "Definition of region",
-                    "type": "text/html"
-                  }
-                ]
-              }
-            }
-          ]
+      "link": {
+        "describedby": [ { "extension": { "KOKkommuneregion0000": "urn:ssb:classification:klass:231" } } ]
       }
     },
     "ContentsCode": {
@@ -126,24 +80,7 @@
               "KOSinnsigregplan0000": "urn:ssb:contextvariable:common:0ba230e1-38b6-4b9a-8deb-5c636d18a175:359649:KOSinnsigregplan0000"
             }
           }
-        ],
-        "related": [
-            {
-              "extension": {
-                
-                "KOSinnsigregplan0000": [
-                  {
-                    "relation": "definition-value",
-                    "metaid": "HOMEPAGE:aku",
-                    "href": "https://www.ssb.no/kompis/statbank/?id=0ba230e1-38b6-4b9a-8deb-5c636d18a175&ver=359649&val=KOSinnsigregplan0000&lang=no",
-                    "label": "Stat",
-                    "type": "text/html"
-                  }
-                ]
-              }
-            }
-          ]
-        
+        ]
       }
     },
     "Tid": {
@@ -178,7 +115,99 @@
       "stub": [ "KOKkommuneregion0000" ],
       "matrix": "KOSplanernyereen0000",
       "subject-code": "al",
-      "subject-area": "Arbeid og lønn"
+      "subject-area": "Arbeid og lønn",
+      "metaid-links": {
+        "statistics-homepage": {
+          "dataset-links": [
+            {
+              "metaid": "KORTNAVN:aku",
+              "href": "https://www.ssb.no/befolkning/folketall/statistikk/befolkning",
+              "label": "Statistics homepage",
+              "type": "text/html"
+            }
+          ]
+        },
+        "about-statistics": {
+          "dataset-links": [
+            {
+              "metaid": "KORTNAVN:aku",
+              "href": "https://www.ssb.no/befolkning/folketall/statistikk/befolkning#om-statistikken",
+              "label": "About the statistics",
+              "type": "text/html"
+            }
+          ]
+        },
+        "definitions": {
+          "KOKkommuneregion0000": {
+            "dimension-links": [
+              {
+                "metaid": "urn:ssb:classification:klass:231",
+                "href": "https://www.ssb.no/klass/klassifikasjoner/231",
+                "label": "Classification for region.",
+                "type": "text/html"
+              }
+            ]
+          },
+          "ContentsCode": {
+            "category-links": {
+              "KOSKBDU0000": [
+                {
+                  "href": "https://www.ssb.no/contextvariable/KOSKBDU0000",
+                  "label": "Korrigerte brutto driftsutgifter  (1000 kr)",
+                  "type": "text/html",
+                  "metaid": "urn:ssb:contextvariable:common:8c42e415-e5dc-4a47-93bf-c9c515b39aa6:104549:KOSKBDU0000"
+                }
+              ],
+              "KOSKBDUperelev0000": [
+                {
+                  "href": "https://www.ssb.no/contextvariable/KOSKBDUperelev0000",
+                  "label": "Korrigerte brutto driftsutgifter per elev (kr)",
+                  "type": "text/html",
+                  "metaid": "urn:ssb:contextvariable:common:8c42e415-e5dc-4a47-93bf-c9c515b39aa6:104549:KOSKBDUperelev0000"
+                }
+              ],
+              "KOSKBDUperskyss0000": [
+                {
+                  "href": "https://www.ssb.no/contextvariable/KOSKBDUperskyss0000",
+                  "label": "Korrigerte brutto driftsutgifter per elev  som får skoleskyss (223) (kr)",
+                  "type": "text/html",
+                  "metaid": "urn:ssb:contextvariable:common:8c42e415-e5dc-4a47-93bf-c9c515b39aa6:104549:KOSKBDUperskyss0000"
+                }
+              ]
+            }
+          }
+        },
+        "example-of-all-attachments": {
+          "dataset-links": [
+            {
+              "metaid": "example:1",
+              "href": "https://www.example.no/example",
+              "label": "Root attachment",
+              "type": "text/html"
+            }
+          ],
+          "DimentionA": {
+            "dimension-links": [
+              {
+                "metaid": "example:1",
+                "href": "https://www.example.no/example",
+                "label": "Dimention attachment",
+                "type": "text/html"
+              }
+            ],
+            "category-links": {
+              "category_A": [
+                {
+                  "metaid": "example:1",
+                  "href": "https://www.example.no/example",
+                  "label": "Category attachment",
+                  "type": "text/html"
+                }
+              ]
+            }
+          }
+        }
+      }
     },
     "contact": [
       {
@@ -194,6 +223,7 @@
         "raw": "Jørn Kristian Undelstvedt, Statistisk sentralbyrå# +47 945 06 864#jku@ssb.no"
       }
     ]
+
   },
   "value": [ 908, 1046, 251, 318, 365231, 353282, 904, 1040, 242, 309, 364006, 351893 ]
 }
