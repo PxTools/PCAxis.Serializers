@@ -1,7 +1,27 @@
-# Links from Px to metadata systems
-A metadata system is a system holding the definitions and other relevant information of tables, variables and values. 
-PxWeb can display links to these external metadata systems, if the pxwebapi emits them. 
-The use of links to metadata systems is enabled by a the existence of a config file and triggered by use of a META-ID keyword in the datasource (PX-file / CNMM-database)
+# Links from Px to external metadata
+Some metadata for a table will exist externaly, e.g. definitions in a classification database, and PxWebApi needs to provide links to these resources.
+
+
+```mermaid
+  mindmap
+    root((PxWeb))
+      statistics-homepage
+      about-statistics
+      definitions
+      other infomation
+```
+
+Information for a link includes:
+```
+href:  an url e.g. "https://www.ssb.no/en/aku" , pointing to a resource
+type: the mime type of the resource (typically "text/html", but could also be e.g. markdown) 
+label: text describing the resouce, like "Statistics homepage". 
+relation: some description of how the resource is related to the table , like "statistics-homepage". 
+```
+
+In the datasource of the api, the external metadata may be  attached to tables, variables and values.
+This is done by using a META-ID keyword which is an urn e.g. "statistics:aku". The api then transforms it to href,type,label and relation according to rules
+given in  a config file. 
  
 
 ## META-ID
