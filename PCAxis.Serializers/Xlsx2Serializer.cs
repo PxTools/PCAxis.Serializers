@@ -198,6 +198,7 @@ namespace PCAxis.Serializers
             string dataNote = string.Empty;
             int column;
             string value;
+            int rowOffset = row;
 
             int indentation = CalculateLeftIndentation(model);
             for (int i = 0; i < model.Data.MatrixRowCount; i++)
@@ -205,7 +206,7 @@ namespace PCAxis.Serializers
 
                 for (int k = 0; k < model.Meta.Stub.Count; k++)
                 {
-                    GetStubCell(model, sheet, k, i);
+                    GetStubCell(model, sheet, k, i, rowOffset);
                 }
                 for (int j = 0; j < model.Data.MatrixColumnCount; j++)
                 {
@@ -814,7 +815,7 @@ namespace PCAxis.Serializers
             return model.Meta.Stub.Count + 1;
         }
 
-        private void GetStubCell(PXModel model, IXLWorksheet sheet, int stubNr, int rowNr)
+        private void GetStubCell(PXModel model, IXLWorksheet sheet, int stubNr, int rowNr, int rowOffset)
         {
             int count = model.Meta.Stub[stubNr].Values.Count;
             int interval = stubNr < model.Meta.Stub.Count - 1 ? CalcStubInterval(stubNr + 1, model) : 1;
@@ -826,7 +827,8 @@ namespace PCAxis.Serializers
                 //Dim Cell As New Cell
                 int offset = 0;
                 val = model.Meta.Stub[stubNr].Values[(rowNr / interval) % count];
-                row = rowNr + 3 + model.Meta.Heading.Count;
+                row = rowNr + rowOffset;
+
                 column = stubNr + 1 + offset;
 
                 SetCell(
