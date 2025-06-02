@@ -215,7 +215,7 @@ namespace PCAxis.Paxiom
             {
                 // All parameters are in the Stub
                 wr.Write(this._delimiter);
-                WriteStringValue(wr, _model.Meta.Matrix);
+                WriteStringValue(wr, _model.Meta.Contents);
                 wr.WriteLine();
             }
         }
