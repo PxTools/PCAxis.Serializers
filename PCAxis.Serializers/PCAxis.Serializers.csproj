@@ -19,7 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="log4net" Version="3.0.4" />
+    <PackageReference Include="log4net" Version="3.1.0" />
 
     <PackageReference Include="MinVer" Version="6.0.0">
       <PrivateAssets>all</PrivateAssets>
@@ -38,7 +38,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
 
-    <PackageReference Include="PxWeb.Api2.Server.Models" Version="2.0.0-beta.16" />
+    <PackageReference Include="PxWeb.Api2.Server.Models" Version="2.0.0-beta.17" />
 
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 
