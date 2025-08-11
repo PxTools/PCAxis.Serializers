@@ -29,8 +29,8 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Parquet.Net" Version="4.25.0" />
     <PackageReference Include="PCAxis.Core" Version="1.2.6" />
-    <PackageReference Include="PCAxis.Metadata" Version="1.0.3" />
-    <PackageReference Include="PCAxis.Query" Version="1.0.9" />
+    <PackageReference Include="PCAxis.Metadata" Version="1.0.4" />
+    <PackageReference Include="PCAxis.Query" Version="1.0.10" />
     <PackageReference Include="ClosedXML" Version="0.97.0" />
 
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
@@ -38,7 +38,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
 
-    <PackageReference Include="PxWeb.Api2.Server.Models" Version="2.0.0-beta.18" />
+    <PackageReference Include="PxWeb.Api2.Server.Models" Version="2.0.0-beta.19" />
 
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 
