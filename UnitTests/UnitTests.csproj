@@ -16,7 +16,7 @@
     </PackageReference>
 
     <PackageReference Include="Parquet.Net" Version="4.25.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
 
 
