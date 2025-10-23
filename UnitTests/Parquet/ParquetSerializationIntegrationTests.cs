@@ -31,7 +31,7 @@ namespace UnitTests.Parquet
         }
 
         [TestMethod, Description("Tests the serialization of PXModel to Parquet format and its correctness.")]
-        [DynamicData(nameof(GetPxFilePaths), DynamicDataSourceType.Method)]
+        [DynamicData(nameof(GetPxFilePaths))]
         public void ShouldSerializePxModel(string pxFile)
         {
             var model = GetPxModelFromFile(pxFile);

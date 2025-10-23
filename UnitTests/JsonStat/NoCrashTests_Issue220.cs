@@ -30,7 +30,7 @@ namespace UnitTests.JsonStat
             {
                 string actual = helper.GetActual(myModel);
 
-                Assert.IsTrue(actual.Length >= 1, "Made it!");
+                Assert.IsGreaterThanOrEqualTo(1, actual.Length, "Made it!");
             }
             catch (Exception)
             {
@@ -54,7 +54,7 @@ namespace UnitTests.JsonStat
             {
                 string actual = helper.GetActual(myModel);
 
-                Assert.IsTrue(actual.Length >= 1, "Made it!");
+                Assert.IsGreaterThanOrEqualTo(1, actual.Length, "Made it!");
             }
             catch (Exception)
             {
@@ -81,7 +81,7 @@ namespace UnitTests.JsonStat
             {
                 string actual = helper.GetActual(myModel);
 
-                Assert.IsTrue(actual.Length >= 1, "Made it!");
+                Assert.IsGreaterThanOrEqualTo(1, actual.Length, "Made it!");
             }
             catch (Exception)
             {

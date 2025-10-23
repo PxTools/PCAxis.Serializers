@@ -32,7 +32,7 @@ namespace UnitTests.JsonStat2
         }
 
         [TestMethod]
-        [DynamicData(nameof(GetPxFilePaths), DynamicDataSourceType.Method)]
+        [DynamicData(nameof(GetPxFilePaths))]
         public void SerializeAllTestFilesAndParse(string pxFile)
         {
             CultureInfo ci = new CultureInfo("sv-SE");

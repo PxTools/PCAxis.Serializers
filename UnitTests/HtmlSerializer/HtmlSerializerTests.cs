@@ -14,7 +14,7 @@ namespace PCAxis.Serializers.Tests
         public void Serialize_NullModel_ThrowsArgumentNullException()
         {
             var serializer = new HtmlSerializer();
-            Assert.ThrowsException<ArgumentNullException>(() => serializer.Serialize(null, "path"));
+            Assert.ThrowsExactly<ArgumentNullException>(() => serializer.Serialize(null, "path"));
         }
 
         [TestMethod]
@@ -22,7 +22,7 @@ namespace PCAxis.Serializers.Tests
         {
             var serializer = new HtmlSerializer();
             var model = new PXModel();
-            Assert.ThrowsException<ArgumentNullException>(() => serializer.Serialize(model, (Stream)null));
+            Assert.ThrowsExactly<ArgumentNullException>(() => serializer.Serialize(model, (Stream)null));
         }
 
         [TestMethod]
@@ -31,7 +31,7 @@ namespace PCAxis.Serializers.Tests
             var serializer = new HtmlSerializer();
             var model = new PXModel();
             var stream = new MemoryStream(new byte[0], false);
-            Assert.ThrowsException<ArgumentException>(() => serializer.Serialize(model, stream));
+            Assert.ThrowsExactly<ArgumentException>(() => serializer.Serialize(model, stream));
         }
 
         [TestMethod]
@@ -46,8 +46,8 @@ namespace PCAxis.Serializers.Tests
                 using (var reader = new StreamReader(stream))
                 {
                     var result = reader.ReadToEnd();
-                    Assert.IsTrue(result.Contains("<table"));
-                    Assert.IsTrue(result.Contains("</table>"));
+                    Assert.Contains("<table", result);
+                    Assert.Contains("</table>", result);
                 }
             }
         }

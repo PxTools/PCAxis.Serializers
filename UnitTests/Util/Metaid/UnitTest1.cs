@@ -25,7 +25,7 @@ namespace UnitTests.Util.Metaid
 
 
             var links = MetaIdResolverStatic.GetTableLinks(metaid_raw, "no");
-            Assert.AreEqual(2, links.Count);
+            Assert.HasCount(2, links);
             Assert.AreEqual(expectedUrl, links[1].Url);
             Assert.AreEqual(expectedLinkText, links[1].Label);
             Assert.AreEqual(expectedRelation, links[1].Relation);
@@ -100,7 +100,7 @@ namespace UnitTests.Util.Metaid
         {
             string metaid_raw = "missing:123";
             var links = MetaIdResolverStatic.GetTableLinks(metaid_raw, "no");
-            Assert.AreEqual(0, links.Count);
+            Assert.HasCount(0, links);
         }
 
         [TestMethod]
@@ -116,7 +116,7 @@ namespace UnitTests.Util.Metaid
             string expectedMataid_2 = "urn:ssb:classification:klass:3";
 
             List<Link> links = MetaIdResolverStatic.GetVariableLinks(metaid_raw, "en", "region");
-            Assert.AreEqual(3, links.Count);
+            Assert.HasCount(3, links);
             Assert.AreEqual(expectedUrl_0, links[0].Url);
             Assert.AreEqual(expectedUrl_1, links[1].Url);
             Assert.AreEqual(expectedUrl_2, links[2].Url);
@@ -133,7 +133,7 @@ namespace UnitTests.Util.Metaid
 
 
             List<Link> links = MetaIdResolverStatic.GetTableLinks(metaid_raw, "en");
-            Assert.AreEqual(1, links.Count);
+            Assert.HasCount(1, links);
             Assert.AreEqual(expectedUrl, links[0].Url);
             Assert.AreEqual(expectedLabel, links[0].Label);
         }
@@ -148,7 +148,7 @@ namespace UnitTests.Util.Metaid
             string expectedLabel = "";
 
             List<Link> links = MetaIdResolverStatic.GetTableLinks(metaid_raw, "en");
-            Assert.AreEqual(1, links.Count);
+            Assert.HasCount(1, links);
             Assert.AreEqual(expectedUrl, links[0].Url);
             Assert.AreEqual(expectedLabel, links[0].Label);
         }
@@ -159,12 +159,12 @@ namespace UnitTests.Util.Metaid
         public void TestTooFewParams()
         {
             // exception text is passed when config or metaid dont fit.
-            // throwing an exception seems to much 
+            // throwing an exception seems to much
             string metaid_raw = "urn:ssb:contextvariable:common:3";
             string expectedUrl = "Index (zero based) must be greater than or equal to zero and less than the size of the argument list.";
 
             List<Link> links = MetaIdResolverStatic.GetValueLinks(metaid_raw, "en", "region", "some value");
-            Assert.AreEqual(1, links.Count);
+            Assert.HasCount(1, links);
             Assert.AreEqual(expectedUrl, links[0].Url);
 
         }
