@@ -10,6 +10,8 @@ using Newtonsoft.Json.Linq;
 
 using PCAxis.Paxiom;
 
+[assembly: DoNotParallelize]
+
 namespace UnitTests.JsonStat
 {
     [TestClass]
@@ -32,7 +34,7 @@ namespace UnitTests.JsonStat
         }
 
         [TestMethod]
-        [DynamicData(nameof(GetPxFilePaths), DynamicDataSourceType.Method)]
+        [DynamicData(nameof(GetPxFilePaths))]
         public void SerializeAllTestFilesAndParse(string pxFile)
         {
             CultureInfo ci = new CultureInfo("sv-SE");

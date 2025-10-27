@@ -38,7 +38,7 @@ namespace UnitTests.Excel
             {
 
                 string actual = helper.GetActual(model);
-                Assert.IsTrue(actual.Length >= 1);
+                Assert.IsGreaterThanOrEqualTo(1, actual.Length);
             }
             catch (Exception e)
             {
@@ -57,7 +57,7 @@ namespace UnitTests.Excel
             {
                 string actual = helper.GetActual(model);
 
-                Assert.IsTrue(actual.Length >= 1);
+                Assert.IsGreaterThanOrEqualTo(1, actual.Length);
             }
             catch (Exception)
             {
