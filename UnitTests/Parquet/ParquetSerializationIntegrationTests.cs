@@ -44,8 +44,8 @@ namespace UnitTests.Parquet
             // Sync wrapper around async call
             Table table = ReadBackParquetFileSync(outputFile);
 
-            // Assertion: Ensure that the model's matrix size is equal to the table's count.
-            Assert.AreEqual(table.Count, model.Data.MatrixSize, $"Mismatch in matrix size for file {fileNameWithoutExtension}.parquet.");
+            // Assertion: Ensure that the model's matrix size is grather than or equal to the table's rowcount.
+            Assert.IsGreaterThanOrEqualTo(model.Data.MatrixSize, table.Count, $"Mismatch in matrix size for file {fileNameWithoutExtension}.parquet.");
 
             // Assertion: Calculate the amount of columns we should have, based on the metadata
             // Number of columns in meta, number of columns in table.
@@ -53,7 +53,15 @@ namespace UnitTests.Parquet
             var numberOfColsInPx = CalculateNumberOfColumnsFromPxFile(model);
             var numberOfColsInParq = table.Schema.DataFields.Length;
 
-            Assert.AreEqual(numberOfColsInParq, numberOfColsInPx, $"Mismatch in column number for {fileNameWithoutExtension}.parquet.");
+            // Assertion: Calculate the amount of rows we should have, based on the metadata
+            // Number of rows in meta, number of rows in table.
+
+            Assert.AreEqual(numberOfColsInPx, numberOfColsInParq, $"Mismatch in column number for {fileNameWithoutExtension}.parquet.");
+
+            var numberOfRowsInPx = CalculateNumberOfRowsFromPxFile(model);
+            var numberOfRowsInParq = table.Count;
+
+            Assert.AreEqual(numberOfRowsInPx, numberOfRowsInParq, $"Mismatch in row number for {fileNameWithoutExtension}.parquet.");
         }
 
         private static int CalculateNumberOfColumnsFromPxFile(PXModel model)
@@ -80,6 +88,21 @@ namespace UnitTests.Parquet
             }
 
             return numberOfCols;
+        }
+
+        private static int CalculateNumberOfRowsFromPxFile(PXModel model)
+        {
+            int numberOfRows = 1;
+
+            foreach (var variable in model.Meta.Variables)
+            {
+                if (!variable.IsContentVariable)
+                {
+                    numberOfRows *= variable.Values.Count;
+                }
+            }
+
+            return numberOfRows;
         }
 
         private static Task<Table> ReadBackParquetFileAsync(string parquetFile)
@@ -124,7 +147,7 @@ namespace UnitTests.Parquet
         [TestCleanup]
         public void TestCleanup()
         {
-            Directory.Delete(OutputDirectoryPath, true);
+            //Directory.Delete(OutputDirectoryPath, true);
         }
     }
 }
