@@ -73,8 +73,11 @@ namespace PCAxis.Serializers
 
                 foreach (var variableValue in variable.Values)
                 {
-                    dimensionValue.Category.Label.Add(variableValue.Code, variableValue.Value);
-                    dimensionValue.Category.Index.Add(variableValue.Code, indexCounter++);
+                    if (dimensionValue.Category != null)
+                    {
+                        dimensionValue.Category.Label.Add(variableValue.Code, variableValue.Value);
+                        dimensionValue.Category.Index.Add(variableValue.Code, indexCounter++);
+                    }
 
                     CollectMetaIdsForValue(variableValue, ref metaIdsHelper);
 
@@ -215,21 +218,25 @@ namespace PCAxis.Serializers
             }
         }
 
-
         private void AddInfoForEliminatedContentVariable(PXModel model, JsonStat2Dataset dataset)
         {
-            dataset.AddDimensionValue("ContentsCode", "EliminatedContents", out var dimensionValue);
             var eliminatedValue = "EliminatedValue";
-            dimensionValue.Category.Label.Add(eliminatedValue, model.Meta.Contents);
-            dimensionValue.Category.Index.Add(eliminatedValue, 0);
+            dataset.AddDimensionValue("ContentsCode", "EliminatedContents", out var dimensionValue);
+            if (dimensionValue.Category != null)
+            {
+                dimensionValue.Category.Label.Add(eliminatedValue, model.Meta.Contents);
+                dimensionValue.Category.Index.Add(eliminatedValue, 0);
 
-            JsonStat2Dataset.AddUnitValue(dimensionValue.Category, out var unitValue);
-            unitValue.Base = model.Meta.ContentInfo.Units;
-            unitValue.Decimals = model.Meta.Decimals;
+                JsonStat2Dataset.AddUnitValue(dimensionValue.Category, out var unitValue);
+                unitValue.Base = model.Meta.ContentInfo.Units;
+                unitValue.Decimals = model.Meta.Decimals;
 
-            dimensionValue.Category.Unit.Add(eliminatedValue, unitValue);
-
-            dimensionValue.Extension.Elimination = true;
+                dimensionValue.Category.Unit.Add(eliminatedValue, unitValue);
+            }
+            if (dimensionValue.Extension != null)
+            {
+                dimensionValue.Extension.Elimination = true;
+            }
 
             //refPeriod extension dimension
             JsonStat2Dataset.AddRefPeriod(dimensionValue, eliminatedValue, model.Meta.ContentInfo.RefPeriod);
@@ -256,32 +263,39 @@ namespace PCAxis.Serializers
 
         private static void AddUpdated(PXModel model, JsonStat2Dataset dataset)
         {
-            DateTime tempDateTime;
+            DateTime? tempDateTime = null;
+
+            // Try to get the most recent LastUpdated from ContentVariable.Values
             if (model.Meta.ContentVariable != null && model.Meta.ContentVariable.Values.Count > 0)
             {
                 var lastUpdatedContentsVariable = model.Meta.ContentVariable.Values
+                    .Where(x => x.ContentInfo?.LastUpdated != null)
                     .OrderByDescending(x => x.ContentInfo.LastUpdated)
                     .FirstOrDefault();
 
-                if (lastUpdatedContentsVariable != null)
+                if (lastUpdatedContentsVariable?.ContentInfo?.LastUpdated != null)
                 {
                     tempDateTime = lastUpdatedContentsVariable.ContentInfo.LastUpdated.PxDateStringToDateTime();
                 }
-                else
-                {
-                    tempDateTime = model.Meta.CreationDate.PxDateStringToDateTime();
-                }
             }
-            else if (model.Meta.ContentInfo.LastUpdated != null)
-            {
-                tempDateTime = model.Meta.ContentInfo.LastUpdated.PxDateStringToDateTime();
-            }
-            else
+
+            // Fallback to CreationDate if not found
+            if (tempDateTime == null && model.Meta.CreationDate != null)
             {
                 tempDateTime = model.Meta.CreationDate.PxDateStringToDateTime();
             }
 
-            dataset.Updated = DateTimeAsUtcString(tempDateTime);
+            // Fallback to ContentInfo.LastUpdated if not found
+            if (tempDateTime == null && model.Meta.ContentInfo?.LastUpdated != null)
+            {
+                tempDateTime = model.Meta.ContentInfo.LastUpdated.PxDateStringToDateTime();
+            }
+
+            // Only set if a valid date was found
+            if (tempDateTime != null)
+            {
+                dataset.Updated = DateTimeAsUtcString(tempDateTime.Value);
+            }
         }
 
         public static string DateTimeAsUtcString(DateTime datetime)
@@ -428,7 +442,11 @@ namespace PCAxis.Serializers
             if (contInfo.Contact != null)
             {
                 var contacts = contInfo.Contact.Split(new[] { "##" }, StringSplitOptions.RemoveEmptyEntries);
-                var res = contacts.FirstOrDefault(x => x.Contains(contact.Forname) && x.Contains(contact.Surname) && x.Contains(contact.Email) && x.Contains(contact.PhoneNo));
+                var res = contacts.FirstOrDefault(x => x.Contains(contact.Forname) &&
+                                                       x.Contains(contact.Surname) &&
+                                                       x.Contains(contact.Email) &&
+                                                       x.Contains(contact.PhoneNo) &&
+                                                       x.Contains(contact.OrganizationName));
 
                 if (res != null)
                 {
@@ -437,7 +455,18 @@ namespace PCAxis.Serializers
             }
 
             // Only display unique contact once
-            if (!dataset.Extension.Contact.Exists(x => x.Mail.Equals(jsonContact.Mail) && x.Name.Equals(jsonContact.Name) && x.Phone.Equals(jsonContact.Phone)))
+            if (dataset.Extension is null)
+            {
+                dataset.Extension = new ExtensionRoot();
+            }
+            if (!dataset.Extension.Contact.Exists(x => x.Mail != null &&
+                                                       x.Name != null &&
+                                                       x.Phone != null &&
+                                                       x.Organization != null &&
+                                                       x.Mail.Equals(jsonContact.Mail) &&
+                                                       x.Name.Equals(jsonContact.Name) &&
+                                                       x.Phone.Equals(jsonContact.Phone) &&
+                                                       x.Organization.Equals(jsonContact.Organization)))
             {
                 dataset.Extension.Contact.Add(jsonContact);
             }
@@ -467,7 +496,7 @@ namespace PCAxis.Serializers
             }
         }
 
-        private static string GetFullName(Paxiom.Contact contact)
+        private static string GetFullName(PCAxis.Paxiom.Contact contact)
         {
             if (string.IsNullOrEmpty(contact.Forname) && string.IsNullOrEmpty(contact.Surname))
             {

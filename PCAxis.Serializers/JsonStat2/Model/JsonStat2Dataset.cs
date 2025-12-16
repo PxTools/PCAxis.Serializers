@@ -151,19 +151,25 @@ namespace PCAxis.Serializers.JsonStat2.Model
             Extension.Px.Aggregallowed = isAggRegAllowed;
         }
 
-        public void AddSurvey(string survey)
+        public void AddUpdateFrequency(string updateFrequency)
         {
-            if (survey != null)
-            {
-                Extension.Px.Survey = survey;
-            }
-        }
+            if (updateFrequency != null)
+                Extension.Px.UpdateFrequency = updateFrequency;
 
+        }
         public void AddLink(string link)
         {
             if (link != null)
             {
                 Extension.Px.Link = link;
+            }
+        }
+
+        public void AddSurvey(string survey)
+        {
+            if (survey != null)
+            {
+                Extension.Px.Survey = survey;
             }
         }
 
@@ -334,13 +340,6 @@ namespace PCAxis.Serializers.JsonStat2.Model
 
                 dimensionValue.Extension.BasePeriod.Add(valueCode, basePeriod);
             }
-        }
-
-        public void AddUpdateFrequency(string updateFrequency)
-        {
-            if (updateFrequency != null)
-                Extension.Px.UpdateFrequency = updateFrequency;
-
         }
     }
 }
