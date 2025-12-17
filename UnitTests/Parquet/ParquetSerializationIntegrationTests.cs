@@ -53,10 +53,10 @@ namespace UnitTests.Parquet
             var numberOfColsInPx = CalculateNumberOfColumnsFromPxFile(model);
             var numberOfColsInParq = table.Schema.DataFields.Length;
 
+            Assert.AreEqual(numberOfColsInPx, numberOfColsInParq, $"Mismatch in column number for {fileNameWithoutExtension}.parquet.");
+
             // Assertion: Calculate the amount of rows we should have, based on the metadata
             // Number of rows in meta, number of rows in table.
-
-            Assert.AreEqual(numberOfColsInPx, numberOfColsInParq, $"Mismatch in column number for {fileNameWithoutExtension}.parquet.");
 
             var numberOfRowsInPx = CalculateNumberOfRowsFromPxFile(model);
             var numberOfRowsInParq = table.Count;
@@ -147,7 +147,7 @@ namespace UnitTests.Parquet
         [TestCleanup]
         public void TestCleanup()
         {
-            //Directory.Delete(OutputDirectoryPath, true);
+            Directory.Delete(OutputDirectoryPath, true);
         }
     }
 }
