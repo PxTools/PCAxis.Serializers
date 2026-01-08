@@ -327,7 +327,7 @@ namespace PCAxis.Serializers
             dataset.AddDescriptiondefault(model.Meta.DescriptionDefault);
             dataset.AddStub(model.Meta.Stub.Select(v => v.Code).ToList());
             dataset.AddHeading(model.Meta.Heading.Select(v => v.Code).ToList());
-            dataset.AddLanguage(model.Meta.Language);
+            dataset.AddLanguage(model.Meta.CurrentLanguage);
             dataset.AddOfficialStatistics(model.Meta.OfficialStatistics);
             dataset.AddCopyright(model.Meta.Copyright);
             dataset.AddMatrix(model.Meta.Matrix);
