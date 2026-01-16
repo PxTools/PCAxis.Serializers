@@ -97,6 +97,9 @@ namespace PCAxis.Serializers
                         //refPeriod extension dimension
                         JsonStat2Dataset.AddRefPeriod(dimensionValue, variableValue.Code, variableValue.ContentInfo.RefPeriod);
 
+                        //alternativeText extension dimension
+                        JsonStat2Dataset.AddAlternativeText(dimensionValue, variableValue.Code, variableValue.ContentInfo.AlternativeText);
+
                         //measuringType extension dimension
                         JsonStat2Dataset.AddMeasuringType(dimensionValue, variableValue.Code, GetMeasuringType(variableValue.ContentInfo.StockFa));
 
@@ -240,6 +243,9 @@ namespace PCAxis.Serializers
 
             //refPeriod extension dimension
             JsonStat2Dataset.AddRefPeriod(dimensionValue, eliminatedValue, model.Meta.ContentInfo.RefPeriod);
+
+            //alternativeText extension dimension
+            JsonStat2Dataset.AddAlternativeText(dimensionValue, eliminatedValue, model.Meta.ContentInfo.AlternativeText);
 
             //measuringType extension dimension
             JsonStat2Dataset.AddMeasuringType(dimensionValue, eliminatedValue, GetMeasuringType(model.Meta.ContentInfo.StockFa));
