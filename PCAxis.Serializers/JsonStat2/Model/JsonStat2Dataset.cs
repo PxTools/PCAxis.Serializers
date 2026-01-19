@@ -306,8 +306,6 @@ namespace PCAxis.Serializers.JsonStat2.Model
                 dimensionValue.Extension = new ExtensionDimension();
             }
 
-            //TODO change Refperiod to AlternativeText in ExtensionDimension when new nuget package is available
-
             if (dimensionValue.Extension.AlternativeText == null)
                 dimensionValue.Extension.AlternativeText = new Dictionary<string, string>();
 
