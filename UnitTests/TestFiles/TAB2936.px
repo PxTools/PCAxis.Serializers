@@ -1,0 +1,92 @@
+CHARSET="ANSI";
+AXIS-VERSION="2010";
+CODEPAGE="iso-8859-1";
+LANGUAGE="en";
+CREATION-DATE="20260220 09:48";
+DECIMALS=1;
+SHOWDECIMALS=1;
+MATRIX="TAB2936";
+COPYRIGHT=NO;
+SUBJECT-CODE="AM";
+SUBJECT-AREA="Labour market";
+TITLE="Employees aged 15-74 (LFS), 1000s by sex, main union organisation, month and type of employment";
+CONTENTS="Employees aged 15-74 (LFS), 1000s";
+STUB="sex","main union organisation";
+HEADING="observations","month","type of employment";
+CONTVARIABLE="observations";
+VARIABLECODE("sex")="Kon";
+VALUES("sex")="men","women","total";
+VARIABLECODE("main union organisation")="FackligOrg";
+VALUES("main union organisation")="all","LO (Swedish Trade Union Confederation)","TCO (The Swedish Confederation for Professional Employees)","SACO (Swedish Confederation of Professional Associations)","Other","non-union members","information not availiable";
+VARIABLECODE("observations")="ContentsCode";
+VALUES("observations")="1000s";
+VARIABLECODE("month")="Tid";
+VALUES("month")="2025M11","2025M12","2026M01";
+VARIABLECODE("type of employment")="AnstForm";
+VALUES("type of employment")="employees, total","permanent employees","temporary employees";
+TIMEVAL("month")=TLIST(M1),"2025M11","2025M12","2026M01";
+CODES("sex")="1","2","1+2";
+CODES("main union organisation")="Samtliga","LO","TCO","SACO","Ovriga","Ejfack","uppg saknas";
+CODES("observations")="AM0401RP";
+CODES("month")="2025M11","2025M12","2026M01";
+CODES("type of employment")="ANSTTOT","FA","TA";
+PRESTEXT("month")=0;
+DOMAIN("sex")="Sex";
+DOMAIN("main union organisation")="Main union organisat";
+DOMAIN("type of employment")="employees";
+ELIMINATION("sex")="total";
+ELIMINATION("main union organisation")="all";
+ELIMINATION("type of employment")="employees, total";
+UNITS="1000s";
+LAST-UPDATED("1000s")="20260216 08:00";
+STOCKFA("1000s")="A";
+DAYADJ("1000s")=NO;
+SEASADJ("1000s")=NO;
+UNITS("1000s")="1000s";
+CONTACT("1000s")="Arbetskraftsundersökningarna (AKU), Statistics Sweden# +46 010-479 50 00#aku@scb.se## Statistikservice, Statistics Sweden# +46 010-479 50 00#information@scb.se##";
+DATABASE="Statistical database";
+SOURCE="Statistics Sweden";
+INFOFILE="AM0401";
+NOTEX="As the LFS is a sample survey, all estimations are subject to uncertainty. Uncertainty in estimations based on fewer than 20 observations on a monthly or quarterly basis or fewer than 40 observations on a yearly basis may be considered too large and the "
+"estimation is not reported. In these cases, the value is replaced with two periods [..].##For the period 2005M01-2020M12, the time series contains ´linked data´. No margins of error (uncertainty figures) are reported for the period, this is instead marke"
+"d as '..' in the time series. The series 2001M01-2004M12 are macrolinked and for the period 2005M01-2020M12 they are microlinked. The estimates regarding quarter 1 2005 and its constituent months are based on a smaller number of responses than other peri"
+"ods. These estimates are therefore more uncertain and should be used with caution.##In 2023, the retirement age was raised from 65 to 66 years, and in 2026, it will be raised to 67 years. This results in the reporting of more age groups in the LFS. To en"
+"able comparisons over time, the age groups 16-65, 16-66, 20-65, and 20-66 are reported back to 2021.##Correction 2025-03-14: Data for main union organisation have been corrected, january 2022-january 2023.";
+NOTEX("type of employment")="Total employees consists of permanent employees and temporary employees.";
+NOTE=".. = Means that information is not available, too uncertain to be presented or removed for reasons of confidentiality.";
+VALUENOTEX("main union organisation","Other")="Information not available on trade union membership is included in Other";
+META-ID("sex")=" ";
+DATASYMBOL1=".";
+DATASYMBOL2="..";
+DATASYMBOL3="..";
+DATASYMBOLSUM="*";
+DATASYMBOLNIL="-";
+DATANOTESUM="*";
+TABLEID="TAB2936";
+VARIABLE-TYPE("sex")="V";
+VARIABLE-TYPE("main union organisation")="V";
+VARIABLE-TYPE("month")="T";
+VARIABLE-TYPE("type of employment")="V";
+DATA=
+2382.7 2134.1 248.7 2367.7 2091.9 275.8 2357.1 2096.3 260.8 
+494.8 456.8 38.1 476.7 433.7 43.1 453.1 428.4 ".." 
+490.5 466.9 23.6 529.5 500.3 29.2 516.4 488.0 28.4 
+367.8 337.9 29.9 376.0 341.1 34.9 360.8 329.5 31.3 
+111.0 107.1 ".." 94.7 93.2 ".." 107.1 106.8 ".." 
+910.8 762.5 148.3 884.7 722.3 162.4 910.8 737.6 173.1 
+".." ".." ".." ".." ".." ".." ".." ".." ".." 
+2361.0 2002.6 358.3 2371.0 2014.7 356.3 2347.1 2041.0 306.1 
+412.4 357.9 54.4 391.0 334.7 56.4 365.5 329.5 36.0 
+592.7 557.7 35.0 572.8 536.8 36.1 558.6 527.2 31.3 
+608.6 554.3 54.3 598.3 540.4 58.0 590.0 542.7 47.3 
+85.9 82.2 ".." 102.2 96.9 ".." 94.8 89.4 ".." 
+652.1 447.8 204.3 703.6 504.0 199.6 738.3 552.1 186.1 
+".." ".." ".." ".." ".." ".." ".." ".." ".." 
+4743.7 4136.7 607.0 4738.7 4106.6 632.1 4704.2 4137.3 566.9 
+907.2 814.7 92.5 867.8 768.3 99.5 818.6 757.9 60.7 
+1083.2 1024.6 58.6 1102.3 1037.1 65.2 1075.0 1015.3 59.7 
+976.4 892.3 84.2 974.3 881.4 92.9 950.7 872.2 78.5 
+196.9 189.3 ".." 196.9 190.1 ".." 201.9 196.3 ".." 
+1562.9 1210.3 352.6 1588.4 1226.3 362.1 1649.1 1289.8 359.3 
+".." ".." ".." ".." ".." ".." ".." ".." ".." 
+;
