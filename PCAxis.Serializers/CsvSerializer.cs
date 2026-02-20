@@ -339,7 +339,8 @@ namespace PCAxis.Paxiom
             df.DecimalSeparator = ".";
             df.ShowDataNotes = false;
             df.ThousandSeparator = "";
-            df.ZeroOption = ZeroOptionType.NoZeroNilAndSymbol;
+            if (ExcludeZerosAndMissingValues)
+                df.ZeroOption = ZeroOptionType.NoZeroNilAndSymbol;
             return df;
         }
 
