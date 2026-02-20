@@ -237,7 +237,7 @@ namespace PCAxis.Serializers
 
         }
 
-        private int StubX(PXModel model, int index)
+        private static int CalculateStubRepeat(PXModel model, int index)
         {
             var x = 1;
 
@@ -289,7 +289,7 @@ namespace PCAxis.Serializers
 
             var values = model.Meta.Stub[level].Values;
 
-            int repeat = StubX(model, level);
+            int repeat = CalculateStubRepeat(model, level);
             for (int i = 0; (i <= (values.Count - 1)); i++)
             {
                 if (AreAllEmptyRows(row, repeat))
