@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 using PCAxis.Paxiom;
@@ -17,6 +18,7 @@ namespace PCAxis.Serializers
 
         private int[] _subStubValues;
         private DataFormatter _fmt;
+        private Dictionary<int, bool> _emptyRowCache;
 
 
         public bool ExcludeZerosAndMissingValues { get; set; } = false;
@@ -69,6 +71,7 @@ namespace PCAxis.Serializers
 
         private void DoSerialize(PXModel model, StreamWriter wr)
         {
+            _emptyRowCache = new Dictionary<int, bool>();
             wr.WriteLine(@"<table id=""" + model.Meta.Matrix + "_" + Guid.NewGuid().ToString() + @""" >"); //@""" aria-describedby="" "
 
             // Only write title if it is set to be included
@@ -234,6 +237,36 @@ namespace PCAxis.Serializers
 
         }
 
+        private int StubX(PXModel model, int index)
+        {
+            var x = 1;
+
+            for (int i = index + 1; i < model.Meta.Stub.Count; i++)
+            {
+                x *= model.Meta.Stub[i].Values.Count;
+            }
+            return x;
+        }
+
+        private bool AreAllEmptyRows(int row, int count)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                bool value;
+
+                if (!_emptyRowCache.TryGetValue(row + i, out value))
+                {
+                    value = _fmt.IsZeroRow(row + i);
+                    _emptyRowCache.Add(row + i, value);
+                }
+                if (!value)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         private void WriteTable(System.IO.StreamWriter wr, Paxiom.PXModel model, int levels, int level, ref int row)
         {
             if (level > levels)
@@ -256,9 +289,14 @@ namespace PCAxis.Serializers
 
             var values = model.Meta.Stub[level].Values;
 
-
+            int repeat = StubX(model, level);
             for (int i = 0; (i <= (values.Count - 1)); i++)
             {
+                if (AreAllEmptyRows(row, repeat))
+                {
+                    row += repeat;
+                    continue;
+                }
                 // writes empty cells if this is not the last variable in the stub, and the next level is not empty
                 if (nextLevel < levels)
                 {
@@ -275,7 +313,7 @@ namespace PCAxis.Serializers
                     // write the next variable in the stub
                     WriteTable(wr, model, levels, nextLevel, ref row);
                 }
-                else //if (level == levels) // This is the last variable in the stub, write the data line and close the row
+                else // This is the last variable in the stub, write the data line and close the row
                 {
 
                     wr.WriteLine("<tr>");
