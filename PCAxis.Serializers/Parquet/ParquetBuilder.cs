@@ -256,14 +256,12 @@ namespace PCAxis.Serializers
         private void PopulateNonContentVariableRow(int[] index, object[] row, Dictionary<string, int> dataFieldIndices, Variable variable, int i)
         {
             var value = variable.Values[index[i]].Code;
+
             if (variable.IsTime)
             {
-                // Use the VALUES ordering (Code) for the displayed time value so it
-                // matches the order of the data array. Some PX files have a
-                // different TIMEVAL ordering; using Code ensures consistency with
-                // the data which follows VALUES(...).
-                row[dataFieldIndices[variable.Name]] = value; // Original time-value (from VALUES)
-                row[dataFieldIndices["timestamp"]] = ParseTimeScale(value, variable.TimeScale); // Parsed timestamp
+                value = variable.Values[index[i]].TimeValue;
+                row[dataFieldIndices[variable.Name]] = value;
+                row[dataFieldIndices["timestamp"]] = ParseTimeScale(value, variable.TimeScale);
             }
             else
             {
