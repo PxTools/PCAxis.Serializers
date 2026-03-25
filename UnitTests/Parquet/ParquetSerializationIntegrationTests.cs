@@ -44,8 +44,12 @@ namespace UnitTests.Parquet
             // Sync wrapper around async call
             Table table = ReadBackParquetFileSync(outputFile);
 
-            // Assertion: Ensure that the model's matrix size is equal to the table's count.
-            Assert.AreEqual(table.Count, model.Data.MatrixSize, $"Mismatch in matrix size for file {fileNameWithoutExtension}.parquet.");
+            // Assertion: Ensure that the table's row count equals the number of observations
+            // for a single ContentsCode. If the model has multiple contents, the serializer
+            // emits additional content columns rather than duplicating rows.
+            int contentCount = model.Meta.ContentVariable != null ? model.Meta.ContentVariable.Values.Count : 1;
+            int expectedRows = model.Data.MatrixSize / contentCount;
+            Assert.AreEqual(expectedRows, table.Count, $"Mismatch in matrix size for file {fileNameWithoutExtension}.parquet.");
 
             // Assertion: Calculate the amount of columns we should have, based on the metadata
             // Number of columns in meta, number of columns in table.
