@@ -39,6 +39,8 @@ namespace PCAxis.Paxiom
 
         public bool IncludeTitle { get; set; } = false;
 
+        public bool ExcludeZerosAndMissingValues { get; set; } = false;
+
 
         private Delimiters _valueDelimiter = Delimiters.Comma;
         public Delimiters ValueDelimiter
@@ -302,6 +304,10 @@ namespace PCAxis.Paxiom
 
                 for (int i = 0; i < sc.Count; i++)
                 {
+                    // If ExcludeZerosAndMissingValues is true, skip rows with all zero or missing values
+                    if (ExcludeZerosAndMissingValues && df.IsZeroRow(i))
+                        continue;
+
                     wr.Write(sc[i]);
                     for (int c = 0; c < _model.Data.MatrixColumnCount; c++)
                     {
@@ -314,6 +320,10 @@ namespace PCAxis.Paxiom
             }
             else if (_model.Meta.Heading.Count > 0)
             {
+                // If ExcludeZerosAndMissingValues is true, do not write the data if all values in the first row are zero or missing
+                if (ExcludeZerosAndMissingValues && df.IsZeroRow(0))
+                    return;
+
                 for (int c = 0; c < _model.Data.MatrixColumnCount; c++)
                 {
                     value = df.ReadElement(0, c);
@@ -329,6 +339,8 @@ namespace PCAxis.Paxiom
             df.DecimalSeparator = ".";
             df.ShowDataNotes = false;
             df.ThousandSeparator = "";
+            if (ExcludeZerosAndMissingValues)
+                df.ZeroOption = ZeroOptionType.NoZeroNilAndSymbol;
             return df;
         }
 
