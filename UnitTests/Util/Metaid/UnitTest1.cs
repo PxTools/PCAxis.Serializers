@@ -14,7 +14,7 @@ namespace UnitTests.Util.Metaid
         }
 
         [TestMethod]
-        [DeploymentItem("Testfiles/metaid.config")]
+        [DeploymentItem("TestFiles/metaid.config")]
         public void TestOnTable()
         {
             string metaid_raw = "STATISTICS:aku";
@@ -34,7 +34,7 @@ namespace UnitTests.Util.Metaid
         }
 
         [TestMethod]
-        [DeploymentItem("Testfiles/metaid.config")]
+        [DeploymentItem("TestFiles/metaid.config")]
         public void TestOnVaiable()
         {
 
@@ -64,7 +64,7 @@ namespace UnitTests.Util.Metaid
         }
 
         [TestMethod]
-        [DeploymentItem("Testfiles/metaid.config")]
+        [DeploymentItem("TestFiles/metaid.config")]
         public void TestOnValue()
         {
 
@@ -95,7 +95,7 @@ namespace UnitTests.Util.Metaid
 
 
         [TestMethod]
-        [DeploymentItem("Testfiles/metaid.config")]
+        [DeploymentItem("TestFiles/metaid.config")]
         public void TestMissing()
         {
             string metaid_raw = "missing:123";
@@ -104,7 +104,7 @@ namespace UnitTests.Util.Metaid
         }
 
         [TestMethod]
-        [DeploymentItem("Testfiles/metaid.config")]
+        [DeploymentItem("TestFiles/metaid.config")]
         public void TestMulti()
         {
             // both comma and space as separators
@@ -124,7 +124,7 @@ namespace UnitTests.Util.Metaid
         }
 
         [TestMethod]
-        [DeploymentItem("Testfiles/metaid.config")]
+        [DeploymentItem("TestFiles/metaid.config")]
         public void TestNoLabel()
         {
             string metaid_raw = "NO_LABEL:1";
@@ -139,7 +139,7 @@ namespace UnitTests.Util.Metaid
         }
 
         [TestMethod]
-        [DeploymentItem("Testfiles/metaid.config")]
+        [DeploymentItem("TestFiles/metaid.config")]
         public void TestAnyUrl()
         {
             // possible but is it a good idea?
@@ -155,7 +155,7 @@ namespace UnitTests.Util.Metaid
 
 
         [TestMethod]
-        [DeploymentItem("Testfiles/metaid.config")]
+        [DeploymentItem("TestFiles/metaid.config")]
         public void TestTooFewParams()
         {
             // exception text is passed when config or metaid dont fit.
