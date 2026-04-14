@@ -5,7 +5,7 @@ namespace PCAxis.Serializers.Util.MetaId
 {
     internal interface IFileGetter
     {
-        Dictionary<string, string> ReadLabelsfile(string filepath);
+        Dictionary<string, string> ReadLabelsfile(string labelsFilePath);
 
         XDocument ReadConfig(string configurationFile);
     }

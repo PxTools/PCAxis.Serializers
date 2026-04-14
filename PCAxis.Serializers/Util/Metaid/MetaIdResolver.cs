@@ -62,7 +62,7 @@ namespace PCAxis.Serializers.Util.MetaId
                 return;
             }
             //for "manual" labels files.
-            _LabelFilesFolder = this._xdoc?.Root?.Attribute("labelFilesFolder")?.Value ?? AppContext.BaseDirectory; ;
+            _LabelFilesFolder = this._xdoc.Root?.Attribute("labelFilesFolder")?.Value ?? AppContext.BaseDirectory;
 
             // Table-level
             LoadConfigurationSection(AttachmentLevel.onTable, this.holder, filereader);

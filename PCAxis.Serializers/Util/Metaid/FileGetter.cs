@@ -15,16 +15,16 @@ namespace PCAxis.Serializers.Util.MetaId
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(typeof(FileGetter));
 
 
-        XDocument IFileGetter.ReadConfig(string configFile)
+        XDocument IFileGetter.ReadConfig(string configurationFile)
         {
 
-            string configurationFile = configFile ?? DefaultConfigFilename;
+            string configFile = configurationFile ?? DefaultConfigFilename;
 
             //It is ok to not use metaid
-            if (!File.Exists(configurationFile))
+            if (!File.Exists(configFile))
             {
-                var fullPath = Path.GetFullPath(configurationFile);
-                if (configurationFile.Equals(DefaultConfigFilename))
+                var fullPath = Path.GetFullPath(configFile);
+                if (configFile.Equals(DefaultConfigFilename))
                 {
                     _logger.WarnFormat("Metaid configuration file '{0}' does not exist in the folder where the dlls are. So any metaids will not be replaced.", fullPath);
                     return null;
@@ -37,7 +37,7 @@ namespace PCAxis.Serializers.Util.MetaId
                 }
             }
 
-            return XDocument.Load(configurationFile);
+            return XDocument.Load(configFile);
         }
 
         Dictionary<string, string> IFileGetter.ReadLabelsfile(string labelsFilePath)
