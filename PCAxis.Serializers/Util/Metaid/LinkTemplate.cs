@@ -1,10 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 
-using PCAxis.Serializers.Util.MetaId;
-
-
-namespace PCAxis.Serializers.Util.Metaid
+namespace PCAxis.Serializers.Util.MetaId
 {
     /// <summary>
     /// Class with template for a link
@@ -13,7 +11,7 @@ namespace PCAxis.Serializers.Util.Metaid
     {
         private readonly string _metaSysId;
 
-        public LinkTemplate(string metaSysId, string textFormat, string linkFormat, string linkType, string linkRelation)
+        public LinkTemplate(string metaSysId, string textFormat, Dictionary<string, string> labelsFile, string linkFormat, string linkType, string linkRelation)
         {
             if (string.IsNullOrWhiteSpace(metaSysId))
             {
@@ -26,6 +24,7 @@ namespace PCAxis.Serializers.Util.Metaid
             }
 
             this.LinkTextFormat = textFormat;
+            this.labelsFile = labelsFile;
             this.LinkUrlFormat = linkFormat;
             this.LinkType = linkType;
             this.LinkRelation = linkRelation;
@@ -42,6 +41,11 @@ namespace PCAxis.Serializers.Util.Metaid
         /// Format of the link text
         /// </summary>
         public string LinkTextFormat { get; }
+
+        /// <summary>
+        /// Dictionary of custom labels from file.
+        /// </summary>
+        private readonly Dictionary<string, string> labelsFile;
 
         /// <summary>
         /// Format of the link (URL)
@@ -68,7 +72,15 @@ namespace PCAxis.Serializers.Util.Metaid
             link.Relation = this.LinkRelation;
             link.Type = this.LinkType;
             link.Url = FormatText(this.LinkUrlFormat, linkParams);
-            link.Label = FormatText(this.LinkTextFormat, textParams);
+
+            if (labelsFile.ContainsKey(metaId))
+            {
+                link.Label = labelsFile[metaId];
+            }
+            else
+            {
+                link.Label = FormatText(this.LinkTextFormat, textParams);
+            }
             link.MetaId = metaId;
             return link;
         }

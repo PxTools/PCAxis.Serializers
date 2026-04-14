@@ -14,7 +14,7 @@ namespace UnitTests.Util.Metaid
         }
 
         [TestMethod]
-        [DeploymentItem("Util/Metaid/metaid.config")]
+        [DeploymentItem("Testfiles/metaid.config")]
         public void TestOnTable()
         {
             string metaid_raw = "STATISTICS:aku";
@@ -34,7 +34,7 @@ namespace UnitTests.Util.Metaid
         }
 
         [TestMethod]
-        [DeploymentItem("Util/Metaid/metaid.config")]
+        [DeploymentItem("Testfiles/metaid.config")]
         public void TestOnVaiable()
         {
 
@@ -42,7 +42,7 @@ namespace UnitTests.Util.Metaid
             string expectedUrl = "https://www.ssb.no/en/klass/klassifikasjoner/123";
             string expectedLinkText = "Classification for region.";
             string expectedType = "text/html";
-            string expectedRelation = "definition-classification";
+            string expectedRelation = "definitions";
 
             List<Link> links = MetaIdResolverStatic.GetVariableLinks(metaid_raw, "en", "region");
 
@@ -64,7 +64,7 @@ namespace UnitTests.Util.Metaid
         }
 
         [TestMethod]
-        [DeploymentItem("Util/Metaid/metaid.config")]
+        [DeploymentItem("Testfiles/metaid.config")]
         public void TestOnValue()
         {
 
@@ -76,7 +76,7 @@ namespace UnitTests.Util.Metaid
             string expectedLinkText_no = "Definisjon av Oslo for vaiabel region.";
 
             string expectedType = "text/html";
-            string expectedRelation = "definition-value";
+            string expectedRelation = "definitions";
 
             List<Link> links = MetaIdResolverStatic.GetValueLinks(metaid_raw, "en", "region", "Oslo");
 
@@ -95,7 +95,7 @@ namespace UnitTests.Util.Metaid
 
 
         [TestMethod]
-        [DeploymentItem("Util/Metaid/metaid.config")]
+        [DeploymentItem("Testfiles/metaid.config")]
         public void TestMissing()
         {
             string metaid_raw = "missing:123";
@@ -104,7 +104,7 @@ namespace UnitTests.Util.Metaid
         }
 
         [TestMethod]
-        [DeploymentItem("Util/Metaid/metaid.config")]
+        [DeploymentItem("Testfiles/metaid.config")]
         public void TestMulti()
         {
             // both comma and space as separators
@@ -124,7 +124,7 @@ namespace UnitTests.Util.Metaid
         }
 
         [TestMethod]
-        [DeploymentItem("Util/Metaid/metaid.config")]
+        [DeploymentItem("Testfiles/metaid.config")]
         public void TestNoLabel()
         {
             string metaid_raw = "NO_LABEL:1";
@@ -139,7 +139,7 @@ namespace UnitTests.Util.Metaid
         }
 
         [TestMethod]
-        [DeploymentItem("Util/Metaid/metaid.config")]
+        [DeploymentItem("Testfiles/metaid.config")]
         public void TestAnyUrl()
         {
             // possible but is it a good idea?
@@ -155,7 +155,7 @@ namespace UnitTests.Util.Metaid
 
 
         [TestMethod]
-        [DeploymentItem("Util/Metaid/metaid.config")]
+        [DeploymentItem("Testfiles/metaid.config")]
         public void TestTooFewParams()
         {
             // exception text is passed when config or metaid dont fit.

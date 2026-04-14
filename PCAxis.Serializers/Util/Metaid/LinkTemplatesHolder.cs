@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace PCAxis.Serializers.Util.Metaid
+namespace PCAxis.Serializers.Util.MetaId
 {
     enum AttachmentLevel { onTable, onVariable, onValue }
 
