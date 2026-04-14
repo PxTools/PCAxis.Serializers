@@ -7,9 +7,9 @@ using PCAxis.Serializers.Util.MetaId;
 namespace UnitTests.Util.Metaid
 {
     [TestClass]
-    public class UnitTest1
+    public class MetaIdResolverStaticTests
     {
-        public UnitTest1()
+        public MetaIdResolverStaticTests()
         {
         }
 
