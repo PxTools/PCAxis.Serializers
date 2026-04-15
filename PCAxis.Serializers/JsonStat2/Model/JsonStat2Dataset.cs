@@ -354,5 +354,45 @@ namespace PCAxis.Serializers.JsonStat2.Model
                 dimensionValue.Extension.BasePeriod.Add(valueCode, basePeriod);
             }
         }
+
+        //On Dimension
+        public static void AddRelatedLink(DimensionValue dimensionValue, RelatedLink theLink)
+        {
+            InitializeRelated(dimensionValue);
+            dimensionValue.Link.Related.Add(theLink);
+        }
+
+        //On root
+        public void AddRelatedLink(RelatedLink theLink)
+        {
+            InitiallizeRelated();
+            this.Link.Related.Add(theLink);
+        }
+
+
+        //On Dimension
+        private static void InitializeRelated(DimensionValue dimensionValue)
+        {
+            if (dimensionValue.Link == null)
+            {
+                dimensionValue.Link = new JsonstatExtensionLink();
+            }
+            if (dimensionValue.Link.Related == null)
+            {
+                dimensionValue.Link.Related = new List<RelatedLink>();
+            }
+        }
+
+
+
+        //On root
+        private void InitiallizeRelated()
+        {
+            if (this.Link == null)
+            {
+                this.Link = new JsonstatExtensionLink();
+                this.Link.Related = new List<RelatedLink>();
+            }
+        }
     }
 }

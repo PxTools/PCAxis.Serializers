@@ -1,0 +1,77 @@
+CHARSET="ANSI";
+AXIS-VERSION="2010";
+CODEPAGE="iso-8859-1";
+LANGUAGE="no";
+CREATION-DATE="20260316 15:09";
+DECIMALS=1;
+SHOWDECIMALS=1;
+MATRIX="12909";
+AGGREGALLOWED=NO;
+COPYRIGHT=NO;
+SUBJECT-CODE="al";
+SUBJECT-AREA="Arbeid og lønn";
+TITLE="12909: Legemeldt sykefravær (prosent) blant innvandrere (lønnstakere, 16-69 år), etter yrke, landbakgrunn, statistikkvariabel og kvartal";
+CONTENTS="12909: Legemeldt sykefravær (prosent) blant innvandrere (lønnstakere, 16-69 år),";
+STUB="yrke","landbakgrunn";
+HEADING="statistikkvariabel","kvartal";
+CONTVARIABLE="statistikkvariabel";
+VARIABLECODE("yrke")="Yrke";
+VALUES("yrke")="Alle yrker","Ledere";
+VARIABLECODE("landbakgrunn")="LandBakgr";
+VALUES("landbakgrunn")="Alle land","Norden utenom Norge","Nye EU-land etter 2004";
+VARIABLECODE("statistikkvariabel")="ContentsCode";
+VALUES("statistikkvariabel")="Sykefraværsprosent (legemeldt)","Sykefraværsprosent (legemeldt), prosentvis endring fra året før";
+VARIABLECODE("kvartal")="Tid";
+VALUES("kvartal")="2025K4";
+TIMEVAL("kvartal")=TLIST(Q1),"2025K4";
+CODES("yrke")="0-9","1";
+CODES("landbakgrunn")="999","00","015a";
+CODES("statistikkvariabel")="Sykefraversprosent","SykefraversprosEndr";
+CODES("kvartal")="2025K4";
+PRESTEXT("yrke")=2;
+PRESTEXT("kvartal")=0;
+ELIMINATION("yrke")="Alle yrker";
+ELIMINATION("landbakgrunn")="Alle land";
+UNITS="prosent";
+LAST-UPDATED("Sykefraværsprosent (legemeldt)")="20260226 08:00";
+STOCKFA("Sykefraværsprosent (legemeldt)")="A";
+DAYADJ("Sykefraværsprosent (legemeldt)")=NO;
+SEASADJ("Sykefraværsprosent (legemeldt)")=NO;
+REFPERIOD("Sykefraværsprosent (legemeldt)")="Kvartal";
+UNITS("Sykefraværsprosent (legemeldt)")="prosent";
+CONTACT("Sykefraværsprosent (legemeldt)")="Unn H. Høydahl, Statistisk sentralbyrå# +47 40 90 23 77#uhh@ssb.no## Arbeidsmarked, Statistisk sentralbyrå# +47 62 88 50 00#arbeidsmarked@ssb.no##Stine Bakke, Statistisk sentralbyrå# +47 91 52 62 51#eba@ssb.no##";
+LAST-UPDATED("Sykefraværsprosent (legemeldt), prosentvis endring fra året før")="20260226 08:00";
+STOCKFA("Sykefraværsprosent (legemeldt), prosentvis endring fra året før")="A";
+DAYADJ("Sykefraværsprosent (legemeldt), prosentvis endring fra året før")=NO;
+SEASADJ("Sykefraværsprosent (legemeldt), prosentvis endring fra året før")=NO;
+REFPERIOD("Sykefraværsprosent (legemeldt), prosentvis endring fra året før")="Kvartal";
+UNITS("Sykefraværsprosent (legemeldt), prosentvis endring fra året før")="prosent";
+CONTACT("Sykefraværsprosent (legemeldt), prosentvis endring fra året før")="Unn H. Høydahl, Statistisk sentralbyrå# +47 40 90 23 77#uhh@ssb.no## Arbeidsmarked, Statistisk sentralbyrå# +47 62 88 50 00#arbeidsmarked@ssb.no##Stine Bakke, Statistisk sentralbyrå# +47 91 52 62 51#eba@ssb.no##";
+DATABASE="Ekstern PROD database O_STATMETA_24 som 2.4";
+SOURCE="Statistisk sentralbyrå";
+INFOFILE="None";
+NOTE="Store endringer i sykefraværsprosenten fra et år til et annet bør tolkes med forsiktighet. Årsaken kan være at det er få personer i det aktuelle yrket, slik at selv små endringer i sykefraværet kan gi store utslag i statistikken.##Tabellen inkluderer ikk"
+"e statsløse lønnstakere eller lønnstakere med ukjent landbakgrunn.";
+META-ID="STATISTICS:sykefratot";
+META-ID("yrke")="urn:ssb:classification:klass:7,urn:ssb:conceptvariable:vardok:1118";
+META-ID("landbakgrunn")="urn:ssb:classification:klass:545";
+META-ID("statistikkvariabel","Sykefraværsprosent (legemeldt)")="urn:ssb:conceptvariable:vardok:2236";
+META-ID("statistikkvariabel","Sykefraværsprosent (legemeldt), prosentvis endring fra året før")="urn:ssb:conceptvariable:vardok:2236";
+DATASYMBOL1="..";
+DATASYMBOL2="...";
+DATASYMBOL3=":";
+DATASYMBOLSUM=".";
+DATASYMBOLNIL="-";
+DATANOTESUM=".";
+TABLEID="12909";
+VARIABLE-TYPE("yrke")="V";
+VARIABLE-TYPE("landbakgrunn")="V";
+VARIABLE-TYPE("kvartal")="T";
+DATA=
+6.4 1.2 
+5.5 -4.2 
+7.3 5.0 
+4.9 0.1 
+3.8 -8.9 
+6.0 6.0 
+;

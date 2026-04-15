@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 
 using Newtonsoft.Json;
@@ -11,6 +13,7 @@ using PCAxis.Metadata;
 using PCAxis.Paxiom;
 using PCAxis.Paxiom.Extensions;
 using PCAxis.Serializers.JsonStat2.Model;
+using PCAxis.Serializers.Util.MetaId;
 
 using PxWeb.Api2.Server.Models;
 
@@ -41,6 +44,7 @@ namespace PCAxis.Serializers
         public string BuildJsonStructure(PXModel model)
         {
             var dataset = new JsonStat2Dataset();
+            string language = model.Meta.CurrentLanguage;
 
             //Updated
             AddUpdated(model, dataset);
@@ -50,6 +54,10 @@ namespace PCAxis.Serializers
 
             //Label
             dataset.AddLabel(model.Meta.Title);
+
+            //Metaid handeling and output comes in OldWay and NewWay
+            //OldWay will hopfully end in 3.0. On root there is just the NewWay
+            AddMetaid(dataset, model.Meta.MetaId, language);
 
             //Extension PX
             AddPxToExtension(model, dataset);
@@ -64,7 +72,7 @@ namespace PCAxis.Serializers
 
             foreach (var variable in model.Meta.Variables)
             {
-                //temporary collector storage
+                //temporary collector storage (For Old Way)
                 var metaIdsHelper = new Dictionary<string, string>();
 
                 dataset.AddDimensionValue(variable.Code, variable.Name, out var dimensionValue);
@@ -79,7 +87,10 @@ namespace PCAxis.Serializers
                         dimensionValue.Category.Index.Add(variableValue.Code, indexCounter++);
                     }
 
+
                     CollectMetaIdsForValue(variableValue, ref metaIdsHelper);
+
+                    AddMetaidOnValue(dimensionValue, variable, variableValue, language);
 
                     // ValueNote
                     AddValueNotes(variableValue, dimensionValue);
@@ -133,12 +144,17 @@ namespace PCAxis.Serializers
                 AddVariableNotes(variable, dimensionValue);
 
                 //MetaID
+
+                //OldWay
                 CollectMetaIdsForVariable(variable, ref metaIdsHelper);
 
                 if (metaIdsHelper.Count > 0)
                 {
                     JsonStat2Dataset.AddDimensionLink(dimensionValue, metaIdsHelper);
                 }
+                //NewWay
+                AddMetaidOnVariable(dimensionValue, variable, language);
+
 
                 dataset.Size.Add(variable.Values.Count);
                 dataset.Id.Add(variable.Code);
@@ -163,6 +179,68 @@ namespace PCAxis.Serializers
 
             return result;
         }
+
+        private void AddMetaidOnVariable(DimensionValue dimensionValue, Variable variable, string language)
+        {
+            if (String.IsNullOrEmpty(variable.MetaId)){
+                return;
+            }
+
+            foreach (var metalink in MetaIdResolverStatic.GetVariableLinks(variable.MetaId, language, variable.Name))
+            {
+                JsonStat2Dataset.AddRelatedLink(dimensionValue, ToRelatedLink(metalink, null));
+            }
+        }
+
+        private void AddMetaidOnValue(DimensionValue dimensionValue, Variable variable, Value variableValue, string language)
+        {
+            if (String.IsNullOrEmpty(variableValue.MetaId))
+            {
+                return;
+            }
+
+            // There are 3 props on a "Variable Value": Code + Value + Text (combo of Code and Value)
+            // 
+            foreach (var metalink in MetaIdResolverStatic.GetValueLinks(variableValue.MetaId,language,variable.Name, variableValue.Text))
+            {
+                JsonStat2Dataset.AddRelatedLink(dimensionValue, ToRelatedLink(metalink, variableValue.Code));
+            }
+        }
+
+        private void AddMetaid(JsonStat2Dataset dataset, string metaIdRaw,  string language)
+        {
+            if (String.IsNullOrEmpty(metaIdRaw))
+            {
+                return;
+            }
+
+            foreach (Util.MetaId.Link metalink in MetaIdResolverStatic.GetTableLinks(metaIdRaw, language))
+            {
+                dataset.AddRelatedLink(ToRelatedLink(metalink, null));
+            }
+            
+        }
+
+
+        private static RelatedLink ToRelatedLink(Util.MetaId.Link metalink, string category)
+        {
+            RelatedLink myOut = new RelatedLink();
+            myOut.Extension = new RelatedLinkExtension();
+            myOut.Extension.Relation = metalink.Relation;
+            if (! String.IsNullOrEmpty(category ))
+            {
+                myOut.Extension.Category = category;
+            }
+            myOut.Extension.Metaid = metalink.MetaId;
+
+            myOut.Href = metalink.Url;
+            myOut.Label = metalink.Label;
+            myOut.Type = metalink.Type;
+
+            return myOut;
+        }
+
+
 
         private static PriceType GetPriceType(string cfprices)
         {
