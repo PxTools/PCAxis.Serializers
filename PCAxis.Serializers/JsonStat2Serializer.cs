@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection.Emit;
 using System.Text;
 
 using Newtonsoft.Json;
@@ -180,9 +178,10 @@ namespace PCAxis.Serializers
             return result;
         }
 
-        private void AddMetaidOnVariable(DimensionValue dimensionValue, Variable variable, string language)
+        private static void AddMetaidOnVariable(DimensionValue dimensionValue, Variable variable, string language)
         {
-            if (String.IsNullOrEmpty(variable.MetaId)){
+            if (String.IsNullOrEmpty(variable.MetaId))
+            {
                 return;
             }
 
@@ -192,7 +191,7 @@ namespace PCAxis.Serializers
             }
         }
 
-        private void AddMetaidOnValue(DimensionValue dimensionValue, Variable variable, Value variableValue, string language)
+        private static void AddMetaidOnValue(DimensionValue dimensionValue, Variable variable, Value variableValue, string language)
         {
             if (String.IsNullOrEmpty(variableValue.MetaId))
             {
@@ -201,13 +200,13 @@ namespace PCAxis.Serializers
 
             // There are 3 props on a "Variable Value": Code + Value + Text (combo of Code and Value)
             // 
-            foreach (var metalink in MetaIdResolverStatic.GetValueLinks(variableValue.MetaId,language,variable.Name, variableValue.Text))
+            foreach (var metalink in MetaIdResolverStatic.GetValueLinks(variableValue.MetaId, language, variable.Name, variableValue.Text))
             {
                 JsonStat2Dataset.AddRelatedLink(dimensionValue, ToRelatedLink(metalink, variableValue.Code));
             }
         }
 
-        private void AddMetaid(JsonStat2Dataset dataset, string metaIdRaw,  string language)
+        private static void AddMetaid(JsonStat2Dataset dataset, string metaIdRaw, string language)
         {
             if (String.IsNullOrEmpty(metaIdRaw))
             {
@@ -218,7 +217,7 @@ namespace PCAxis.Serializers
             {
                 dataset.AddRelatedLink(ToRelatedLink(metalink, null));
             }
-            
+
         }
 
 
@@ -227,7 +226,7 @@ namespace PCAxis.Serializers
             RelatedLink myOut = new RelatedLink();
             myOut.Extension = new RelatedLinkExtension();
             myOut.Extension.Relation = metalink.Relation;
-            if (! String.IsNullOrEmpty(category ))
+            if (!String.IsNullOrEmpty(category))
             {
                 myOut.Extension.Category = category;
             }
