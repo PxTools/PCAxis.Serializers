@@ -32,14 +32,7 @@
     <PackageReference Include="PCAxis.Metadata" Version="1.0.5" />
     <PackageReference Include="PCAxis.Query" Version="1.0.10" />
     <PackageReference Include="ClosedXML" Version="0.97.0" />
-
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-
     <PackageReference Include="PxWeb.Api2.Server.Models" Version="2.2.0" />
-
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 
   </ItemGroup>
