@@ -60,6 +60,30 @@ namespace UnitTests.Parquet
             Assert.AreEqual(numberOfColsInParq, numberOfColsInPx, $"Mismatch in column number for {fileNameWithoutExtension}.parquet.");
         }
 
+        [TestMethod, Description("Tests correct ordering of time variable (pxfile: 16216.px)")]
+        [DeploymentItem("TestFiles/14216.px")]
+        public void TestTimeVariableOrdering()
+        {
+            var pxFile = "14216.px";
+            var model = GetPxModelFromFile(pxFile);
+            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(pxFile);
+            string outputFile = Path.Combine(OutputDirectoryPath, $"{fileNameWithoutExtension}.parquet");
+            SerializePxModelToParquet(model, outputFile);
+            Table table = ReadBackParquetFileSync(outputFile);
+
+            Assert.AreEqual(2, table.Count, "Test number of rows");
+
+            Assert.AreEqual("0801", table[0].Values[0], "Test tettsted");
+            Assert.AreEqual("2025", table[0].Values[1], "Test year");
+            Assert.AreEqual(275.87, table[0].Values[3], "Test ContentsCode_Areal");
+            Assert.AreEqual(double.Parse("1110887"), table[0].Values[5], "Test ContentsCode_Bosatte");
+
+            Assert.AreEqual("0801", table[1].Values[0], "Test tettsted");
+            Assert.AreEqual("2024", table[1].Values[1], "Test year");
+            Assert.AreEqual(276.30, table[1].Values[3], "Test ContentsCode_Areal");
+            Assert.AreEqual(double.Parse("1098061"), table[1].Values[5], "Test ContentsCode_Bosatte");
+        }
+
         private static int CalculateNumberOfColumnsFromPxFile(PXModel model)
         {
 

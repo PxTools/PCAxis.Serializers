@@ -259,7 +259,12 @@ namespace PCAxis.Serializers
 
             if (variable.IsTime)
             {
-                value = variable.Values[index[i]].TimeValue;
+                // We can't look at TimeValue because in Paxiom TimeValue is wrong
+                // when the codes and values are not sorted ascending
+                if (variable.Values.IsCodesFictional)
+                {
+                    value = variable.Values[index[i]].Value;
+                }
                 row[dataFieldIndices[variable.Name]] = value;
                 row[dataFieldIndices["timestamp"]] = ParseTimeScale(value, variable.TimeScale);
             }
@@ -336,6 +341,7 @@ namespace PCAxis.Serializers
         /// <exception cref="ArgumentException"></exception>
         private static DateTime ParseHalfyear(string value)
         {
+            value = new string(value.Where(c => char.IsDigit(c)).ToArray());
             if (int.TryParse(value.Substring(0, 4), out int halfYearYear) && int.TryParse(value.Substring(4), out int halfYear))
             {
                 int monthHalfyear = halfYear == 1 ? 1 : 7;
@@ -353,6 +359,7 @@ namespace PCAxis.Serializers
         /// <exception cref="ArgumentException"></exception>
         private static DateTime ParseQuarterly(string value)
         {
+            value = new string(value.Where(c => char.IsDigit(c)).ToArray());
             if (int.TryParse(value.Substring(0, 4), out int quarterYear) && int.TryParse(value.Substring(4), out int quarter))
             {
                 int monthQuarter = (quarter - 1) * 3 + 1;
@@ -369,6 +376,7 @@ namespace PCAxis.Serializers
         /// <exception cref="ArgumentException"></exception>
         private static DateTime ParseMonthly(string value)
         {
+            value = new string(value.Where(c => char.IsDigit(c)).ToArray());
             if (int.TryParse(value.Substring(0, 4), out int monthYear) && int.TryParse(value.Substring(4, 2), out int month))
             {
                 return new DateTime(monthYear, month, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -384,6 +392,7 @@ namespace PCAxis.Serializers
         /// <exception cref="ArgumentException"></exception>
         private static DateTime ParseWeekly(string value)
         {
+            value = new string(value.Where(c => char.IsDigit(c)).ToArray());
             if (int.TryParse(value.Substring(0, 4), out int weekYear) && int.TryParse(value.Substring(4), out int week))
             {
                 DateTime jan1 = new DateTime(weekYear, 1, 1, 0, 0, 0, DateTimeKind.Utc);
