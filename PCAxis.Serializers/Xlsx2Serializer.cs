@@ -209,7 +209,6 @@ namespace PCAxis.Serializers
             string dataNote = string.Empty;
             int column;
             string value;
-            int rowOffset = row;
 
             int indentation = CalculateLeftIndentation(model);
             for (int i = 0; i < model.Data.MatrixRowCount; i++)
