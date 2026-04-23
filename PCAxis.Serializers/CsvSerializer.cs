@@ -295,42 +295,54 @@ namespace PCAxis.Paxiom
 
             if (_model.Meta.Stub.Count > 0)
             {
-                sc = ConcatStubValues(0);
-
-                if (sc.Count != _model.Data.MatrixRowCount)
-                {
-                    throw new PXSerializationException("Stub values do not match the data", "");
-                }
-
-                for (int i = 0; i < sc.Count; i++)
-                {
-                    // If ExcludeZerosAndMissingValues is true, skip rows with all zero or missing values
-                    if (ExcludeZerosAndMissingValues && df.IsZeroRow(i))
-                        continue;
-
-                    wr.Write(sc[i]);
-                    for (int c = 0; c < _model.Data.MatrixColumnCount; c++)
-                    {
-                        value = df.ReadElement(i, c);
-                        wr.Write(this._delimiter);
-                        wr.Write(value);
-                    }
-                    wr.WriteLine();
-                }
+                WriteTableWithSubVariables(wr, ref value, df);
             }
             else if (_model.Meta.Heading.Count > 0)
             {
-                // If ExcludeZerosAndMissingValues is true, do not write the data if all values in the first row are zero or missing
-                if (ExcludeZerosAndMissingValues && df.IsZeroRow(0))
-                    return;
+                WriteTableWithnHeadingVariables(wr, ref value, df);
+            }
+        }
 
+        private void WriteTableWithnHeadingVariables(StreamWriter wr, ref string value, DataFormatter df)
+        {
+            // If ExcludeZerosAndMissingValues is true, do not write the data if all values in the first row are zero or missing
+            if (ExcludeZerosAndMissingValues && df.IsZeroRow(0))
+                return;
+
+            for (int c = 0; c < _model.Data.MatrixColumnCount; c++)
+            {
+                value = df.ReadElement(0, c);
+                wr.Write(this._delimiter);
+                wr.Write(value);
+            }
+
+        }
+
+        private void WriteTableWithSubVariables(StreamWriter wr, ref string value, DataFormatter df)
+        {
+            StringCollection sc = ConcatStubValues(0);
+            if (sc.Count != _model.Data.MatrixRowCount)
+            {
+                throw new PXSerializationException("Stub values do not match the data", "");
+            }
+
+            for (int i = 0; i < sc.Count; i++)
+            {
+                // If ExcludeZerosAndMissingValues is true, skip rows with all zero or missing values
+                if (ExcludeZerosAndMissingValues && df.IsZeroRow(i))
+                    continue;
+
+                wr.Write(sc[i]);
                 for (int c = 0; c < _model.Data.MatrixColumnCount; c++)
                 {
-                    value = df.ReadElement(0, c);
+                    value = df.ReadElement(i, c);
                     wr.Write(this._delimiter);
                     wr.Write(value);
                 }
+                wr.WriteLine();
             }
+
+            return sc;
         }
 
         private DataFormatter CreateDataFormater()
