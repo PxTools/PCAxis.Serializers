@@ -341,8 +341,6 @@ namespace PCAxis.Paxiom
                 }
                 wr.WriteLine();
             }
-
-            return sc;
         }
 
         private DataFormatter CreateDataFormater()
