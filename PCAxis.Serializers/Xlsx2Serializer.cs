@@ -214,12 +214,6 @@ namespace PCAxis.Serializers
             int indentation = CalculateLeftIndentation(model);
             for (int i = 0; i < model.Data.MatrixRowCount; i++)
             {
-                //// Write stub headings
-                //for (int k = 0; k < model.Meta.Stub.Count; k++)
-                //{
-                //    WriteStubHeading(model, sheet, k, i, rowOffset);
-                //}
-
                 // Write data cells for row
                 // Skip writing the row if ExcludeZerosAndMissingValues is true and the row only contains zeros or missing values
                 if (ExcludeZerosAndMissingValues && fmt.IsZeroRow(i))
@@ -838,47 +832,6 @@ namespace PCAxis.Serializers
 
         private void WriteStubHeading(PXModel model, IXLWorksheet sheet, int rowOffset, DataFormatter fmt)
         {
-            //int stubCount = model.Meta.Stub.Count;
-            //int rowCount = model.Data.MatrixRowCount;
-            //// Exit early if we do not have any stub variables
-            //if (stubCount < 1) { return; }
-
-            //var count = new int[stubCount];
-            //var interval = new int[stubCount];
-
-            //for (int stubNr = 0; stubNr < stubCount; stubNr++)
-            //{
-            //    count[stubNr] = model.Meta.Stub[stubNr].Values.Count;
-            //    interval[stubNr] = stubNr < model.Meta.Stub.Count - 1 ? CalcStubInterval(stubNr + 1, model) : 1;
-            //}
-
-
-
-            //for (int stubNr = 0; stubNr < stubCount; stubNr++)
-            //{
-            //    int row = 0;
-            //    while (row < rowCount)
-            //    {
-            //        Value val = model.Meta.Stub[stubNr].Values[(row / interval[stubNr]) % count[stubNr]];
-            //        SetCell(
-            //          sheet.Cell(row + rowOffset, stubNr + 1),
-            //          CellContentType.Stub,
-            //          GetLabel(val),
-            //          c => c.Style.Font.Bold = true);
-
-            //        if (val.HasNotes())
-            //        {
-            //            SetCell(
-            //                sheet.Cell(row + rowOffset, stubNr + 1),
-            //                CellContentType.Comment,
-            //                val.Notes.GetAllNotes(),
-            //                null
-            //            );
-            //        }
-            //        row += interval[stubNr];
-            //    }
-            //}
-
             int skipedRows = 0;
             WriteStubHeadingRecursive(model, sheet, 0, 0, rowOffset, fmt, ref skipedRows);
 
@@ -894,7 +847,6 @@ namespace PCAxis.Serializers
             int localSkippedRows = skipedRows;
             for (int i = 0; i < count; i++)
             {
-                allChildrenSkipped = false;
                 if ((stubNr + 1) < model.Meta.Stub.Count)
                 {
                     allChildrenSkipped = WriteStubHeadingRecursive(model, sheet, stubNr + 1, rowNr, rowOffset, fmt, ref skipedRows);
@@ -902,7 +854,6 @@ namespace PCAxis.Serializers
                     if (ExcludeZerosAndMissingValues && allChildrenSkipped)
                     {
                         zeroRowsCount++;
-                        //skipedRows--;
                         continue;
                     }
                 }
@@ -939,42 +890,6 @@ namespace PCAxis.Serializers
                 rowNr += interval;
             }
             return zeroRowsCount == count;
-        }
-
-
-        private void WriteStubHeading(PXModel model, IXLWorksheet sheet, int stubNr, int rowNr, int rowOffset)
-        {
-            int count = model.Meta.Stub[stubNr].Values.Count;
-            int interval = stubNr < model.Meta.Stub.Count - 1 ? CalcStubInterval(stubNr + 1, model) : 1;
-
-            Value val;
-            int row, column;
-            if (rowNr % interval == 0)
-            {
-                //Dim Cell As New Cell
-                int offset = 0;
-                val = model.Meta.Stub[stubNr].Values[(rowNr / interval) % count];
-                row = rowNr + rowOffset;
-
-                column = stubNr + 1 + offset;
-
-                SetCell(
-                    sheet.Cell(row, column),
-                    CellContentType.Stub,
-                    GetLabel(val),
-                    c => c.Style.Font.Bold = true
-                );
-
-                if (val.HasNotes())
-                {
-                    SetCell(
-                        sheet.Cell(row, column),
-                        CellContentType.Comment,
-                        val.Notes.GetAllNotes(),
-                        null
-                    );
-                }
-            }
         }
 
         private static int CalcStubInterval(int stubChildNr, PXModel model)
