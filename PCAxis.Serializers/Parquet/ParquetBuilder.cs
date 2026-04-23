@@ -58,7 +58,12 @@ namespace PCAxis.Serializers
             int matrixSize = model.Data.MatrixColumnCount * model.Data.MatrixRowCount;
             double[] data = new double[matrixSize];
             int[] variableValueCounts = GetVariableValueCounts();
-            var indices = GenerateDataPointIndices(variableValueCounts);
+            // Build a mask indicating which variables are multi-valued content variables.
+            bool[] isContentMulti = model.Meta.Variables
+                .Select(v => v.IsContentVariable && v.Values.Count > 1)
+                .ToArray();
+
+            var indices = GenerateDataPointIndices(variableValueCounts, isContentMulti);
 
             for (int m = 0; m < matrixSize; m++)
             {
@@ -213,23 +218,26 @@ namespace PCAxis.Serializers
 
                 int columnIndex = dataFieldIndices[columnName];
                 int symbolColumnIndex = dataFieldIndices[symbolColumnName]; // Get index of the symbol column
-                int dataIndex = ParquetBuilder.GetDataIndex(index, variableValueCounts);
 
-                if (dataIndex + j < data.Length)
-                {
-                    dataIndex += j;
-                }
+                // Compute the exact data index for this content value by cloning the
+                // multi-dimensional index, setting the content variable coordinate to j,
+                // and converting to the linear data index. This avoids assumptions about
+                // dimension ordering or stride between content values.
+                int varPos = model.Meta.Variables.IndexOf(variable);
+                int[] indexForValue = (int[])index.Clone();
+                indexForValue[varPos] = j;
+                int dataIndexForValue = ParquetBuilder.GetDataIndex(indexForValue, variableValueCounts);
 
-                if (dataIndex >= 0 && dataIndex < data.Length)
+                if (dataIndexForValue >= 0 && dataIndexForValue < data.Length)
                 {
-                    if (dataSymbolMap.ContainsKey(data[dataIndex]))
+                    if (dataSymbolMap.ContainsKey(data[dataIndexForValue]))
                     {
-                        row[symbolColumnIndex] = dataSymbolMap[data[dataIndex]]; // Set the symbol value
+                        row[symbolColumnIndex] = dataSymbolMap[data[dataIndexForValue]]; // Set the symbol value
                         row[columnIndex] = double.NaN; // Replace the value with double.NaN
                     }
                     else
                     {
-                        row[columnIndex] = data[dataIndex];
+                        row[columnIndex] = data[dataIndexForValue];
                         row[symbolColumnIndex] = null; // No symbol
                     }
                 }
@@ -248,11 +256,17 @@ namespace PCAxis.Serializers
         private void PopulateNonContentVariableRow(int[] index, object[] row, Dictionary<string, int> dataFieldIndices, Variable variable, int i)
         {
             var value = variable.Values[index[i]].Code;
+
             if (variable.IsTime)
             {
-                value = variable.Values[index[i]].TimeValue;
-                row[dataFieldIndices[variable.Name]] = value; // Original time-value
-                row[dataFieldIndices["timestamp"]] = ParseTimeScale(value, variable.TimeScale); // Parsed timestamp
+                // We can't look at TimeValue because in Paxiom TimeValue is wrong
+                // when the codes and values are not sorted ascending
+                if (variable.Values.IsCodesFictional)
+                {
+                    value = variable.Values[index[i]].Value;
+                }
+                row[dataFieldIndices[variable.Name]] = value;
+                row[dataFieldIndices["timestamp"]] = ParseTimeScale(value, variable.TimeScale);
             }
             else
             {
@@ -327,6 +341,7 @@ namespace PCAxis.Serializers
         /// <exception cref="ArgumentException"></exception>
         private static DateTime ParseHalfyear(string value)
         {
+            value = new string(value.Where(c => char.IsDigit(c)).ToArray());
             if (int.TryParse(value.Substring(0, 4), out int halfYearYear) && int.TryParse(value.Substring(4), out int halfYear))
             {
                 int monthHalfyear = halfYear == 1 ? 1 : 7;
@@ -344,6 +359,7 @@ namespace PCAxis.Serializers
         /// <exception cref="ArgumentException"></exception>
         private static DateTime ParseQuarterly(string value)
         {
+            value = new string(value.Where(c => char.IsDigit(c)).ToArray());
             if (int.TryParse(value.Substring(0, 4), out int quarterYear) && int.TryParse(value.Substring(4), out int quarter))
             {
                 int monthQuarter = (quarter - 1) * 3 + 1;
@@ -360,6 +376,7 @@ namespace PCAxis.Serializers
         /// <exception cref="ArgumentException"></exception>
         private static DateTime ParseMonthly(string value)
         {
+            value = new string(value.Where(c => char.IsDigit(c)).ToArray());
             if (int.TryParse(value.Substring(0, 4), out int monthYear) && int.TryParse(value.Substring(4, 2), out int month))
             {
                 return new DateTime(monthYear, month, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -375,6 +392,7 @@ namespace PCAxis.Serializers
         /// <exception cref="ArgumentException"></exception>
         private static DateTime ParseWeekly(string value)
         {
+            value = new string(value.Where(c => char.IsDigit(c)).ToArray());
             if (int.TryParse(value.Substring(0, 4), out int weekYear) && int.TryParse(value.Substring(4), out int week))
             {
                 DateTime jan1 = new DateTime(weekYear, 1, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -412,11 +430,12 @@ namespace PCAxis.Serializers
 
             for (int i = index.Length - 1; i >= 0; i--)
             {
-                dataIndex += index[i] * multiplier;
-                if (i < variableValueCounts.Length - 1) // Adjusting the condition here
+                if (i < variableValueCounts.Length - 1) // Ensure multiplier equals product of dimensions to the right
                 {
                     multiplier *= variableValueCounts[i + 1];
                 }
+
+                dataIndex += index[i] * multiplier;
             }
 
             return dataIndex;
@@ -473,16 +492,22 @@ namespace PCAxis.Serializers
         /// </summary>
         /// <param name="variableValueCounts">An array of integers representing the counts of values for each variable.</param>
         /// <returns>A list of integer arrays representing the data point indices.</returns>
-        private static List<int[]> GenerateDataPointIndices(int[] variableValueCounts)
+        private static List<int[]> GenerateDataPointIndices(int[] variableValueCounts, bool[] isContentMulti)
         {
             int variableCount = variableValueCounts.Length;
-            int[] variableIndexCounts = new int[variableCount];
+
+            // Effective counts treat multi-valued content variables as having count 1
+            // so that rows correspond to combinations of the other variables only.
+            int[] effectiveCounts = new int[variableCount];
+            for (int i = 0; i < variableCount; i++)
+            {
+                effectiveCounts[i] = (isContentMulti != null && i < isContentMulti.Length && isContentMulti[i]) ? 1 : variableValueCounts[i];
+            }
 
             int totalDataPoints = 1;
             for (int i = variableCount - 1; i >= 0; i--)
             {
-                variableIndexCounts[i] = totalDataPoints;
-                totalDataPoints *= variableValueCounts[i];
+                totalDataPoints *= effectiveCounts[i];
             }
 
             List<int[]> dataPointIndices = new List<int[]>(totalDataPoints);
@@ -494,12 +519,14 @@ namespace PCAxis.Serializers
                 int tempIndex = dataIndex;
                 for (int variableIndex = 0; variableIndex < variableCount; variableIndex++)
                 {
-                    indices[variableIndex] = tempIndex % variableValueCounts[variableIndex];
-                    tempIndex /= variableValueCounts[variableIndex];
+                    // For multi-valued content variables effectiveCounts will be 1 so this yields 0.
+                    indices[variableIndex] = tempIndex % effectiveCounts[variableIndex];
+                    tempIndex /= effectiveCounts[variableIndex];
                 }
 
                 dataPointIndices.Add(indices);
             }
+
             return dataPointIndices;
         }
     }
