@@ -842,31 +842,26 @@ namespace PCAxis.Serializers
             int interval = stubNr < model.Meta.Stub.Count - 1 ? CalcStubInterval(stubNr + 1, model) : 1;
             int zeroRowsCount = 0;
             bool allChildrenSkipped;
-            bool zeroRow;
             int localSkippedRows = skipedRows;
             for (int i = 0; i < count; i++)
             {
+                allChildrenSkipped = false;
                 if ((stubNr + 1) < model.Meta.Stub.Count)
                 {
                     allChildrenSkipped = WriteStubHeadingRecursive(model, sheet, stubNr + 1, rowNr, rowOffset, fmt, ref skipedRows);
-
-                    if (ExcludeZerosAndMissingValues && allChildrenSkipped)
-                    {
-                        zeroRowsCount++;
-                        continue;
-                    }
                 }
 
-                if (ExcludeZerosAndMissingValues)
+                if (ExcludeZerosAndMissingValues && allChildrenSkipped)
                 {
-                    zeroRow = fmt.IsZeroRow(rowNr);
+                    zeroRowsCount++;
+                    continue;
+                }
 
-                    if (zeroRow)
-                    {
-                        zeroRowsCount++;
-                        skipedRows++;
-                        continue;
-                    }
+                if (ExcludeZerosAndMissingValues && fmt.IsZeroRow(rowNr))
+                {
+                    zeroRowsCount++;
+                    skipedRows++;
+                    continue;
                 }
 
                 Value val = model.Meta.Stub[stubNr].Values[i];
