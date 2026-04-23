@@ -287,24 +287,22 @@ namespace PCAxis.Paxiom
         /// <param name="wr">The stream to write to</param>
         protected void WriteTable(StreamWriter wr)
         {
-            StringCollection sc;
-
-            string value = "";
-            DataFormatter df = CreateDataFormater();
-
 
             if (_model.Meta.Stub.Count > 0)
             {
-                WriteTableWithSubVariables(wr, ref value, df);
+                WriteTableWithSubVariables(wr);
             }
             else if (_model.Meta.Heading.Count > 0)
             {
-                WriteTableWithnHeadingVariables(wr, ref value, df);
+                WriteTableWithnHeadingVariables(wr);
             }
         }
 
-        private void WriteTableWithnHeadingVariables(StreamWriter wr, ref string value, DataFormatter df)
+        private void WriteTableWithnHeadingVariables(StreamWriter wr)
         {
+            string value = "";
+            DataFormatter df = CreateDataFormater();
+
             // If ExcludeZerosAndMissingValues is true, do not write the data if all values in the first row are zero or missing
             if (ExcludeZerosAndMissingValues && df.IsZeroRow(0))
                 return;
@@ -318,8 +316,10 @@ namespace PCAxis.Paxiom
 
         }
 
-        private void WriteTableWithSubVariables(StreamWriter wr, ref string value, DataFormatter df)
+        private void WriteTableWithSubVariables(StreamWriter wr)
         {
+            string value = "";
+            DataFormatter df = CreateDataFormater();
             StringCollection sc = ConcatStubValues(0);
             if (sc.Count != _model.Data.MatrixRowCount)
             {
