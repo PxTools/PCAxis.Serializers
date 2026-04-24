@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 using PCAxis.Paxiom;
@@ -17,7 +18,10 @@ namespace PCAxis.Serializers
 
         private int[] _subStubValues;
         private DataFormatter _fmt;
+        private Dictionary<int, bool> _emptyRowCache;
 
+
+        public bool ExcludeZerosAndMissingValues { get; set; } = false;
         public bool IncludeTitle { get; set; } = false;
         public LablePreference ValueLablesDisplay { get; set; } = LablePreference.None;
 
@@ -67,6 +71,7 @@ namespace PCAxis.Serializers
 
         private void DoSerialize(PXModel model, StreamWriter wr)
         {
+            _emptyRowCache = new Dictionary<int, bool>();
             wr.WriteLine(@"<table id=""" + model.Meta.Matrix + "_" + Guid.NewGuid().ToString() + @""" >"); //@""" aria-describedby="" "
 
             // Only write title if it is set to be included
@@ -92,11 +97,22 @@ namespace PCAxis.Serializers
             wr.WriteLine("<tbody>");
             int levels = stub.Count;
             int row = 0;
+            _fmt = GetDataFormatter(model);
             WriteTable(wr, model, levels, 0, ref row);
 
             wr.WriteLine("</tbody>");
             wr.WriteLine("</table>");
             wr.Flush();
+        }
+
+        private DataFormatter GetDataFormatter(PXModel model)
+        {
+            var df = new DataFormatter(model);
+            if (ExcludeZerosAndMissingValues)
+            {
+                df.ZeroOption = ZeroOptionType.NoZeroNilAndSymbol;
+            }
+            return df;
         }
 
         private int CalculateSubValues(Variables vars, int level, ref int[] subValues)
@@ -221,48 +237,97 @@ namespace PCAxis.Serializers
 
         }
 
+        private static int CalculateStubRepeat(PXModel model, int index)
+        {
+            var x = 1;
+
+            for (int i = index + 1; i < model.Meta.Stub.Count; i++)
+            {
+                x *= model.Meta.Stub[i].Values.Count;
+            }
+            return x;
+        }
+
+        private bool AreAllEmptyRows(int row, int count)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                bool value;
+
+                if (!_emptyRowCache.TryGetValue(row + i, out value))
+                {
+                    value = _fmt.IsZeroRow(row + i);
+                    _emptyRowCache.Add(row + i, value);
+                }
+                if (!value)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         private void WriteTable(System.IO.StreamWriter wr, Paxiom.PXModel model, int levels, int level, ref int row)
         {
-            _fmt = new DataFormatter(model);
-
-            if ((level == levels))
+            if (level > levels)
             {
-                //  Time to write the data to the file
-                WriteDataLine(wr, model, row);
-                //  Close this row. The closing tag is not writen if level + 1 < levels, se
-                //  the else clause below
-                wr.WriteLine("</tr>");
-                row = (row + 1);
+                return;
             }
-            else
+
+            int nextLevel = level + 1;
+
+            // There is not variables in the stub, write the data line and return
+            if (model.Meta.Stub.Count == 0)
             {
-                Paxiom.Values values = model.Meta.Stub[level].Values;
-                int nextLevel = (level + 1);
-                for (int i = 0; (i <= (values.Count - 1)); i++)
+                wr.WriteLine("<tr>");
+                WriteEmptyHeadingForStub(wr, model);
+                WriteDataLine(wr, model, row);
+                wr.WriteLine("</tr>");
+                row++;
+                return;
+            }
+
+            var values = model.Meta.Stub[level].Values;
+
+            int repeat = CalculateStubRepeat(model, level);
+            for (int i = 0; (i <= (values.Count - 1)); i++)
+            {
+                if (AreAllEmptyRows(row, repeat))
+                {
+                    row += repeat;
+                    continue;
+                }
+                // writes empty cells if this is not the last variable in the stub, and the next level is not empty
+                if (nextLevel < levels)
                 {
                     wr.WriteLine("<tr>");
                     wr.Write(@"<th scope=""row"">");
-
                     wr.Write(GetLabel(values[i]));
                     wr.WriteLine("</th>");
-                    _fmt = new DataFormatter(model);
 
-
-                    if (level + 1 < levels)
+                    for (int y = 0; y <= model.Data.MatrixColumnCount - 1; y++)
                     {
-                        for (int y = 0; y <= model.Data.MatrixColumnCount - 1; y++)
-                        {
-                            wr.WriteLine("<td></td>");
-                        }
-                        wr.WriteLine("</tr>");
+                        wr.WriteLine("<td></td>");
                     }
-
-
+                    wr.WriteLine("</tr>");
+                    // write the next variable in the stub
                     WriteTable(wr, model, levels, nextLevel, ref row);
                 }
+                else // This is the last variable in the stub, write the data line and close the row
+                {
 
+                    wr.WriteLine("<tr>");
+                    wr.Write(@"<th scope=""row"">");
+                    wr.Write(GetLabel(values[i]));
+                    wr.WriteLine("</th>");
+                    //  Write the data to the file
+                    WriteDataLine(wr, model, row);
+                    //  Close this row. The closing tag is not writen if level + 1 < levels, se
+                    //  the else clause below
+                    wr.WriteLine("</tr>");
+                    row++;
+                }
             }
-
         }
     }
 }
