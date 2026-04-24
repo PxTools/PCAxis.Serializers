@@ -12,6 +12,7 @@ namespace PCAxis.Serializers.Tests.Csv
 {
     [TestClass]
     [DeploymentItem("TestFiles/PR0101B3.px")]
+    [DeploymentItem("TestFiles/TAB2936.px")]
     public class CsvSerializerTests
     {
         [TestMethod]
@@ -100,6 +101,21 @@ namespace PCAxis.Serializers.Tests.Csv
             var content = reader.ReadToEnd();
 
             Assert.Contains("Consumer Price Index", content);
+        }
+
+        [TestMethod]
+        public void Serialize_ValidModelWithLinesWithMissingValue_ShouldBeSmallerInSize()
+        {
+            var serializer = new CsvSerializer();
+            var helper = new UnitTests.Helper();
+            var model = helper.GetSelectAllModel("TAB2936.px");
+            var stream = new MemoryStream();
+            serializer.Serialize(model, stream);
+            serializer.ExcludeZerosAndMissingValues = true;
+            var streamWithExclusion = new MemoryStream();
+            serializer.Serialize(model, streamWithExclusion);
+
+            Assert.IsGreaterThan(streamWithExclusion.Length, stream.Length);
         }
     }
 }
