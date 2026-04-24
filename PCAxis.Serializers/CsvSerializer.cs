@@ -39,6 +39,8 @@ namespace PCAxis.Paxiom
 
         public bool IncludeTitle { get; set; } = false;
 
+        public bool ExcludeZerosAndMissingValues { get; set; } = false;
+
 
         private Delimiters _valueDelimiter = Delimiters.Comma;
         public Delimiters ValueDelimiter
@@ -285,41 +287,59 @@ namespace PCAxis.Paxiom
         /// <param name="wr">The stream to write to</param>
         protected void WriteTable(StreamWriter wr)
         {
-            StringCollection sc;
-
-            string value = "";
-            DataFormatter df = CreateDataFormater();
-
 
             if (_model.Meta.Stub.Count > 0)
             {
-                sc = ConcatStubValues(0);
-
-                if (sc.Count != _model.Data.MatrixRowCount)
-                {
-                    throw new PXSerializationException("Stub values do not match the data", "");
-                }
-
-                for (int i = 0; i < sc.Count; i++)
-                {
-                    wr.Write(sc[i]);
-                    for (int c = 0; c < _model.Data.MatrixColumnCount; c++)
-                    {
-                        value = df.ReadElement(i, c);
-                        wr.Write(this._delimiter);
-                        wr.Write(value);
-                    }
-                    wr.WriteLine();
-                }
+                WriteTableWithSubVariables(wr);
             }
             else if (_model.Meta.Heading.Count > 0)
             {
+                WriteTableWithnHeadingVariables(wr);
+            }
+        }
+
+        private void WriteTableWithnHeadingVariables(StreamWriter wr)
+        {
+            string value = "";
+            DataFormatter df = CreateDataFormater();
+
+            // If ExcludeZerosAndMissingValues is true, do not write the data if all values in the first row are zero or missing
+            if (ExcludeZerosAndMissingValues && df.IsZeroRow(0))
+                return;
+
+            for (int c = 0; c < _model.Data.MatrixColumnCount; c++)
+            {
+                value = df.ReadElement(0, c);
+                wr.Write(this._delimiter);
+                wr.Write(value);
+            }
+
+        }
+
+        private void WriteTableWithSubVariables(StreamWriter wr)
+        {
+            string value = "";
+            DataFormatter df = CreateDataFormater();
+            StringCollection sc = ConcatStubValues(0);
+            if (sc.Count != _model.Data.MatrixRowCount)
+            {
+                throw new PXSerializationException("Stub values do not match the data", "");
+            }
+
+            for (int i = 0; i < sc.Count; i++)
+            {
+                // If ExcludeZerosAndMissingValues is true, skip rows with all zero or missing values
+                if (ExcludeZerosAndMissingValues && df.IsZeroRow(i))
+                    continue;
+
+                wr.Write(sc[i]);
                 for (int c = 0; c < _model.Data.MatrixColumnCount; c++)
                 {
-                    value = df.ReadElement(0, c);
+                    value = df.ReadElement(i, c);
                     wr.Write(this._delimiter);
                     wr.Write(value);
                 }
+                wr.WriteLine();
             }
         }
 
@@ -329,6 +349,8 @@ namespace PCAxis.Paxiom
             df.DecimalSeparator = ".";
             df.ShowDataNotes = false;
             df.ThousandSeparator = "";
+            if (ExcludeZerosAndMissingValues)
+                df.ZeroOption = ZeroOptionType.NoZeroNilAndSymbol;
             return df;
         }
 
