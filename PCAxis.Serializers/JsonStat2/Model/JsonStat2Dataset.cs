@@ -320,7 +320,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
             };
         }
 
-		//On Dimension
+        //On Dimension
         public static void AddRelatedLink(DimensionValue dimensionValue, RelatedLink theLink)
         {
             InitializeRelated(dimensionValue);
@@ -394,7 +394,5 @@ namespace PCAxis.Serializers.JsonStat2.Model
                 dimensionValue.Extension.BasePeriod.Add(valueCode, basePeriod);
             }
         }
-
-  
     }
 }
