@@ -320,42 +320,7 @@ namespace PCAxis.Serializers.JsonStat2.Model
             };
         }
 
-        public static void AddMeasuringType(DimensionValue dimensionValue, string valueCode, MeasuringType measuringType)
-        {
-            if (dimensionValue.Extension.MeasuringType == null)
-                dimensionValue.Extension.MeasuringType = new Dictionary<string, MeasuringType>();
-
-            dimensionValue.Extension.MeasuringType.Add(valueCode, measuringType);
-        }
-
-        public static void AddPriceType(DimensionValue dimensionValue, string valueCode, PriceType priceType)
-        {
-            if (dimensionValue.Extension.PriceType == null)
-                dimensionValue.Extension.PriceType = new Dictionary<string, PriceType>();
-
-            dimensionValue.Extension.PriceType.Add(valueCode, priceType);
-        }
-
-        public static void AddAdjustment(DimensionValue dimensionValue, string valueCode, Adjustment adjustment)
-        {
-            if (dimensionValue.Extension.Adjustment == null)
-                dimensionValue.Extension.Adjustment = new Dictionary<string, Adjustment>();
-
-            dimensionValue.Extension.Adjustment.Add(valueCode, adjustment);
-        }
-
-        public static void AddBasePeriod(DimensionValue dimensionValue, string valueCode, string basePeriod)
-        {
-            if (!string.IsNullOrEmpty(basePeriod))
-            {
-                if (dimensionValue.Extension.BasePeriod == null)
-                    dimensionValue.Extension.BasePeriod = new Dictionary<string, string>();
-
-                dimensionValue.Extension.BasePeriod.Add(valueCode, basePeriod);
-            }
-        }
-
-        //On Dimension
+		//On Dimension
         public static void AddRelatedLink(DimensionValue dimensionValue, RelatedLink theLink)
         {
             InitializeRelated(dimensionValue);
@@ -394,5 +359,42 @@ namespace PCAxis.Serializers.JsonStat2.Model
                 this.Link.Related = new List<RelatedLink>();
             }
         }
+
+        public static void AddMeasuringType(DimensionValue dimensionValue, string valueCode, MeasuringType measuringType)
+        {
+            if (dimensionValue.Extension.MeasuringType == null)
+                dimensionValue.Extension.MeasuringType = new Dictionary<string, MeasuringType>();
+
+            dimensionValue.Extension.MeasuringType.Add(valueCode, measuringType);
+        }
+
+        public static void AddPriceType(DimensionValue dimensionValue, string valueCode, PriceType priceType)
+        {
+            if (dimensionValue.Extension.PriceType == null)
+                dimensionValue.Extension.PriceType = new Dictionary<string, PriceType>();
+
+            dimensionValue.Extension.PriceType.Add(valueCode, priceType);
+        }
+
+        public static void AddAdjustment(DimensionValue dimensionValue, string valueCode, Adjustment adjustment)
+        {
+            if (dimensionValue.Extension.Adjustment == null)
+                dimensionValue.Extension.Adjustment = new Dictionary<string, Adjustment>();
+
+            dimensionValue.Extension.Adjustment.Add(valueCode, adjustment);
+        }
+
+        public static void AddBasePeriod(DimensionValue dimensionValue, string valueCode, string basePeriod)
+        {
+            if (!string.IsNullOrEmpty(basePeriod))
+            {
+                if (dimensionValue.Extension.BasePeriod == null)
+                    dimensionValue.Extension.BasePeriod = new Dictionary<string, string>();
+
+                dimensionValue.Extension.BasePeriod.Add(valueCode, basePeriod);
+            }
+        }
+
+  
     }
 }
