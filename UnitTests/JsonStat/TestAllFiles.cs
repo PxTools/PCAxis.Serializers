@@ -10,10 +10,9 @@ using Newtonsoft.Json.Linq;
 
 using PCAxis.Paxiom;
 
-[assembly: DoNotParallelize]
-
 namespace UnitTests.JsonStat
 {
+    [DoNotParallelize]
     [TestClass]
     [DeploymentItem("TestFiles", "TestFiles")]
     public class TestAllFiles
