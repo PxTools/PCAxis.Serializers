@@ -72,14 +72,14 @@ namespace PCAxis.Serializers.Parquet
             }
 
             ParquetSchema schema = CreateSchema();
-            DataField[] schemaFields = schema.GetDataFields();
-            Dictionary<string, int> fieldNameToColumnIndex = schemaFields.Select((field, idx) => new { field.Name, idx })
+            DataField[] dataFields = schema.GetDataFields();
+            Dictionary<string, int> fieldNameToColumnIndex = dataFields.Select((field, idx) => new { field.Name, idx })
                                                                  .ToDictionary(x => x.Name, x => x.idx);
 
             int rowCount = indices.Count;
             // Keep an object buffer per column, then cast to typed arrays in one pass.
-            var columnBuffers = new object[schemaFields.Length][];
-            for (int columnIndex = 0; columnIndex < schemaFields.Length; columnIndex++)
+            var columnBuffers = new object[dataFields.Length][];
+            for (int columnIndex = 0; columnIndex < dataFields.Length; columnIndex++)
             {
                 columnBuffers[columnIndex] = new object[rowCount];
             }
@@ -87,20 +87,20 @@ namespace PCAxis.Serializers.Parquet
             // Build each row once and write values directly into their column buffers.
             for (int rowIndex = 0; rowIndex < rowCount; rowIndex++)
             {
-                var row = PopulateRow(indices[rowIndex], schemaFields.Length, variableValueCounts, data, fieldNameToColumnIndex);
-                for (int columnIndex = 0; columnIndex < schemaFields.Length; columnIndex++)
+                var row = PopulateRow(indices[rowIndex], dataFields.Length, variableValueCounts, data, fieldNameToColumnIndex);
+                for (int columnIndex = 0; columnIndex < dataFields.Length; columnIndex++)
                 {
                     columnBuffers[columnIndex][rowIndex] = row[columnIndex];
                 }
             }
 
-            var columns = new DataColumn[schemaFields.Length];
+            var columns = new DataColumn[dataFields.Length];
 
             // Convert object buffers to field-typed arrays required by DataColumn.
-            for (int columnIndex = 0; columnIndex < schemaFields.Length; columnIndex++)
+            for (int columnIndex = 0; columnIndex < dataFields.Length; columnIndex++)
             {
-                Array typedValues = ConvertToTypedArray(schemaFields[columnIndex], columnBuffers[columnIndex]);
-                columns[columnIndex] = new DataColumn(schemaFields[columnIndex], typedValues);
+                Array typedValues = ConvertToTypedArray(dataFields[columnIndex], columnBuffers[columnIndex]);
+                columns[columnIndex] = new DataColumn(dataFields[columnIndex], typedValues);
             }
 
             return columns;
