@@ -5,6 +5,7 @@ using Parquet;
 using Parquet.Rows;
 
 using PCAxis.Paxiom;
+using PCAxis.Serializers.Parquet;
 
 namespace PCAxis.Serializers
 {

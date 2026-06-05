@@ -8,7 +8,7 @@ using Parquet.Schema;
 using PCAxis.Paxiom;
 using PCAxis.Paxiom.Operations;
 
-namespace PCAxis.Serializers
+namespace PCAxis.Serializers.Parquet
 {
     public class ParquetBuilder
     {
