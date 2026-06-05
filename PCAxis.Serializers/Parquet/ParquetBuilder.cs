@@ -71,30 +71,31 @@ namespace PCAxis.Serializers.Parquet
             }
 
             ParquetSchema schema = CreateSchema();
-            List<DataField> dataFields = schema.GetDataFields().ToList();
+            DataField[] schemaFields = schema.GetDataFields();
+            Dictionary<string, int> dataFieldIndices = schemaFields.Select((field, idx) => new { field.Name, idx })
+                                                                 .ToDictionary(x => x.Name, x => x.idx);
 
-            var rows = new List<object[]>(indices.Count);
-
-            foreach (var index in indices)
+            int rowCount = indices.Count;
+            var columnBuffers = new object[schemaFields.Length][];
+            for (int columnIndex = 0; columnIndex < schemaFields.Length; columnIndex++)
             {
-                var row = PopulateRow(index, dataFields, variableValueCounts, data);
-                rows.Add(row);
+                columnBuffers[columnIndex] = new object[rowCount];
             }
 
-            int rowCount = rows.Count;
-            DataField[] schemaFields = schema.GetDataFields();
+            for (int rowIndex = 0; rowIndex < rowCount; rowIndex++)
+            {
+                var row = PopulateRow(indices[rowIndex], schemaFields.Length, variableValueCounts, data, dataFieldIndices);
+                for (int columnIndex = 0; columnIndex < schemaFields.Length; columnIndex++)
+                {
+                    columnBuffers[columnIndex][rowIndex] = row[columnIndex];
+                }
+            }
+
             var columns = new DataColumn[schemaFields.Length];
 
             for (int columnIndex = 0; columnIndex < schemaFields.Length; columnIndex++)
             {
-                // Transpose row-oriented values into one dense array per column.
-                object[] sourceValues = new object[rowCount];
-                for (int rowIndex = 0; rowIndex < rowCount; rowIndex++)
-                {
-                    sourceValues[rowIndex] = rows[rowIndex][columnIndex];
-                }
-
-                Array typedValues = ConvertToTypedArray(schemaFields[columnIndex], sourceValues);
+                Array typedValues = ConvertToTypedArray(schemaFields[columnIndex], columnBuffers[columnIndex]);
                 columns[columnIndex] = new DataColumn(schemaFields[columnIndex], typedValues);
             }
 
@@ -220,16 +221,14 @@ namespace PCAxis.Serializers.Parquet
         /// Populates a single row in the Parquet table based on the specified index and data.
         /// </summary>
         /// <param name="index">The index representing the position of the row in the PXModel data.</param>
-        /// <param name="dataFields">The list of Parquet data fields representing the schema.</param>
+        /// <param name="fieldCount">The number of fields in the row schema.</param>
         /// <param name="variableValueCounts">The counts of values for each variable in the model.</param>
         /// <param name="data">The array containing the PXModel data.</param>
         /// <returns>The populated Parquet row.</returns>
-        private object[] PopulateRow(int[] index, List<DataField> dataFields, int[] variableValueCounts, double[] data)
+        private object[] PopulateRow(int[] index, int fieldCount, int[] variableValueCounts, double[] data, Dictionary<string, int> dataFieldIndices)
         {
             int variableCount = model.Meta.Variables.Count;
-            var row = new object[dataFields.Count];
-            Dictionary<string, int> dataFieldIndices = dataFields.Select((field, idx) => new { field.Name, idx })
-                                                                 .ToDictionary(x => x.Name, x => x.idx);
+            var row = new object[fieldCount];
 
             for (int i = 0; i < variableCount; i++)
             {
