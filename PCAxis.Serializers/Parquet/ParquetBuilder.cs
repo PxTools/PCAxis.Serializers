@@ -63,6 +63,7 @@ namespace PCAxis.Serializers.Parquet
                 .Select(v => v.IsContentVariable && v.Values.Count > 1)
                 .ToArray();
 
+            // Generate one logical row index per output row.
             var indices = GenerateDataPointIndices(variableValueCounts, isContentMulti);
 
             for (int m = 0; m < matrixSize; m++)
@@ -76,12 +77,14 @@ namespace PCAxis.Serializers.Parquet
                                                                  .ToDictionary(x => x.Name, x => x.idx);
 
             int rowCount = indices.Count;
+            // Keep an object buffer per column, then cast to typed arrays in one pass.
             var columnBuffers = new object[schemaFields.Length][];
             for (int columnIndex = 0; columnIndex < schemaFields.Length; columnIndex++)
             {
                 columnBuffers[columnIndex] = new object[rowCount];
             }
 
+            // Build each row once and write values directly into their column buffers.
             for (int rowIndex = 0; rowIndex < rowCount; rowIndex++)
             {
                 var row = PopulateRow(indices[rowIndex], schemaFields.Length, variableValueCounts, data, dataFieldIndices);
@@ -93,6 +96,7 @@ namespace PCAxis.Serializers.Parquet
 
             var columns = new DataColumn[schemaFields.Length];
 
+            // Convert object buffers to field-typed arrays required by DataColumn.
             for (int columnIndex = 0; columnIndex < schemaFields.Length; columnIndex++)
             {
                 Array typedValues = ConvertToTypedArray(schemaFields[columnIndex], columnBuffers[columnIndex]);
