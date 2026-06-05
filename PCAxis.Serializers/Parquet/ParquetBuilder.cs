@@ -73,7 +73,7 @@ namespace PCAxis.Serializers.Parquet
 
             ParquetSchema schema = CreateSchema();
             DataField[] schemaFields = schema.GetDataFields();
-            Dictionary<string, int> dataFieldIndices = schemaFields.Select((field, idx) => new { field.Name, idx })
+            Dictionary<string, int> fieldNameToColumnIndex = schemaFields.Select((field, idx) => new { field.Name, idx })
                                                                  .ToDictionary(x => x.Name, x => x.idx);
 
             int rowCount = indices.Count;
@@ -87,7 +87,7 @@ namespace PCAxis.Serializers.Parquet
             // Build each row once and write values directly into their column buffers.
             for (int rowIndex = 0; rowIndex < rowCount; rowIndex++)
             {
-                var row = PopulateRow(indices[rowIndex], schemaFields.Length, variableValueCounts, data, dataFieldIndices);
+                var row = PopulateRow(indices[rowIndex], schemaFields.Length, variableValueCounts, data, fieldNameToColumnIndex);
                 for (int columnIndex = 0; columnIndex < schemaFields.Length; columnIndex++)
                 {
                     columnBuffers[columnIndex][rowIndex] = row[columnIndex];
