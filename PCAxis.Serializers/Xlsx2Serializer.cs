@@ -96,44 +96,7 @@ namespace PCAxis.Serializers
                 if (type == CellContentType.Comment)
                     cell.GetComment().AddText(value.ToString());
                 else
-                    SetTypedCellValue(cell, value); // ClosedXML 0.100+ requires concrete value types
-        }
-
-        private static void SetTypedCellValue(IXLCell cell, object value)
-        {
-            switch (value)
-            {
-                case string s:
-                    cell.SetValue(s);
-                    break;
-                case bool b:
-                    cell.SetValue(b);
-                    break;
-                case int i:
-                    cell.SetValue(i);
-                    break;
-                case long l:
-                    cell.SetValue(l);
-                    break;
-                case double d:
-                    cell.SetValue(d);
-                    break;
-                case float f:
-                    cell.SetValue(f);
-                    break;
-                case decimal m:
-                    cell.SetValue((double)m);
-                    break;
-                case DateTime dt:
-                    cell.SetValue(dt);
-                    break;
-                case TimeSpan ts:
-                    cell.SetValue(ts);
-                    break;
-                default:
-                    cell.SetValue(value.ToString());
-                    break;
-            }
+                    CellValueHelper.SetTypedCellValue(cell, value); // ClosedXML 0.100+ requires concrete value types
         }
 
         protected virtual void SetCellFormat(IXLCell cell, CellContentType type, object value, FormatCellDescription changes)
