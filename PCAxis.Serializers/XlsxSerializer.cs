@@ -85,7 +85,44 @@ namespace PCAxis.Serializers
                 if (type == CellContentType.Comment)
                     cell.GetComment().AddText(value.ToString());
                 else
-                    cell.SetValue(value); //Change from cell.Value = value to SetValue(..) For not format e.g 10-11 to date
+                    SetTypedCellValue(cell, value); // ClosedXML 0.100+ requires concrete value types
+        }
+
+        private static void SetTypedCellValue(IXLCell cell, object value)
+        {
+            switch (value)
+            {
+                case string s:
+                    cell.SetValue(s);
+                    break;
+                case bool b:
+                    cell.SetValue(b);
+                    break;
+                case int i:
+                    cell.SetValue(i);
+                    break;
+                case long l:
+                    cell.SetValue(l);
+                    break;
+                case double d:
+                    cell.SetValue(d);
+                    break;
+                case float f:
+                    cell.SetValue(f);
+                    break;
+                case decimal m:
+                    cell.SetValue((double)m);
+                    break;
+                case DateTime dt:
+                    cell.SetValue(dt);
+                    break;
+                case TimeSpan ts:
+                    cell.SetValue(ts);
+                    break;
+                default:
+                    cell.SetValue(value.ToString());
+                    break;
+            }
         }
 
         protected virtual void SetCellFormat(IXLCell cell, CellContentType type, object value, FormatCellDescription changes)
@@ -109,7 +146,7 @@ namespace PCAxis.Serializers
                 /*
 				sheet.Cell(1, 1).Value = model.Meta.Title;
 				sheet.Cell(1, 1).Style.Font.FontSize = 14;
-				sheet.Cell(1, 1).Style.Font.Bold = true; 
+				sheet.Cell(1, 1).Style.Font.Bold = true;
 				*/
 
                 setCell(
@@ -187,7 +224,7 @@ namespace PCAxis.Serializers
                             !value.IsNumeric() ?
                                 (FormatCellDescription)(c => { c.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right; })
                                 :
-                                (FormatCellDescription)(c => { c.DataType = XLDataType.Number; c.Style.NumberFormat.Format = FormatNumericCell(GetDecimalPrecision(value, fmt.DecimalSeparator)); })
+                                (FormatCellDescription)(c => { c.Style.NumberFormat.Format = FormatNumericCell(GetDecimalPrecision(value, fmt.DecimalSeparator)); })
                         );
                         if (!string.IsNullOrEmpty(n))
                         {
@@ -202,7 +239,7 @@ namespace PCAxis.Serializers
 
                         if (_showDataNoteCells && !String.IsNullOrEmpty(dataNote))
                         {
-                            //sheet.Cell(row, column + dataNoteNoteOffset).Value = dataNote;    
+                            //sheet.Cell(row, column + dataNoteNoteOffset).Value = dataNote;
                             setCell(
                                 sheet.Cell(row, column + dataNoteNoteOffset),
                                 CellContentType.DataNote,
@@ -337,7 +374,7 @@ namespace PCAxis.Serializers
                 }
             }
 
-            //Writes mandantory cellnotes 
+            //Writes mandantory cellnotes
             CellNote cn;
             VariableValuePair vvp;
             for (int i = 0; i < model.Meta.CellNotes.Count; i++)
@@ -610,7 +647,7 @@ namespace PCAxis.Serializers
                         row++;
                         for (int i = 0; i < str.Length; i++)
                         {
-                            //sheet.Cell(row++, 2).Value = str[i];                            
+                            //sheet.Cell(row++, 2).Value = str[i];
                             setCell(
                                 sheet.Cell(row++, 1),
                                 CellContentType.Info,
@@ -1087,7 +1124,7 @@ namespace PCAxis.Serializers
             }
 
             //OFFICIAL STATISTICS
-            //If the statistics are official, insert information about that in the file 
+            //If the statistics are official, insert information about that in the file
             //Reqtest error report #406
             row++;
             if (model.Meta.OfficialStatistics)
@@ -1158,7 +1195,7 @@ namespace PCAxis.Serializers
             {
                 //INTERVAL
                 int hInterval = CalcPostHeadingInterval(i, model);
-                //HEADING              
+                //HEADING
                 p = CalcPreHeadingInterval(i, model); //0;
 
                 for (int l = 0; l <= p; l++)
@@ -1294,7 +1331,7 @@ namespace PCAxis.Serializers
                         sheet.Cell(row, column),
                         CellContentType.Code,
                         val.Code,
-                        c => { c.DataType = XLDataType.Text; c.Style.Font.Bold = true; }
+                        c => { c.Style.Font.Bold = true; }
                     );
                     //sheet.Cell(row, column).DataType = XLCellValues.Text;
                     //sheet.Cell(row, column).Style.Font.Bold = true;
@@ -1322,7 +1359,7 @@ namespace PCAxis.Serializers
                 {
                     /*
 					sheet.Cell(row, column).Value = val.Text;
-					sheet.Cell(row, column).Style.Font.Bold = true; 
+					sheet.Cell(row, column).Style.Font.Bold = true;
 					*/
 
                     setCell(

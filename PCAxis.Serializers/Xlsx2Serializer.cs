@@ -96,7 +96,44 @@ namespace PCAxis.Serializers
                 if (type == CellContentType.Comment)
                     cell.GetComment().AddText(value.ToString());
                 else
-                    cell.SetValue(value); //Change from cell.Value = contentInfo to SetValue(..) For not format e.g 10-11 to date
+                    SetTypedCellValue(cell, value); // ClosedXML 0.100+ requires concrete value types
+        }
+
+        private static void SetTypedCellValue(IXLCell cell, object value)
+        {
+            switch (value)
+            {
+                case string s:
+                    cell.SetValue(s);
+                    break;
+                case bool b:
+                    cell.SetValue(b);
+                    break;
+                case int i:
+                    cell.SetValue(i);
+                    break;
+                case long l:
+                    cell.SetValue(l);
+                    break;
+                case double d:
+                    cell.SetValue(d);
+                    break;
+                case float f:
+                    cell.SetValue(f);
+                    break;
+                case decimal m:
+                    cell.SetValue((double)m);
+                    break;
+                case DateTime dt:
+                    cell.SetValue(dt);
+                    break;
+                case TimeSpan ts:
+                    cell.SetValue(ts);
+                    break;
+                default:
+                    cell.SetValue(value.ToString());
+                    break;
+            }
         }
 
         protected virtual void SetCellFormat(IXLCell cell, CellContentType type, object value, FormatCellDescription changes)
@@ -141,7 +178,7 @@ namespace PCAxis.Serializers
                 // Writes values for the stub and data cells
                 row = WriteAllRows(row, model, sheet, fmt);
 
-                // Writes the information             
+                // Writes the information
                 WriteAllTableExtraMetadata(row + 1, model, sheet);
 
                 return book;
@@ -233,7 +270,7 @@ namespace PCAxis.Serializers
                         !value.IsNumeric() ?
                             (FormatCellDescription)(c => { c.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right; })
                             :
-                            (FormatCellDescription)(c => { c.DataType = XLDataType.Number; c.Style.NumberFormat.Format = FormatNumericCell(GetDecimalPrecision(value, fmt.DecimalSeparator)); })
+                            (FormatCellDescription)(c => { c.Style.NumberFormat.Format = FormatNumericCell(GetDecimalPrecision(value, fmt.DecimalSeparator)); })
                     );
                     if (!string.IsNullOrEmpty(n))
                     {
@@ -285,7 +322,7 @@ namespace PCAxis.Serializers
             //Writes mandantory contentInfo notes
             row = WriteValueNotes(row, model, sheet);
 
-            //Writes mandantory cellnotes 
+            //Writes mandantory cellnotes
             row = WriteCellNotes(row, model, sheet);
             return row;
         }
