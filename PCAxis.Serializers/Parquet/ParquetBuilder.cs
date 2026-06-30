@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Parquet.Rows;
+using Parquet.Data;
 using Parquet.Schema;
 
 using PCAxis.Paxiom;
 using PCAxis.Paxiom.Operations;
 
-namespace PCAxis.Serializers
+namespace PCAxis.Serializers.Parquet
 {
     public class ParquetBuilder
     {
@@ -50,10 +50,10 @@ namespace PCAxis.Serializers
 
 
         /// <summary>
-        /// Populates the Parquet table based on the PXModel data and metadata.
+        /// Populates Parquet columns based on the PXModel data and metadata.
         /// </summary>
-        /// <returns>The populated Parquet table.</returns>
-        public Table PopulateTable()
+        /// <returns>The populated Parquet data columns.</returns>
+        public DataColumn[] PopulateColumns()
         {
             int matrixSize = model.Data.MatrixColumnCount * model.Data.MatrixRowCount;
             double[] data = new double[matrixSize];
@@ -63,6 +63,7 @@ namespace PCAxis.Serializers
                 .Select(v => v.IsContentVariable && v.Values.Count > 1)
                 .ToArray();
 
+            // Generate one logical row index per output row.
             var indices = GenerateDataPointIndices(variableValueCounts, isContentMulti);
 
             for (int m = 0; m < matrixSize; m++)
@@ -70,27 +71,90 @@ namespace PCAxis.Serializers
                 data[m] = model.Data.ReadElement(m);
             }
 
-            List<DataField> dataFields = CreateDataFields();
+            ParquetSchema schema = CreateSchema();
+            DataField[] dataFields = schema.GetDataFields();
+            Dictionary<string, int> fieldNameToColumnIndex = dataFields.Select((field, idx) => new { field.Name, idx })
+                                                                 .ToDictionary(x => x.Name, x => x.idx);
 
-            var table = new Table(dataFields.ToArray());
-
-            foreach (var index in indices)
+            int rowCount = indices.Count;
+            // Keep an object buffer per column, then cast to typed arrays in one pass.
+            var columnBuffers = new object[dataFields.Length][];
+            for (int columnIndex = 0; columnIndex < dataFields.Length; columnIndex++)
             {
-                var row = PopulateRow(index, dataFields, variableValueCounts, data);
-                table.Add(row);
+                columnBuffers[columnIndex] = new object[rowCount];
             }
 
-            return table;
+            // Build each row once and write values directly into their column buffers.
+            for (int rowIndex = 0; rowIndex < rowCount; rowIndex++)
+            {
+                var row = PopulateRow(indices[rowIndex], dataFields.Length, variableValueCounts, data, fieldNameToColumnIndex);
+                for (int columnIndex = 0; columnIndex < dataFields.Length; columnIndex++)
+                {
+                    columnBuffers[columnIndex][rowIndex] = row[columnIndex];
+                }
+            }
+
+            var columns = new DataColumn[dataFields.Length];
+
+            // Convert object buffers to field-typed arrays required by DataColumn.
+            for (int columnIndex = 0; columnIndex < dataFields.Length; columnIndex++)
+            {
+                Array typedValues = ConvertToTypedArray(dataFields[columnIndex], columnBuffers[columnIndex]);
+                columns[columnIndex] = new DataColumn(dataFields[columnIndex], typedValues);
+            }
+
+            return columns;
+        }
+
+        private static Array ConvertToTypedArray(DataField field, object[] values)
+        {
+            // DataColumn expects an Array with the exact CLR element type of the field.
+            Type clrType = field.ClrType;
+
+            if (clrType == typeof(double))
+            {
+                var result = new double[values.Length];
+                for (int i = 0; i < values.Length; i++)
+                {
+                    result[i] = values[i] == null ? default : Convert.ToDouble(values[i]);
+                }
+
+                return result;
+            }
+
+            if (clrType == typeof(string))
+            {
+                var result = new string[values.Length];
+                for (int i = 0; i < values.Length; i++)
+                {
+                    result[i] = values[i] as string;
+                }
+
+                return result;
+            }
+
+            if (clrType == typeof(DateTime))
+            {
+                var result = new DateTime[values.Length];
+                for (int i = 0; i < values.Length; i++)
+                {
+                    result[i] = values[i] == null ? default : (DateTime)values[i];
+                }
+
+                return result;
+            }
+
+            throw new NotSupportedException($"Unsupported Parquet field type '{clrType}'.");
         }
 
 
         /// <summary>
-        /// Creates the Parquet schema fields based on the PXModel metadata.
+        /// Creates the Parquet schema based on the PXModel metadata.
         /// </summary>
-        /// <returns>The list of Parquet data fields.</returns>
-        private List<DataField> CreateDataFields()
+        /// <returns>The Parquet schema.</returns>
+        private ParquetSchema CreateSchema()
         {
-            List<DataField> dataFields = new List<DataField>();
+            var dataFields = new List<DataField>();
             int variableCount = model.Meta.Variables.Count;
 
             for (int i = 0; i < variableCount; i++)
@@ -98,15 +162,15 @@ namespace PCAxis.Serializers
                 var variable = model.Meta.Variables[i];
                 if (variable.IsContentVariable && variable.Values.Count > 1)
                 {
-                    ParquetBuilder.AddContentVariableFields(dataFields, variable);
+                    AddContentVariableFields(dataFields, variable);
                 }
                 else
                 {
-                    ParquetBuilder.AddNonContentVariableFields(dataFields, variable);
+                    AddNonContentVariableFields(dataFields, variable);
                 }
             }
 
-            return dataFields;
+            return new ParquetSchema(dataFields.Cast<Field>());
         }
 
 
@@ -161,16 +225,14 @@ namespace PCAxis.Serializers
         /// Populates a single row in the Parquet table based on the specified index and data.
         /// </summary>
         /// <param name="index">The index representing the position of the row in the PXModel data.</param>
-        /// <param name="dataFields">The list of Parquet data fields representing the schema.</param>
+        /// <param name="fieldCount">The number of fields in the row schema.</param>
         /// <param name="variableValueCounts">The counts of values for each variable in the model.</param>
         /// <param name="data">The array containing the PXModel data.</param>
         /// <returns>The populated Parquet row.</returns>
-        private object[] PopulateRow(int[] index, List<DataField> dataFields, int[] variableValueCounts, double[] data)
+        private object[] PopulateRow(int[] index, int fieldCount, int[] variableValueCounts, double[] data, Dictionary<string, int> dataFieldIndices)
         {
             int variableCount = model.Meta.Variables.Count;
-            var row = new object[dataFields.Count];
-            Dictionary<string, int> dataFieldIndices = dataFields.Select((field, idx) => new { field.Name, idx })
-                                                                 .ToDictionary(x => x.Name, x => x.idx);
+            var row = new object[fieldCount];
 
             for (int i = 0; i < variableCount; i++)
             {
