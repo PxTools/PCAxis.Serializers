@@ -180,15 +180,25 @@ namespace PCAxis.Serializers
                         value = fmt.ReadElement(i, j, ref n, ref dataNote);
 
                         //TODO: Improve performance of setting value format, takes a lot of CPU at the moment
-                        setCell(
+
+                        if (value.IsNumeric())
+                        {
+                            setCell(
+                                sheet.Cell(row, column + dataNoteValueOffset),
+                                CellContentType.Data,
+                                value,
+                                (FormatCellDescription)(c => { c.Style.NumberFormat.Format = FormatNumericCell(GetDecimalPrecision(value, fmt.DecimalSeparator)); }));
+                        }
+                        else
+                        {
+                            setCell(
                             sheet.Cell(row, column + dataNoteValueOffset),
                             CellContentType.Data,
                             value,
-                            !value.IsNumeric() ?
-                                (FormatCellDescription)(c => { c.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right; })
-                                :
-                                (FormatCellDescription)(c => { c.Style.NumberFormat.Format = FormatNumericCell(GetDecimalPrecision(value, fmt.DecimalSeparator)); })
-                        );
+                            (FormatCellDescription)(c => { c.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right; }));
+                        }
+
+
                         if (!string.IsNullOrEmpty(n))
                         {
                             //sheet.Cell(row, column + dataNoteValueOffset).Comment.AddText(n);
