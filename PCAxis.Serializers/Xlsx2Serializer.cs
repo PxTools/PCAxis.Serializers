@@ -226,15 +226,24 @@ namespace PCAxis.Serializers
                     column = indentation + j;
                     value = fmt.ReadElement(i, j, ref n, ref dataNote);
 
-                    SetCell(
-                        sheet.Cell(row, column),
-                        CellContentType.Data,
-                        value,
-                        !value.IsNumeric() ?
-                            (FormatCellDescription)(c => { c.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right; })
-                            :
-                            (FormatCellDescription)(c => { c.Style.NumberFormat.Format = FormatNumericCell(GetDecimalPrecision(value, fmt.DecimalSeparator)); })
-                    );
+                    if (value.IsNumeric())
+                    {
+                        double numericValue = double.Parse(value, CultureInfo.InvariantCulture);
+                        SetCell(
+                            sheet.Cell(row, column),
+                            CellContentType.Data,
+                            numericValue,
+                            (FormatCellDescription)(c => { c.Style.NumberFormat.Format = FormatNumericCell(GetDecimalPrecision(value, fmt.DecimalSeparator)); }));
+                    }
+                    else
+                    {
+                        SetCell(
+                            sheet.Cell(row, column),
+                            CellContentType.Data,
+                            value,
+                                (FormatCellDescription)(c => { c.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right; }));
+                    }
+
                     if (!string.IsNullOrEmpty(n))
                     {
                         SetCell(
