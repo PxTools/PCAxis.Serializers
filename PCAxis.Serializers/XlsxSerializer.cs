@@ -183,10 +183,11 @@ namespace PCAxis.Serializers
 
                         if (value.IsNumeric())
                         {
+                            double numericValue = double.Parse(value, CultureInfo.InvariantCulture);
                             setCell(
                                 sheet.Cell(row, column + dataNoteValueOffset),
                                 CellContentType.Data,
-                                value,
+                                numericValue,
                                 (FormatCellDescription)(c => { c.Style.NumberFormat.Format = FormatNumericCell(GetDecimalPrecision(value, fmt.DecimalSeparator)); }));
                         }
                         else
