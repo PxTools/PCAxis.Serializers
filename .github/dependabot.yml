@@ -17,7 +17,8 @@ updates:
     cooldown:
       default-days: 9
       exclude:
-        - "PCAxis.Core"
+        - "PCAxis.*"
+        - "PxWeb.Api2.Server.Models"
 
   - package-ecosystem: "github-actions"
     directory: "/"
