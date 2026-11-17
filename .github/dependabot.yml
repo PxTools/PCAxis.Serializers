@@ -18,6 +18,8 @@ updates:
       default-days: 9
       exclude:
         - "PCAxis.Core"
+        - "PCAxis.Metadata"
+        - "PxWeb.Api2.Server.Models"
 
   - package-ecosystem: "github-actions"
     directory: "/"
